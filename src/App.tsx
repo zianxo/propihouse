@@ -3,16 +3,33 @@ import './index.css'
 
 function App() {
   const [email, setEmail] = useState('')
-  const [sent, setSent] = useState(false)
-  const [successMsg, setSuccessMsg] = useState('')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle')
+  const [message, setMessage] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email || !email.includes('@')) return
-    setSent(true)
-    setSuccessMsg('Gracias. Te avisaremos en cuanto abramos.')
-    setEmail('')
+
+    setStatus('loading')
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Error desconocido')
+      setStatus('sent')
+      setMessage('Gracias. Te avisaremos en cuanto abramos.')
+      setEmail('')
+    } catch (err: unknown) {
+      setStatus('error')
+      setMessage(err instanceof Error ? err.message : 'Algo salió mal. Inténtalo de nuevo.')
+    }
   }
+
+  const isSent = status === 'sent'
+  const isLoading = status === 'loading'
 
   return (
     <>
@@ -58,20 +75,20 @@ function App() {
             placeholder="Tu correo electrónico"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            disabled={sent}
+            disabled={isSent || isLoading}
           />
           <button
-            className={`notify-btn${sent ? ' sent' : ''}`}
+            className={`notify-btn${isSent ? ' sent' : ''}`}
             type="submit"
-            disabled={sent}
+            disabled={isSent || isLoading}
           >
-            {sent ? 'Listo ✓' : 'Notifícame'}
+            {isSent ? 'Listo ✓' : isLoading ? '...' : 'Notifícame'}
           </button>
         </form>
 
-        {/* Success */}
-        {successMsg && (
-          <p className="success-msg">{successMsg}</p>
+        {/* Status message */}
+        {message && (
+          <p className={`success-msg${status === 'error' ? ' error' : ''}`}>{message}</p>
         )}
 
         {/* Divider */}
@@ -99,7 +116,7 @@ function App() {
       {/* Bottom bar */}
       <footer className="bottom-bar">
         <span className="bottom-copy">
-          © 2025 PropiHouse. Todos los derechos reservados.
+          © 2026 PropiHouse. Todos los derechos reservados.
         </span>
         <nav className="bottom-links">
           <a href="tel:+34637863678">637 86 36 78</a>
