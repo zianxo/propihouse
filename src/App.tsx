@@ -40,12 +40,16 @@ function App() {
       <div className="page">
         {/* Brand */}
         <div className="brand">
-          <img
+          {/* <img
             src="/logo.png"
             alt="PropiHouse"
             className="brand-icon"
-          />
-          <span className="brand-name">PropiHouse</span>
+          /> */}
+          {/* <span className="brand-name"><img
+            src="/logo.png"
+            alt="PropiHouse"
+            className="brand-icon"
+          /></span> */}
         </div>
 
         {/* Badge */}
@@ -64,7 +68,7 @@ function App() {
         <p className="subheadline">
           Estamos preparando algo especial. Una experiencia inmobiliaria
           diseñada con detalle, pensada para quienes buscan{' '}
-          lo mejor en España.
+          lo mejor.
         </p>
 
         {/* Email capture */}
