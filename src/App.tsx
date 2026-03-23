@@ -60,13 +60,13 @@ function App() {
 
         {/* Headline */}
         <h1 className="headline">
-          Tu hogar ideal,<br />
+          Tu refugio inmobiliario,<br />
           <em>muy pronto.</em>
         </h1>
 
         {/* Sub */}
         <p className="subheadline">
-          Estamos preparando algo especial. Una experiencia inmobiliaria
+          Una experiencia inmobiliaria
           diseñada con detalle, pensada para quienes buscan{' '}
           lo mejor.
         </p>
@@ -105,10 +105,10 @@ function App() {
             <span className="meta-value">637 86 36 78</span>
           </div>
           <div className="meta-sep" />
-          <div className="meta-item">
+          {/* <div className="meta-item">
             <span className="meta-label">Especialidad</span>
             <span className="meta-value">Propiedades Premium</span>
-          </div>
+          </div> */}
           <div className="meta-sep" />
           <div className="meta-item">
             <span className="meta-label">Barcelona</span>
