@@ -181,7 +181,7 @@ function HeroScrollVideo() {
         {/* Fallback static image while frames load */}
         {!loaded && (
           <div className="absolute inset-0">
-            <img src="/images/hero.png" alt="" className="w-full h-full object-cover" />
+            <img src="/frames/frame-001.jpg" alt="" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-r from-dark/80 via-dark/50 to-dark/20" />
             <div className="absolute inset-0 bg-gradient-to-t from-dark/60 via-transparent to-dark/10" />
           </div>
