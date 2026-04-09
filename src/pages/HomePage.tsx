@@ -209,29 +209,20 @@ function HeroScrollVideo() {
         >
           <div className="max-w-7xl mx-auto px-6 w-full">
             <div className="max-w-2xl">
-              <span
-                className="inline-block text-cream/80 text-xs font-bold tracking-[0.25em] uppercase mb-6 animate-fade-up"
-                style={{ animationDelay: '0.1s' }}
-              >
+              <span className="inline-block text-cream/80 text-xs font-bold tracking-[0.25em] uppercase mb-6">
                 Inmobiliaria en L'Hospitalet de Llobregat
               </span>
 
-              <h1
-                className="font-serif text-[2rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] font-medium text-white leading-[1.15] mb-7 animate-fade-up"
-                style={{ animationDelay: '0.25s' }}
-              >
+              <h1 className="font-serif text-[2rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] font-medium text-white leading-[1.15] mb-7">
                 Entender bien tu situacion es el primer paso para{' '}
                 <em className="italic text-cream">decidir con criterio</em>
               </h1>
 
-              <p
-                className="text-white/65 text-lg md:text-xl leading-relaxed mb-10 max-w-xl animate-fade-up"
-                style={{ animationDelay: '0.4s' }}
-              >
+              <p className="text-white/65 text-lg md:text-xl leading-relaxed mb-10 max-w-xl">
                 En PropiHouse te ayudamos a tomar decisiones inmobiliarias con claridad en L'Hospitalet de Llobregat.
               </p>
 
-              <div className="flex flex-wrap gap-4 animate-fade-up" style={{ animationDelay: '0.55s' }}>
+              <div className="flex flex-wrap gap-4">
                 <Link
                   to="/entender-mi-situacion"
                   className="group inline-flex items-center gap-2.5 bg-blue hover:bg-blue-dark text-white text-sm font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue/25"
