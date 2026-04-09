@@ -13,6 +13,13 @@
 </head>
 
 <body>
+  <script>
+    // Preview gate: redirect to coming-soon unless the preview cookie exists.
+    // Remove this block when the site goes live.
+    if (!document.cookie.includes('propihouse_preview=true') && location.pathname !== '/coming-soon.html') {
+      location.replace('/coming-soon.html');
+    }
+  </script>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
