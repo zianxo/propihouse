@@ -125,7 +125,7 @@ footer a:hover { color: var(--text-2); }
         // Code accepted — cookie is set, reload to enter the real site
         btn.textContent = 'Entrando...';
         msg.textContent = 'Acceso concedido. Redirigiendo...';
-        setTimeout(function() { window.location.reload(); }, 600);
+        setTimeout(function() { window.location.href = '/'; }, 600);
         return;
       }
     } catch (_) {
