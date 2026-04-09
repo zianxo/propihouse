@@ -1,0 +1,19 @@
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "cookie",
+          "key": "propihouse_preview",
+          "value": "true"
+        }
+      ],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/coming-soon.html"
+    }
+  ]
+}

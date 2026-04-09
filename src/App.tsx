@@ -1,141 +1,47 @@
-import { useState } from 'react'
-import './index.css'
+import { lazy, Suspense } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import Layout from './components/Layout'
 
-function App() {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle')
-  const [message, setMessage] = useState('')
+const HomePage = lazy(() => import('./pages/HomePage'))
+const ComprarPage = lazy(() => import('./pages/ComprarPage'))
+const AlquilarPage = lazy(() => import('./pages/AlquilarPage'))
+const VenderPage = lazy(() => import('./pages/VenderPage'))
+const FinanciarPage = lazy(() => import('./pages/FinanciarPage'))
+const ComoTrabajamosPage = lazy(() => import('./pages/ComoTrabajamosPage'))
+const ContactoPage = lazy(() => import('./pages/ContactoPage'))
+const EntenderSituacionPage = lazy(() => import('./pages/EntenderSituacionPage'))
+const CuantoValePage = lazy(() => import('./pages/CuantoValePage'))
+const ValoradorPage = lazy(() => import('./pages/ValoradorPage'))
+const GuiaPage = lazy(() => import('./pages/GuiaPage'))
+const ArticlePage = lazy(() => import('./pages/ArticlePage'))
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email || !email.includes('@')) return
-
-    setStatus('loading')
-    try {
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Error desconocido')
-      setStatus('sent')
-      setMessage('Gracias. Te avisaremos en cuanto abramos.')
-      setEmail('')
-    } catch (err: unknown) {
-      setStatus('error')
-      setMessage(err instanceof Error ? err.message : 'Algo salió mal. Inténtalo de nuevo.')
-    }
-  }
-
-  const isSent = status === 'sent'
-  const isLoading = status === 'loading'
-
+function Loading() {
   return (
-    <>
-      {/* Ambient orbs */}
-      <div className="orb orb-1" />
-      <div className="orb orb-2" />
-
-      <div className="page">
-        {/* Brand */}
-        <div className="brand">
-          {/* <img
-            src="/logo.png"
-            alt="PropiHouse"
-            className="brand-icon"
-          /> */}
-          {/* <span className="brand-name"><img
-            src="/logo.png"
-            alt="PropiHouse"
-            className="brand-icon"
-          /></span> */}
-        </div>
-
-        {/* Badge */}
-        <div className="badge">
-          <span className="badge-dot" />
-          Próximamente
-        </div>
-
-        {/* Headline */}
-        <h1 className="headline">
-          Tu hogar ideal,<br />
-          <em>muy pronto.</em>
-        </h1>
-
-        {/* Sub */}
-        <p className="subheadline">
-          Estamos preparando algo especial. Una experiencia inmobiliaria
-          diseñada con detalle, pensada para quienes buscan{' '}
-          lo mejor.
-        </p>
-
-        {/* Email capture */}
-        <form className="notify-form" onSubmit={handleSubmit}>
-          <input
-            className="notify-input"
-            type="email"
-            placeholder="Tu correo electrónico"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            disabled={isSent || isLoading}
-          />
-          <button
-            className={`notify-btn${isSent ? ' sent' : ''}`}
-            type="submit"
-            disabled={isSent || isLoading}
-          >
-            {isSent ? 'Listo ✓' : isLoading ? '...' : 'Notifícame'}
-          </button>
-        </form>
-
-        {/* Status message */}
-        {message && (
-          <p className={`success-msg${status === 'error' ? ' error' : ''}`}>{message}</p>
-        )}
-
-        {/* Divider */}
-        <div className="divider" />
-
-        {/* Meta info */}
-        <div className="meta">
-          <div className="meta-item">
-            <span className="meta-label">Teléfono</span>
-            <span className="meta-value">637 86 36 78</span>
-          </div>
-          <div className="meta-sep" />
-          <div className="meta-item">
-            <span className="meta-label">Especialidad</span>
-            <span className="meta-value">Propiedades Premium</span>
-          </div>
-          <div className="meta-sep" />
-          <div className="meta-item">
-            <span className="meta-label">Barcelona</span>
-            <span className="meta-value">L'Hospitalet de Llobregat</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom bar */}
-      <footer className="bottom-bar">
-        <span className="bottom-copy">
-          © 2026 PropiHouse. Todos los derechos reservados.
-        </span>
-        <nav className="bottom-links">
-          <a href="tel:+34637863678">637 86 36 78</a>
-          <a
-            href="https://maps.google.com/?q=Carrer+d'Enric+Prat+de+la+Riba,+187,+08901+L'Hospitalet+de+Llobregat,+Barcelona"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            L'Hospitalet, Barcelona
-          </a>
-          <a href="#">Privacidad</a>
-        </nav>
-      </footer>
-    </>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-blue border-t-transparent rounded-full animate-spin" />
+    </div>
   )
 }
 
-export default App
+export default function App() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="comprar" element={<ComprarPage />} />
+          <Route path="alquilar" element={<AlquilarPage />} />
+          <Route path="vender" element={<VenderPage />} />
+          <Route path="financiar" element={<FinanciarPage />} />
+          <Route path="como-trabajamos" element={<ComoTrabajamosPage />} />
+          <Route path="contacto" element={<ContactoPage />} />
+          <Route path="entender-mi-situacion" element={<EntenderSituacionPage />} />
+          <Route path="cuanto-vale-mi-vivienda" element={<CuantoValePage />} />
+          <Route path="valorador" element={<ValoradorPage />} />
+          <Route path="guia" element={<GuiaPage />} />
+          <Route path="guia/:slug" element={<ArticlePage />} />
+        </Route>
+      </Routes>
+    </Suspense>
+  )
+}

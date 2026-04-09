@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PropiHouse — Próximamente</title>
+<meta name="description" content="PropiHouse — Tu inmobiliaria de confianza en L'Hospitalet de Llobregat. Próximamente." />
+<link rel="icon" type="image/png" href="/favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #000; --surface: rgba(255,255,255,0.04); --border: rgba(255,255,255,0.08);
+  --border-hl: rgba(255,255,255,0.15); --text-1: #f5f5f7; --text-2: rgba(245,245,247,0.55);
+  --text-3: rgba(245,245,247,0.35); --accent: #e8d5b0; --accent-glow: rgba(232,213,176,0.12);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+html, body { height: 100%; width: 100%; }
+body { background: var(--bg); color: var(--text-1); font-family: var(--font); -webkit-font-smoothing: antialiased; overflow: hidden; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); background-repeat: repeat; background-size: 128px 128px; pointer-events: none; z-index: 0; }
+.orb { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; animation: drift 18s ease-in-out infinite alternate; }
+.orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(232,213,176,0.07) 0%, transparent 70%); top: -200px; right: -100px; }
+.orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(180,200,232,0.05) 0%, transparent 70%); bottom: -150px; left: -100px; animation-delay: -9s; }
+@keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(40px,20px) scale(1.05); } }
+.page { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100dvh; padding: 48px 24px; text-align: center; }
+.badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 100px; border: 1px solid var(--border-hl); background: var(--surface); backdrop-filter: blur(12px); font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 32px; animation: fadeUp .9s cubic-bezier(.16,1,.3,1) both; animation-delay: .25s; }
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.4; transform:scale(.8); } }
+h1 { font-size: clamp(40px, 8vw, 80px); font-weight: 300; letter-spacing: -0.03em; line-height: 1.05; color: var(--text-1); margin-bottom: 24px; animation: fadeUp .9s cubic-bezier(.16,1,.3,1) both; animation-delay: .35s; }
+h1 em { font-style: normal; background: linear-gradient(135deg, #f5f5f7 30%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.sub { font-size: clamp(15px, 2vw, 19px); font-weight: 300; line-height: 1.65; color: var(--text-2); max-width: 520px; margin-bottom: 56px; animation: fadeUp .9s cubic-bezier(.16,1,.3,1) both; animation-delay: .45s; }
+.form { display: flex; align-items: center; width: 100%; max-width: 420px; border: 1px solid var(--border-hl); border-radius: 12px; background: var(--surface); backdrop-filter: blur(16px); overflow: hidden; transition: border-color .25s, box-shadow .25s; animation: fadeUp .9s cubic-bezier(.16,1,.3,1) both; animation-delay: .55s; }
+.form:focus-within { border-color: var(--border-hl); box-shadow: 0 0 0 3px var(--accent-glow); }
+.form input { flex: 1; padding: 14px 18px; background: transparent; border: none; outline: none; font-size: 14px; font-family: var(--font); color: var(--text-1); }
+.form input::placeholder { color: var(--text-3); }
+.form button { padding: 12px 20px; margin: 4px; border-radius: 8px; border: none; background: var(--text-1); color: #000; font-size: 13px; font-weight: 500; font-family: var(--font); cursor: pointer; white-space: nowrap; transition: background .2s, transform .15s; flex-shrink: 0; }
+.form button:hover { background: #e0e0e2; transform: translateY(-1px); }
+.form button:active { transform: translateY(0); }
+.form button.sent { background: var(--accent); color: #000; }
+.form button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.msg { font-size: 13px; color: var(--accent); margin-top: 14px; min-height: 18px; animation: fadeUp .5s cubic-bezier(.16,1,.3,1) both; }
+.msg.err { color: rgba(255,120,100,0.85); }
+.meta { display: flex; align-items: center; gap: 28px; margin-top: 56px; animation: fadeUp .9s cubic-bezier(.16,1,.3,1) both; animation-delay: .7s; }
+.meta-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.meta-label { font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); }
+.meta-value { font-size: 13px; color: var(--text-2); }
+.meta-sep { width: 1px; height: 32px; background: var(--border); }
+footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); animation: fadeIn 1.2s ease both; animation-delay: .9s; z-index: 2; }
+footer span { font-size: 11px; color: var(--text-3); }
+footer nav { display: flex; gap: 24px; }
+footer a { font-size: 11px; color: var(--text-3); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--text-2); }
+@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@media (max-width: 480px) { body { overflow: auto; } .meta { gap: 16px; } footer { padding: 16px 20px; } footer nav { gap: 16px; } .form { max-width: 100%; } }
+</style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<div class="page">
+  <div class="badge"><span class="badge-dot"></span> Próximamente</div>
+
+  <h1>Tu refugio inmobiliario,<br><em>muy pronto.</em></h1>
+
+  <p class="sub">Una experiencia inmobiliaria diseñada con detalle, pensada para quienes buscan lo mejor.</p>
+
+  <form class="form" id="form" autocomplete="off">
+    <input id="email" type="text" placeholder="Tu correo electrónico" />
+    <button id="btn" type="submit">Notifícame</button>
+  </form>
+
+  <p class="msg" id="msg"></p>
+
+  <div class="meta">
+    <div class="meta-item">
+      <span class="meta-label">Teléfono</span>
+      <span class="meta-value">637 86 36 78</span>
+    </div>
+    <div class="meta-sep"></div>
+    <div class="meta-item">
+      <span class="meta-label">Barcelona</span>
+      <span class="meta-value">L'Hospitalet de Llobregat</span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>&copy; 2026 PropiHouse.</span>
+  <nav>
+    <a href="tel:+34637863678">637 86 36 78</a>
+    <a href="https://maps.google.com/?q=Carrer+d'Enric+Prat+de+la+Riba,+187,+08901+L'Hospitalet+de+Llobregat,+Barcelona" target="_blank" rel="noopener noreferrer">L'Hospitalet, Barcelona</a>
+  </nav>
+</footer>
+
+<script>
+(function() {
+  var form = document.getElementById('form');
+  var input = document.getElementById('email');
+  var btn = document.getElementById('btn');
+  var msg = document.getElementById('msg');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var val = input.value.trim();
+    if (!val) return;
+
+    btn.disabled = true;
+    btn.textContent = '...';
+    msg.textContent = '';
+    msg.className = 'msg';
+
+    // Check if it's the secret preview code
+    try {
+      var unlockRes = await fetch('/api/unlock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: val })
+      });
+
+      if (unlockRes.ok) {
+        // Code accepted — cookie is set, reload to enter the real site
+        btn.textContent = 'Entrando...';
+        msg.textContent = 'Acceso concedido. Redirigiendo...';
+        setTimeout(function() { window.location.reload(); }, 600);
+        return;
+      }
+    } catch (_) {
+      // unlock failed — not a code, treat as email
+    }
+
+    // Not a code — treat as normal email subscription
+    if (!val.includes('@')) {
+      msg.textContent = 'Introduce un correo válido.';
+      msg.className = 'msg err';
+      btn.disabled = false;
+      btn.textContent = 'Notifícame';
+      return;
+    }
+
+    try {
+      var res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: val })
+      });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error desconocido');
+
+      btn.textContent = 'Listo ✓';
+      btn.classList.add('sent');
+      msg.textContent = 'Gracias. Te avisaremos en cuanto abramos.';
+      input.value = '';
+    } catch (err) {
+      msg.textContent = err.message || 'Algo salió mal. Inténtalo de nuevo.';
+      msg.className = 'msg err';
+      btn.disabled = false;
+      btn.textContent = 'Notifícame';
+    }
+  });
+})();
+</script>
+</body>
+</html>
