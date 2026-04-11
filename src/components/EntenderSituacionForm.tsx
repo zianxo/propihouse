@@ -20,22 +20,22 @@ const STEP_1_OPTIONS: StepOption[] = [
 const STEP_2_OPTIONS: StepOption[] = [
   { label: 'Lo necesito con urgencia', value: 'urgente', icon: '!' },
   { label: 'Estoy explorando opciones', value: 'explorando', icon: '◇' },
-  { label: 'Estoy bloqueado/a y necesito orientacion', value: 'bloqueado', icon: '?' },
+  { label: 'Estoy bloqueado/a y necesito orientación', value: 'bloqueado', icon: '?' },
 ]
 
 const STEP_3_OPTIONS: StepOption[] = [
   { label: 'Cambio de vivienda', value: 'cambio', icon: '⇄' },
   { label: 'Herencia', value: 'herencia', icon: '∗' },
-  { label: 'Divorcio o separacion', value: 'divorcio', icon: '∥' },
-  { label: 'Inversion', value: 'inversion', icon: '△' },
-  { label: 'Otra situacion', value: 'otra', icon: '○' },
+  { label: 'Divorcio o separación', value: 'divorcio', icon: '∥' },
+  { label: 'Inversión', value: 'inversion', icon: '△' },
+  { label: 'Otra situación', value: 'otra', icon: '○' },
 ]
 
 const HOUSING_TYPES: StepOption[] = [
   { label: 'Piso', value: 'piso', icon: '▦' },
   { label: 'Casa', value: 'casa', icon: '⌂' },
-  { label: 'Atico', value: 'atico', icon: '△' },
-  { label: 'Duplex', value: 'duplex', icon: '▥' },
+  { label: 'Ático', value: 'atico', icon: '△' },
+  { label: 'Dúplex', value: 'duplex', icon: '▥' },
 ]
 
 const TOTAL_STEPS = 5
@@ -105,7 +105,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
         <span className="text-xs tracking-widest uppercase text-[#1A1A1A]/35 font-medium font-[Lato]">
           Paso {step} de {total}
         </span>
-        <span className="text-xs text-[#1A1A1A]/25 font-[Lato]">{Math.round(pct)}%</span>
+        <span className="text-xs text-[#1A1A1A]/45 font-[Lato]">{Math.round(pct)}%</span>
       </div>
       <div className="h-[3px] w-full bg-[#1A1A1A]/[0.06] rounded-full overflow-hidden">
         <div
@@ -172,11 +172,11 @@ export function EntenderSituacionForm({
   /* Step data */
   const [tipo, setTipo] = useState('')
   const [punto, setPunto] = useState('')
-  const [situacion, setSituacion] = useState('')
+  const [situación, setSituacion] = useState('')
   const [tipoVivienda, setTipoVivienda] = useState('')
-  const [ubicacion, setUbicacion] = useState('')
+  const [ubicación, setUbicacion] = useState('')
   const [nombre, setNombre] = useState('')
-  const [telefono, setTelefono] = useState('')
+  const [teléfono, setTeléfono] = useState('')
   const [email, setEmail] = useState('')
 
   /* Pre-select tipo from query param (only used on the standalone page) */
@@ -207,7 +207,7 @@ export function EntenderSituacionForm({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    if (!nombre.trim() || !telefono.trim()) return
+    if (!nombre.trim() || !teléfono.trim()) return
     // In production, POST to /api/contact here
     setSubmitted(true)
   }
@@ -228,10 +228,10 @@ export function EntenderSituacionForm({
             Te ayudamos a entender tu caso sin compromiso
           </h2>
           <p className="text-[#1A1A1A]/60 text-lg font-light leading-relaxed mb-3 font-[Lato]">
-            Hemos recibido tu informacion. En breve nos pondremos en contacto contigo.
+            Hemos recibido tu información. En breve nos pondremos en contacto contigo.
           </p>
           <p className="text-[#1A1A1A]/40 text-sm font-[Lato]">
-            En la mayoria de casos respondemos en menos de 24h.
+            En la mayoría de casos respondemos en menos de 24h.
           </p>
 
           {!embedded && (
@@ -262,7 +262,7 @@ export function EntenderSituacionForm({
           }`}
         >
           <h1 className="font-[Playfair_Display] text-2xl md:text-3xl lg:text-[2.25rem] font-light text-[#1A1A1A] tracking-tight leading-tight">
-            Vamos a entender tu situacion
+            Vamos a entender tu situación
           </h1>
           <p className="mt-3 text-[#1A1A1A]/50 text-base font-light font-[Lato] leading-relaxed">
             No es un formulario. Es el primer paso para tomar decisiones con criterio.
@@ -274,8 +274,8 @@ export function EntenderSituacionForm({
       {step > 1 && (
         <div className="mt-10 mb-8 text-center max-w-xl mx-auto">
           <h2 className="font-[Playfair_Display] text-xl md:text-2xl font-light text-[#1A1A1A] tracking-tight">
-            {step === 2 && 'En que punto estas?'}
-            {step === 3 && 'Situacion personal'}
+            {step === 2 && 'En qué punto estas?'}
+            {step === 3 && 'Situación personal'}
             {step === 4 && 'Ubicacion y tipo de vivienda'}
             {step === 5 && 'Datos de contacto'}
           </h2>
@@ -322,7 +322,7 @@ export function EntenderSituacionForm({
               <OptionCard
                 key={opt.value}
                 option={opt}
-                selected={situacion === opt.value}
+                selected={situación === opt.value}
                 onClick={() => selectAndAdvance(setSituacion, opt.value)}
               />
             ))}
@@ -352,7 +352,7 @@ export function EntenderSituacionForm({
                   >
                     <span
                       className={`text-xl transition-colors ${
-                        tipoVivienda === opt.value ? 'text-[#2A79A9]' : 'text-[#1A1A1A]/30'
+                        tipoVivienda === opt.value ? 'text-[#2A79A9]' : 'text-[#1A1A1A]/45'
                       }`}
                     >
                       {opt.icon}
@@ -376,10 +376,10 @@ export function EntenderSituacionForm({
               </label>
               <input
                 type="text"
-                value={ubicacion}
+                value={ubicación}
                 onChange={(e) => setUbicacion(e.target.value)}
-                placeholder="Zona, calle o codigo postal en L'Hospitalet..."
-                className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
+                placeholder="Zona, calle o código postal en L'Hospitalet..."
+                className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/45 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
               />
             </div>
 
@@ -387,7 +387,7 @@ export function EntenderSituacionForm({
             <button
               type="button"
               onClick={goForward}
-              disabled={!tipoVivienda || !ubicacion.trim()}
+              disabled={!tipoVivienda || !ubicación.trim()}
               className="w-full mt-2 rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
             >
               Continuar
@@ -407,48 +407,48 @@ export function EntenderSituacionForm({
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
                 required
-                className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
+                className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/45 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
                 placeholder="Tu nombre"
               />
             </div>
 
             <div>
               <label className="block text-xs tracking-widest uppercase text-[#1A1A1A]/35 mb-2 font-medium font-[Lato]">
-                Telefono *
+                Teléfono *
               </label>
               <input
                 type="tel"
-                value={telefono}
-                onChange={(e) => setTelefono(e.target.value)}
+                value={teléfono}
+                onChange={(e) => setTeléfono(e.target.value)}
                 required
-                className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
+                className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/45 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
                 placeholder="637 00 00 00"
               />
             </div>
 
             <div>
               <label className="block text-xs tracking-widest uppercase text-[#1A1A1A]/35 mb-2 font-medium font-[Lato]">
-                Email <span className="normal-case tracking-normal text-[#1A1A1A]/20">(opcional)</span>
+                Email <span className="normal-case tracking-normal text-[#1A1A1A]/40">(opcional)</span>
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
+                className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/45 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
                 placeholder="tu@email.com"
               />
             </div>
 
             <button
               type="submit"
-              disabled={!nombre.trim() || !telefono.trim()}
+              disabled={!nombre.trim() || !teléfono.trim()}
               className="w-full mt-4 rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
             >
               Quiero entender mi caso
             </button>
 
-            <p className="text-center text-xs text-[#1A1A1A]/30 font-[Lato]">
-              Sin compromiso. Tu informacion es confidencial.
+            <p className="text-center text-xs text-[#1A1A1A]/45 font-[Lato]">
+              Sin compromiso. Tu información es confidencial.
             </p>
           </form>
         </StepWrapper>

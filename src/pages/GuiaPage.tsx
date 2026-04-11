@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { RevealSection, SectionHeading } from '../components/ui'
 
@@ -13,70 +14,70 @@ const ARTICLES: {
     slug: 'buen-momento-vender',
     category: 'Entender el mercado',
     description:
-      "Factores que influyen en el momento de venta, tendencias actuales del mercado y claves para tomar una buena decision en L'Hospitalet.",
+      "Factores que influyen en el momento de venta, tendencias actuales del mercado y claves para tomar una buena decisión en L'Hospitalet.",
   },
   {
-    title: "Como saber cuanto vale mi piso en L'Hospitalet?",
+    title: "Cómo saber cuánto vale mi piso en L'Hospitalet?",
     slug: 'cuanto-vale-piso-hospitalet',
     category: 'Entender el valor',
     description:
-      'Los metodos de valoracion mas fiables, que factores afectan al precio y como evitar errores al calcular el valor de tu vivienda.',
+      'Los métodos de valoración más fiables, que factores afectan al precio y cómo evitar errores al calcular el valor de tu vivienda.',
   },
   {
     title: 'Errores al vender una vivienda',
     slug: 'errores-vender-vivienda',
     category: 'Entender los errores',
     description:
-      'Los errores mas comunes que cometen los propietarios al vender y como puedes evitarlos para conseguir un mejor resultado.',
+      'Los errores más comúnes que cometen los propietarios al vender y como puedes evitarlos para conseguir un mejor resultado.',
   },
   {
-    title: 'Como preparar una vivienda antes de venderla',
+    title: 'Cómo preparar una vivienda antes de venderla',
     slug: 'preparar-vivienda-vender',
     category: 'Preparar la vivienda',
     description:
-      'Que ajustes realmente aportan valor antes de poner tu vivienda en el mercado y cuales son innecesarios.',
+      'Qué ajustes realmente aportan valor antes de poner tu vivienda en el mercado y cuales son innecesarios.',
   },
   {
-    title: "Cuanto tarda vender un piso en L'Hospitalet",
+    title: "Cuánto tarda vender un piso en L'Hospitalet",
     slug: 'cuanto-tarda-vender-piso',
     category: 'Entender los tiempos',
     description:
-      'Plazos realistas segun la zona, el tipo de propiedad y las condiciones del mercado actual en el area metropolitana de Barcelona.',
+      'Plazos realistas según la zona, el tipo de propiedad y las condiciones del mercado actual en el area metropolitana de Barcelona.',
   },
   {
     title: 'Comprar antes o vender primero?',
     slug: 'comprar-o-vender-primero',
-    category: 'Tomar decisiones estrategicas',
+    category: 'Tomar decisiones estratégicas',
     description:
-      'Las ventajas e inconvenientes de cada opcion y como planificar un cambio de vivienda sin riesgos innecesarios.',
+      'Las ventajas e inconvenientes de cada opción y cómo planificar un cambio de vivienda sin riesgos innecesarios.',
   },
   {
-    title: 'Cuanto dinero necesito para comprar una vivienda',
+    title: 'Cuánto dinero necesito para comprar una vivienda',
     slug: 'cuanto-dinero-comprar-vivienda',
     category: 'Entender el presupuesto',
     description:
-      'Entrada, impuestos, gastos de notaria, hipoteca. Desglose completo de todo lo que necesitas tener en cuenta antes de comprar.',
+      'Entrada, impuestos, gastos de notaría, hipoteca. Desglose completo de todo lo que necesitas tener en cuenta antes de comprar.',
   },
   {
     title: 'Herencias, divorcios y cambios de vida',
     slug: 'herencia-divorcio-cambio-vida',
     category: 'Situaciones personales',
     description:
-      'Como gestionar una vivienda cuando la situacion personal cambia y que opciones tienes segun tu caso concreto.',
+      'Como gestionar una vivienda cuando la situación personal cambia y qué opciones tienes según tu caso concreto.',
   },
   {
     title: 'Errores habituales al comprar una vivienda',
     slug: 'errores-comprar-vivienda',
     category: 'Errores al comprar',
     description:
-      'Desde no revisar bien la documentacion hasta subestimar los gastos. Los fallos mas frecuentes de los compradores.',
+      'Desde no revisar bien la documentación hasta subestimar los gastos. Los fallos más frecuentes de los compradores.',
   },
   {
     title: "Impuestos al vender un piso en L'Hospitalet",
     slug: 'impuestos-vender',
     category: 'Impuestos y costes',
     description:
-      'IRPF, plusvalia municipal, IBI proporcional y otros gastos fiscales que debes conocer antes de vender tu vivienda.',
+      'IRPF, plusvalía municipal, IBI proporcional y otros gastos fiscales que debes conocer antes de vender tu vivienda.',
   },
 ]
 
@@ -84,7 +85,7 @@ const ARTICLES: {
 const SITUATIONS = [
   {
     title: 'Cambio de vivienda',
-    description: 'Quieres vender para comprar otra propiedad que se ajuste mejor a tu situacion actual.',
+    description: 'Quieres vender para comprar otra propiedad que se ajuste mejor a tu situación actual.',
     icon: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -105,8 +106,8 @@ const SITUATIONS = [
     link: '/entender-mi-situacion?tipo=vender',
   },
   {
-    title: 'Divorcio o separacion',
-    description: 'La situacion personal ha cambiado y necesitas tomar una decision sobre la vivienda.',
+    title: 'Divorcio o separación',
+    description: 'La situación personal ha cambiado y necesitas tomar una decisión sobre la vivienda.',
     icon: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -118,7 +119,7 @@ const SITUATIONS = [
   },
   {
     title: 'Inversion',
-    description: 'Buscas una oportunidad de inversion inmobiliaria con criterio y datos reales.',
+    description: 'Buscas una oportunidad de inversión inmobiliaria con criterio y datos reales.',
     icon: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <line x1="12" y1="1" x2="12" y2="23" />
@@ -153,7 +154,7 @@ function ArticleCard({
           {description}
         </p>
         <span className="inline-flex items-center gap-2 text-blue font-bold text-sm group-hover:gap-3 transition-all duration-300">
-          Leer articulo
+          Leer artículo
           <svg
             width="16"
             height="16"
@@ -174,6 +175,13 @@ function ArticleCard({
 }
 
 export default function GuiaPage() {
+  useEffect(() => {
+    document.title = "Guía inmobiliaria — PropiHouse"
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', 'Artículos prácticos sobre comprar, vender y alquilar vivienda en L\'Hospitalet de Llobregat.')
+    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+  }, [])
+
   return (
     <>
       {/* ═══════════ HERO ═══════════ */}
@@ -194,22 +202,22 @@ export default function GuiaPage() {
         <div className="max-w-4xl mx-auto px-6 relative z-10">
           <RevealSection>
             <span className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-6">
-              Guia inmobiliaria
+              Guía inmobiliaria
             </span>
             <h1 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-dark leading-[1.15] mb-5">
-              Guia para entender el mercado inmobiliario{' '}
+              Guía para entender el mercado inmobiliario{' '}
               <span className="block mt-1">
                 en <em className="italic text-blue">L'Hospitalet de Llobregat</em>
               </span>
             </h1>
             <p className="text-text-light text-base md:text-lg leading-relaxed max-w-2xl mb-4">
-              El proceso que suelen recorrer las personas antes de tomar una decision inmobiliaria.
+              El proceso que suelen recorrer las personas antes de tomar una decisión inmobiliaria.
             </p>
             <p className="text-text-muted text-base leading-relaxed max-w-2xl mb-6">
-              Si estas pensando en vender, comprar o cambiar de vivienda en L'Hospitalet de Llobregat, es normal que aparezcan muchas preguntas. En este espacio compartimos articulos pensados para entender mejor como funciona el mercado inmobiliario.
+              Si estás pensando en vender, comprar o cambiar de vivienda en L'Hospitalet de Llobregat, es normal que aparezcan muchas preguntas. En este espacio compartimos artículos pensados para entender mejor cómo funciona el mercado inmobiliario.
             </p>
             <p className="text-olive font-serif italic text-lg">
-              Porque cuando se entiende bien la situacion, es mucho mas facil decidir con criterio.
+              Porque cuando se entiende bien la situación, es mucho más fácil decidir con criterio.
             </p>
           </RevealSection>
         </div>
@@ -227,8 +235,8 @@ export default function GuiaPage() {
         <div className="max-w-7xl mx-auto px-6">
           <RevealSection>
             <SectionHeading
-              eyebrow="Articulos"
-              title="Temas que conviene entender antes de tomar una decision"
+              eyebrow="Artículos"
+              title="Temas que conviene entender antes de tomar una decisión"
             />
           </RevealSection>
 
@@ -247,8 +255,8 @@ export default function GuiaPage() {
         <div className="max-w-7xl mx-auto px-6">
           <RevealSection>
             <SectionHeading
-              eyebrow="Tu situacion"
-              title="Que esta pasando ahora mismo con tu vivienda?"
+              eyebrow="Tu situación"
+              title="Qué está pasando ahora mismo con tu vivienda?"
             />
           </RevealSection>
 
@@ -296,36 +304,50 @@ export default function GuiaPage() {
       </section>
 
       {/* ═══════════ CTA FINAL ═══════════ */}
-      <section className="py-20 md:py-28 bg-dark relative overflow-hidden">
-        {/* Texture */}
+      <section className="relative py-24 md:py-32 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2A3328] via-[#344030] to-[#2A3328]" />
         <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-          backgroundSize: '28px 28px',
+          backgroundImage: 'radial-gradient(circle at 1px 1px, white 0.5px, transparent 0)',
+          backgroundSize: '24px 24px',
         }} />
-        {/* Warm glow */}
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] opacity-[0.05] pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse, #EFE8CD 0%, transparent 70%)' }}
-        />
+        <div className="absolute top-0 left-1/4 w-[500px] h-[300px] rounded-full opacity-[0.07] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #2A79A9 0%, transparent 70%)' }} />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] rounded-full opacity-[0.05] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #868C4D 0%, transparent 70%)' }} />
 
-        <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
+        <div className="relative max-w-3xl mx-auto px-6 text-center z-10">
           <RevealSection>
-            <span className="inline-block text-cream/50 text-xs font-bold tracking-[0.2em] uppercase mb-5">
-              El primer paso
-            </span>
-            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-8">
-              Antes de tomar una decision inmobiliaria
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <span className="block w-12 h-px bg-white/20" />
+              <span className="text-cream/40 text-[10px] font-bold tracking-[0.25em] uppercase">La guía</span>
+              <span className="block w-12 h-px bg-white/20" />
+            </div>
+
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">
+              Antes de tomar una decisión inmobiliaria
             </h2>
-            <Link
-              to="/entender-mi-situacion"
-              className="inline-flex items-center gap-2.5 bg-cream hover:bg-cream-dark text-dark text-sm font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg"
-            >
-              Entender mi situacion
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
-              </svg>
-            </Link>
-            <p className="text-white/35 text-sm mt-6 max-w-md mx-auto">
+            <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+              Cuanto mejor entiendes tu situación, mejores decisiones puedes tomar.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                to="/entender-mi-situacion"
+                className="group inline-flex items-center gap-2.5 bg-white hover:bg-cream text-dark font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg text-sm"
+              >
+                Entender mi situación
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </Link>
+              <a
+                href="https://wa.me/34637863678"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 bg-white/10 hover:bg-white/15 text-white/80 hover:text-white font-bold px-7 py-4 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-300 text-sm"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-[#25D366]"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                Escríbenos por WhatsApp
+              </a>
+            </div>
+
+            <p className="text-white/35 text-sm mt-8">
               Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
             </p>
           </RevealSection>

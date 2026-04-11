@@ -4,7 +4,7 @@ import { RevealSection, SectionHeading, ReviewCard } from '../components/ui'
 import { EntenderSituacionForm } from '../components/EntenderSituacionForm'
 
 /* ─── Constants ─── */
-const TOTAL_FRAMES = 96
+const TOTAL_FRAMES = 145
 const FRAME_WIDTH = 1764
 const FRAME_HEIGHT = 1176
 
@@ -20,7 +20,7 @@ function HeroScrollVideo() {
 
   const getFramePath = useCallback((index: number) => {
     const num = String(index + 1).padStart(3, '0')
-    return `/frames/frame-${num}.jpg`
+    return `/frames-webp/frame-${num}.webp`
   }, [])
 
   /* Preload all frames */
@@ -138,7 +138,7 @@ function HeroScrollVideo() {
           <span className="text-cream/60 text-xs font-bold tracking-[0.25em] uppercase">Nuestro enfoque</span>
           <h3 className="font-serif text-3xl md:text-5xl text-white leading-tight font-medium">
             Primero entendemos.<br/>
-            <span className="text-cream/70">Despues actuamos.</span>
+            <span className="text-cream/70">Después actuamos.</span>
           </h3>
         </div>
       ),
@@ -148,7 +148,7 @@ function HeroScrollVideo() {
       position: 'center',
       content: (
         <div className="text-center space-y-5">
-          <span className="text-cream/60 text-xs font-bold tracking-[0.25em] uppercase">Como empezamos</span>
+          <span className="text-cream/60 text-xs font-bold tracking-[0.25em] uppercase">Cómo empezamos</span>
           <div className="font-serif text-2xl md:text-4xl lg:text-[2.75rem] text-white leading-[1.25] font-medium space-y-1">
             <div className="text-cream/45">No empezamos por el mercado.</div>
             <div className="text-cream/45">No empezamos por los portales.</div>
@@ -164,7 +164,7 @@ function HeroScrollVideo() {
         <div className="text-center space-y-3">
           <h3 className="font-serif text-2xl md:text-4xl lg:text-5xl text-white leading-tight font-medium">
             Cada vivienda tiene una historia.<br/>
-            <span className="text-cream/70">Te ayudamos a escribir el siguiente capitulo.</span>
+            <span className="text-cream/70">Te ayudamos a escribir el siguiente capítulo.</span>
           </h3>
         </div>
       ),
@@ -181,7 +181,7 @@ function HeroScrollVideo() {
         {/* Fallback static image while frames load */}
         {!loaded && (
           <div className="absolute inset-0">
-            <img src="/frames/frame-001.jpg" alt="" className="w-full h-full object-cover" />
+            <img src="/frames-webp/frame-001.webp" alt="" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-r from-dark/80 via-dark/50 to-dark/20" />
             <div className="absolute inset-0 bg-gradient-to-t from-dark/60 via-transparent to-dark/10" />
           </div>
@@ -197,6 +197,17 @@ function HeroScrollVideo() {
         {/* Gradient overlays for text legibility */}
         <div className="absolute inset-0 bg-gradient-to-r from-dark/70 via-dark/35 to-transparent pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-dark/50 via-transparent to-dark/20 pointer-events-none" />
+        {/* Top vignette for navbar/logo contrast — blur fades out gradually */}
+        <div
+          className="absolute top-0 left-0 right-0 h-40 pointer-events-none z-[1]"
+          style={{
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            maskImage: 'linear-gradient(to bottom, black 0%, black 30%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 30%, transparent 100%)',
+            background: 'linear-gradient(to bottom, rgba(26,26,26,0.5) 0%, rgba(26,26,26,0.2) 50%, transparent 100%)',
+          }}
+        />
 
         {/* ── Hero content (visible at top, fades on scroll) ── */}
         <div
@@ -220,7 +231,7 @@ function HeroScrollVideo() {
                 className="font-serif text-[2rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] font-medium text-white leading-[1.15] mb-7 animate-fade-up"
                 style={{ animationDelay: '0.25s' }}
               >
-                Entender bien tu situacion es el primer paso para{' '}
+                Entender bien tu situación es el primer paso para{' '}
                 <em className="italic text-cream">decidir con criterio</em>
               </h1>
 
@@ -236,14 +247,14 @@ function HeroScrollVideo() {
                   to="/entender-mi-situacion"
                   className="group inline-flex items-center gap-2.5 bg-blue hover:bg-blue-dark text-white text-sm font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue/25"
                 >
-                  Entender mi situacion
+                  Entender mi situación
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </Link>
                 <Link
                   to="/como-trabajamos"
                   className="inline-flex items-center gap-2 bg-white/12 backdrop-blur-sm hover:bg-white/20 text-white text-sm font-bold px-7 py-4 rounded-lg border border-white/15 transition-all duration-300"
                 >
-                  Como trabajamos
+                  Cómo trabajamos
                 </Link>
               </div>
             </div>
@@ -308,13 +319,13 @@ function HeroScrollVideo() {
 const SERVICES = [
   {
     title: 'Comprar',
-    description: 'Te ayudamos a encontrar la propiedad ideal. Analizamos tu situacion, filtramos opciones reales y te acompanamos hasta la entrega de llaves.',
+    description: 'Te ayudamos a encontrar la propiedad ideal. Analizamos tu situación, filtramos opciones reales y te acompañamos hasta la entrega de llaves.',
     link: '/comprar',
     icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
   },
   {
     title: 'Vender',
-    description: 'Valoramos tu propiedad, disenamos una estrategia de venta personalizada y gestionamos todo el proceso por ti.',
+    description: 'Valoramos tu propiedad, diseñamos una estrategia de venta personalizada y gestiónamos todo el proceso por ti.',
     link: '/vender',
     icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
   },
@@ -326,7 +337,7 @@ const SERVICES = [
   },
   {
     title: 'Financiar',
-    description: 'Te ayudamos a entender tu capacidad real y a encontrar la financiacion que tiene sentido para tu situacion.',
+    description: 'Te ayudamos a entender tu capacidad real y a encontrar la financiación que tiene sentido para tu situación.',
     link: '/financiar',
     icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 17a5 5 0 0 0 10 0c0-2.76-2.5-5-5-8-2.5 3-5 5.24-5 8Z"/><path d="M12 17a5 5 0 0 0 10 0c0-2.76-2.5-5-5-8-2.5 3-5 5.24-5 8Z"/></svg>,
   },
@@ -334,14 +345,44 @@ const SERVICES = [
 
 /* ─── Review Data ─── */
 const REVIEWS = [
-  { name: 'Maria Garcia', text: 'Desde el primer momento nos sentimos acompanados. Encontramos nuestro piso ideal en menos de un mes. Un trato increiblemente cercano y profesional.', image: '/reviews/2026-02-04.webp' },
+  { name: 'Maria Garcia', text: 'Desde el primer momento nos sentimos acompañados. Encontramos nuestro piso ideal en menos de un mes. Un trato increíblemente cercano y profesional.', image: '/reviews/2026-02-04.webp' },
   { name: 'Carlos Rodriguez', text: 'Vendimos nuestro piso con PropiHouse y el proceso fue impecable. Nos guiaron en cada paso y consiguieron un precio por encima de lo esperado.', image: '/reviews/2026-02-04 (1).webp' },
-  { name: 'Ana Martinez', text: 'Buscabamos alquiler y pensabamos que seria imposible. PropiHouse nos encontro una opcion perfecta en nuestra zona preferida. Muy agradecidos.', image: '/reviews/2026-02-04 (2).webp' },
-  { name: 'Jordi Puig', text: 'El equipo financiero nos ayudo a conseguir la mejor hipoteca. Sin ellos, no habriamos podido comprar nuestra primera vivienda. Totalmente recomendable.', image: '/reviews/2026-02-04 (3).webp' },
+  { name: 'Ana Martinez', text: 'Buscabamos alquiler y pensábamos que seria imposible. PropiHouse nos encontro una opción perfecta en nuestra zona preferida. Muy agradecidos.', image: '/reviews/2026-02-04 (2).webp' },
+  { name: 'Jordi Puig', text: 'El equipo financiero nos ayudo a conseguir la mejor hipoteca. Sin ellos, no habríamos podido comprar nuestra primera vivienda. Totalmente recomendable.', image: '/reviews/2026-02-04 (3).webp' },
 ]
 
 /* ─── HomePage ─── */
 export default function HomePage() {
+  useEffect(() => {
+    document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat"
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', "Tu inmobiliaria de confianza en L'Hospitalet de Llobregat. Entender bien tu situación es el primer paso para tomar decisiones inmobiliarias con criterio.")
+    // JSON-LD structured data
+    const script = document.createElement('script')
+    script.type = 'application/ld+json'
+    script.id = 'ld-json-business'
+    script.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "RealEstateAgent",
+      "name": "PropiHouse",
+      "url": "https://www.propihouse.es",
+      "telephone": "+34637863678",
+      "email": "hola@propihouse.es",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Carrer d'Enric Prat de la Riba, 187",
+        "addressLocality": "L'Hospitalet de Llobregat",
+        "postalCode": "08901",
+        "addressRegion": "Barcelona",
+        "addressCountry": "ES"
+      },
+      "areaServed": "L'Hospitalet de Llobregat",
+      "slogan": "Lo que ves es lo que es"
+    })
+    document.head.appendChild(script)
+    return () => { document.getElementById('ld-json-business')?.remove() }
+  }, [])
+
   return (
     <>
       {/* Hero = scroll video animation as background */}
@@ -353,8 +394,8 @@ export default function HomePage() {
           <RevealSection>
             <SectionHeading
               eyebrow="Nuestros servicios"
-              title="Te acompanamos en cada decision"
-              subtitle="Comprar, vender, alquilar o financiar. Sea cual sea tu situacion, estamos aqui para ayudarte a entenderla y actuar con criterio."
+              title="Te acompañamos en cada decisión"
+              subtitle="Comprar, vender, alquilar o financiar. Sea cual sea tu situación, estamos aquí para ayudarte a entenderla y actuar con criterio."
             />
           </RevealSection>
           <RevealSection>
@@ -383,7 +424,7 @@ export default function HomePage() {
 
       {/* ═══════════ ENTENDER MI SITUACION (embedded form) ═══════════ */}
       <section
-        id="entender-mi-situacion"
+        id="entender-mi-situación"
         className="relative py-24 md:py-32 bg-gradient-to-b from-warm-white via-cream/20 to-cream/40 overflow-hidden scroll-mt-24"
       >
         {/* Decorative accents */}
@@ -552,19 +593,34 @@ export default function HomePage() {
 
       {/* ═══════════ CTA BANNER ═══════════ */}
       <section className="relative py-24 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-dark">
-          <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 0.5px, transparent 0)', backgroundSize: '24px 24px' }} />
-          <div className="absolute inset-0 bg-gradient-to-br from-olive-dark/20 via-transparent to-blue/10" />
-        </div>
-        <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2A3328] via-[#344030] to-[#2A3328]" />
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 0.5px, transparent 0)', backgroundSize: '24px 24px' }} />
+        <div className="absolute top-0 left-1/4 w-[500px] h-[300px] rounded-full opacity-[0.07] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #2A79A9 0%, transparent 70%)' }} />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] rounded-full opacity-[0.05] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #868C4D 0%, transparent 70%)' }} />
+
+        <div className="relative max-w-3xl mx-auto px-6 text-center z-10">
           <RevealSection>
-            <span className="inline-block text-cream/60 text-xs font-bold tracking-[0.25em] uppercase mb-5">El primer paso</span>
-            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">Antes de tomar una decision, conviene entender bien la situacion</h2>
-            <p className="text-white/50 text-lg mb-10 max-w-xl mx-auto leading-relaxed">Te escuchamos, analizamos tu caso y te damos la informacion que necesitas. Sin compromiso, sin presiones.</p>
-            <Link to="/entender-mi-situacion" className="group inline-flex items-center gap-2.5 bg-blue hover:bg-blue-dark text-white font-bold px-9 py-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue/25">
-              Entender mi situacion
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </Link>
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <span className="block w-12 h-px bg-white/20" />
+              <span className="text-cream/40 text-[10px] font-bold tracking-[0.25em] uppercase">El primer paso</span>
+              <span className="block w-12 h-px bg-white/20" />
+            </div>
+
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">Antes de tomar una decisión, conviene entender bien la situación</h2>
+            <p className="text-white/65 text-lg mb-10 max-w-xl mx-auto leading-relaxed">Te escuchamos, analizamos tu caso y te damos la información qué necesitas. Sin compromiso, sin presiones.</p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link to="/entender-mi-situacion" className="group inline-flex items-center gap-2.5 bg-white hover:bg-cream text-dark font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg text-sm">
+                Entender mi situación
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </Link>
+              <a href="https://wa.me/34637863678" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 bg-white/10 hover:bg-white/15 text-white/80 hover:text-white font-bold px-7 py-4 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-300 text-sm">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-[#25D366]"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                Escríbenos por WhatsApp
+              </a>
+            </div>
+
+            <p className="text-white/35 text-sm mt-8">Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.</p>
           </RevealSection>
         </div>
       </section>

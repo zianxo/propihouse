@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { RevealSection, SectionHeading } from '../components/ui'
 
@@ -20,9 +21,9 @@ const PACKS = [
     price: '79',
     tagline: 'Para quien quiere hacerlo con criterio y evitar errores',
     features: [
-      'Revision del contrato de alquiler',
-      'Consultoria en dudas legales',
-      'Consultoria en zonas tensionadas',
+      'Revisión del contrato de alquiler',
+      'Consultoría en dudas legales',
+      'Consultoría en zonas tensionadas',
       'Soporte durante 7 dias',
     ],
     includes: 'Incluye todo lo de Cumple',
@@ -34,9 +35,9 @@ const PACKS = [
     price: '249',
     tagline: 'Para quien quiere hacerlo bien y sin improvisar',
     features: [
-      'Redaccion contrato personalizado PropiHouse',
+      'Redacción contrato personalizado PropiHouse',
       'Inventario fotografico',
-      'Consultoria personalizada',
+      'Consultoría personalizada',
       'Soporte durante 15 dias',
     ],
     includes: 'Incluye Cumple + Cuadra',
@@ -49,24 +50,16 @@ const PACKS = [
     priceLabel: 'Gestion completa',
     tagline: 'Para quien quiere delegar todo el proceso con tranquilidad',
     features: [
-      'Busqueda de inquilino y gestion de visitas',
+      'Búsqueda de inquilino y gestión de visitas',
       'Estudio de solvencia documentado',
-      'Acompanamiento durante todo el proceso',
-      'Seguro de impagos incluido (1 ano, sujeto a aprobacion)',
+      'Acompañamiento durante todo el proceso',
+      'Seguro de impagos incluido (1 año, sujeto a aprobación)',
       'Opcion sin seguro de impagos',
     ],
     includes: 'Incluye Cumple + Cuadra + Blinda',
     note: 'Honorarios vinculados al alquiler realizado',
     cta: 'Quiero olvidarme de todo',
     accent: true,
-    postService: {
-      title: 'Y despues del alquiler... tambien puedes olvidarte de todo',
-      features: [
-        'Seguimiento del arrendamiento',
-        'Comunicacion con el inquilino',
-        'Gestion de incidencias',
-      ],
-    },
   },
 ] as const
 
@@ -86,7 +79,7 @@ const FEARS = [
         <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
       </svg>
     ),
-    text: 'Problemas que se alargan sin solucion',
+    text: 'Problemas que se alargan sin solución',
   },
   {
     icon: (
@@ -94,7 +87,7 @@ const FEARS = [
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
       </svg>
     ),
-    text: 'Situaciones incomodas que nadie te habia explicado',
+    text: 'Situaciones incomodas que nadie te había explicado',
   },
   {
     icon: (
@@ -102,7 +95,7 @@ const FEARS = [
         <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 9.9-1" />
       </svg>
     ),
-    text: 'La sensacion de haber perdido el control',
+    text: 'La sensación de haber perdido el control',
   },
 ]
 
@@ -111,17 +104,17 @@ const ASPECTS = [
   {
     num: '01',
     title: 'Precio',
-    desc: 'Saber cuanto pedir, con datos reales y normativa actualizada.',
+    desc: 'Saber cuánto pedir, con datos reales y normativa actualizada.',
   },
   {
     num: '02',
     title: 'Tipo de inquilino',
-    desc: 'Definir que perfil encaja con tu situacion y tu propiedad.',
+    desc: 'Definir qué perfil encaja con tu situación y tu propiedad.',
   },
   {
     num: '03',
-    title: 'Nivel de implicacion',
-    desc: 'Decidir cuanto quieres gestionar tu y cuanto quieres delegar.',
+    title: 'Nivel de implicación',
+    desc: 'Decidir cuánto quieres gestionar tu y cuánto quieres delegar.',
   },
 ]
 
@@ -129,13 +122,13 @@ const ASPECTS = [
 const VALORADOR_FACTORS = [
   { label: 'Normativa vigente', icon: '/' },
   { label: 'Estado del inmueble', icon: '/' },
-  { label: 'Demanda real de la zona', icon: '/' },
-  { label: 'Tipo de inquilino', icon: '/' },
+  { label: 'Perfil de inquilino', icon: '/' },
+  { label: 'Tu nivel de implicación', icon: '/' },
 ]
 
 /* ─── Guide Articles ─── */
 const GUIDE_ARTICLES = [
-  { n: '01', cat: 'Preparacion', title: 'Como preparar una vivienda antes de ponerla en el mercado', slug: '/guia/preparar-vivienda-vender' },
+  { n: '01', cat: 'Preparación', title: 'Cómo preparar una vivienda antes de ponerla en el mercado', slug: '/guia/preparar-vivienda-vender' },
   { n: '02', cat: 'Situaciones', title: 'Herencias, divorcios y cambios de vida', slug: '/guia/herencia-divorcio-cambio-vida' },
   { n: '03', cat: 'Estrategia', title: 'Comprar antes o vender primero?', slug: '/guia/comprar-o-vender-primero' },
 ]
@@ -158,7 +151,84 @@ function ArrowIcon({ size = 16 }: { size?: number }) {
   )
 }
 
+/* ─── Scroll-linked animated timeline ─────────────────────── */
+
+function AnimatedTimeline({ steps }: { steps: { num: string; title: string; desc: string }[] }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const dotRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [progress, setProgress] = useState(0)
+  const [reached, setReached] = useState<boolean[]>(() => steps.map(() => false))
+  const rafRef = useRef<number>(0)
+
+  useEffect(() => {
+    const update = () => {
+      const container = containerRef.current
+      if (!container) return
+      const rect = container.getBoundingClientRect()
+      const triggerY = window.innerHeight * 0.55
+      const raw = (triggerY - rect.top) / (rect.bottom - rect.top)
+      setProgress(Math.max(0, Math.min(1, raw)))
+      const next = dotRefs.current.map((dot) => {
+        if (!dot) return false
+        const r = dot.getBoundingClientRect()
+        return r.top + r.height / 2 <= triggerY
+      })
+      setReached((prev) =>
+        prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next
+      )
+    }
+    const onScroll = () => { cancelAnimationFrame(rafRef.current); rafRef.current = requestAnimationFrame(update) }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+    update()
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(rafRef.current) }
+  }, [])
+
+  return (
+    <div ref={containerRef} className="relative mt-12">
+      {/* Gray base line */}
+      <div className="absolute left-[23px] top-0 bottom-0 w-[2px] bg-cream-dark/30 rounded-full" />
+      {/* Animated fill line */}
+      <div
+        className="absolute left-[23px] top-0 w-[2px] rounded-full bg-gradient-to-b from-olive via-olive/85 to-olive/40"
+        style={{ height: `${progress * 100}%`, transition: 'height 120ms linear', boxShadow: '0 0 12px rgba(134,140,77,0.3)' }}
+      />
+      <div className="space-y-10">
+        {steps.map((step, i) => {
+          const active = reached[i]
+          return (
+            <div key={step.num} className="flex gap-6 items-start relative">
+              <div className="relative z-10 flex-shrink-0">
+                <div
+                  ref={(el) => { dotRefs.current[i] = el }}
+                  className={`w-12 h-12 rounded-full flex items-center justify-center font-serif text-lg font-bold transition-all duration-500 ${
+                    active ? 'bg-olive text-white scale-110' : 'bg-white text-dark border-2 border-cream-dark/40 shadow-soft'
+                  }`}
+                  style={active ? { boxShadow: '0 0 0 6px rgba(134,140,77,0.12), 0 4px 14px rgba(134,140,77,0.22)' } : undefined}
+                >
+                  {step.num}
+                </div>
+              </div>
+              <div className={`pt-2 transition-all duration-500 ${active ? 'opacity-100 translate-x-0' : 'opacity-60 -translate-x-1'}`}>
+                <h3 className="font-sans font-bold text-dark text-lg mb-1">{step.title}</h3>
+                <p className="text-text-light text-base leading-relaxed">{step.desc}</p>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 export default function AlquilarPage() {
+  useEffect(() => {
+    document.title = "Alquilar vivienda en L'Hospitalet de Llobregat — PropiHouse"
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', 'Gestión de alquileres en L\'Hospitalet. Contratos, inquilinos solventes y acompañamiento completo.')
+    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+  }, [])
+
   return (
     <>
       {/* ═══════════ BLOCK 1: INTRO ═══════════ */}
@@ -172,18 +242,18 @@ export default function AlquilarPage() {
 
         <div className="max-w-4xl mx-auto px-6 relative z-10">
           <RevealSection>
-            <span className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-5">
+            <span className="inline-block text-[#B8A88A] text-xs font-bold tracking-[0.2em] uppercase mb-5">
               Alquilar en L'Hospitalet
             </span>
             <h1 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-dark leading-tight mb-8 max-w-3xl">
-              Alquilar una vivienda en L'Hospitalet de Llobregat no siempre es una decision sencilla
+              Alquilar una vivienda en L'Hospitalet de Llobregat no siempre es una decisión sencilla
             </h1>
             <div className="max-w-2xl space-y-5">
               <p className="text-text-light text-lg leading-relaxed">
-                Muchas personas tienen una propiedad que podrian alquilar, pero no lo hacen. O lo hacen con dudas.
+                Muchas personas tienen una propiedad que podrían alquilar, pero no lo hacen. O lo hacen con dudas.
               </p>
               <p className="text-text-light text-lg leading-relaxed">
-                Dudas sobre el precio, sobre quien entra en tu vivienda, sobre que pasa si algo sale mal. Preguntas normales que, sin una respuesta clara, acaban frenando una decision que podria tener mucho sentido.
+                Dudas sobre el precio, sobre quien entra en tu vivienda, sobre qué pasa si algo sale mal. Preguntas normales que, sin una respuestá clara, acaban frenando una decisión que podria tener mucho sentido.
               </p>
             </div>
           </RevealSection>
@@ -199,10 +269,10 @@ export default function AlquilarPage() {
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-olive via-blue to-olive" />
 
               <h2 className="font-serif text-2xl md:text-3xl font-medium text-dark leading-snug mb-6">
-                Cuanto podrias pedir por tu alquiler en L'Hospitalet de Llobregat?
+                Quieres saber qué opciones tienes con tu alquiler en L'Hospitalet de Llobregat?
               </h2>
               <p className="text-text-light text-base leading-relaxed mb-8 max-w-xl">
-                Analizamos tu caso teniendo en cuenta los factores que realmente afectan al precio de un alquiler:
+                Analizamos tu caso teniendo en cuenta los factores que realmente importan en un alquiler:
               </p>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
@@ -220,16 +290,16 @@ export default function AlquilarPage() {
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <Link
-                  to="/valorador"
+                  to="/entender-mi-situacion"
                   className="inline-flex items-center justify-center gap-2 bg-blue hover:bg-blue-dark text-white font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue/20 text-sm"
                 >
-                  Calcular el precio de mi alquiler
+                  Consultar sobre mi alquiler
                   <ArrowIcon />
                 </Link>
               </div>
 
               <p className="mt-5 text-text-muted text-sm italic">
-                Obtendras una referencia orientativa inmediata. No es necesario dejar tus datos.
+                Sin compromiso. Te ayudamos a entender tu situación antes de tomar decisiones.
               </p>
             </div>
           </RevealSection>
@@ -241,7 +311,7 @@ export default function AlquilarPage() {
         <div className="max-w-4xl mx-auto px-6">
           <RevealSection>
             <SectionHeading
-              title="El problema no es alquilar la vivienda, es todo lo que puede pasar despues"
+              title="El problema no es alquilar la vivienda, es todo lo que puede pasar después"
               center={false}
             />
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -260,7 +330,7 @@ export default function AlquilarPage() {
               ))}
             </div>
             <p className="mt-8 text-text-light text-base leading-relaxed max-w-2xl">
-              Son miedos reales. Y la respuesta no es dejar de alquilar, sino hacerlo de una forma que minimice esos riesgos desde el principio.
+              Son miedos reales. Y la respuestá no es dejar de alquilar, sino hacerlo de una forma que minimice esos riesgos desde el principio.
             </p>
           </RevealSection>
         </div>
@@ -274,37 +344,19 @@ export default function AlquilarPage() {
               title="Antes de alquilar, hay algo que conviene tener claro"
               center={false}
             />
-            <div className="mt-12 space-y-0 relative">
-              {/* Vertical connector line */}
-              <div className="absolute left-[23px] top-6 bottom-6 w-[2px] bg-cream-dark/30 rounded-full hidden md:block" />
-
-              {ASPECTS.map(({ num, title, desc }, i) => (
-                <div key={num} className="flex gap-6 items-start relative pb-10 last:pb-0">
-                  <div className="relative z-10 flex-shrink-0">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-serif text-lg font-bold shadow-soft ${
-                      i === 0 ? 'bg-olive text-white' : 'bg-white text-dark border-2 border-cream-dark/40'
-                    }`}>
-                      {num}
-                    </div>
-                  </div>
-                  <div className="pt-2">
-                    <h3 className="font-sans font-bold text-dark text-lg mb-1">{title}</h3>
-                    <p className="text-text-light text-base leading-relaxed">{desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-12">
-              <Link
-                to="/entender-mi-situacion"
-                className="inline-flex items-center gap-2 bg-olive-dark hover:bg-olive text-white font-bold px-7 py-3.5 rounded-lg transition-all duration-300 text-sm"
-              >
-                Entender mi situacion
-                <ArrowIcon />
-              </Link>
-            </div>
           </RevealSection>
+
+          <AnimatedTimeline steps={ASPECTS} />
+
+          <div className="mt-12">
+            <Link
+              to="/entender-mi-situacion"
+              className="inline-flex items-center gap-2 bg-olive-dark hover:bg-olive text-white font-bold px-7 py-3.5 rounded-lg transition-all duration-300 text-sm"
+            >
+              Entender mi situación
+              <ArrowIcon />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -322,7 +374,7 @@ export default function AlquilarPage() {
             {/* LEFT — heading + lead */}
             <div className="md:col-span-5">
               <RevealSection>
-                <span className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-5">
+                <span className="inline-block text-[#B8A88A] text-xs font-bold tracking-[0.2em] uppercase mb-5">
                   Nuestro modelo
                 </span>
                 <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.5rem] font-medium text-dark leading-tight tracking-tight">
@@ -342,8 +394,8 @@ export default function AlquilarPage() {
               <RevealSection delay={200}>
                 <div className="relative pl-6 border-l-2 border-blue/40">
                   <p className="text-base md:text-lg leading-[1.8] text-text-light">
-                    Lo importante no es elegir el servicio mas completo, sino el que encaje con tu situacion. Por eso trabajamos con un modelo flexible:{' '}
-                    <em className="not-italic font-semibold text-dark/85">tu decides cuanto quieres implicarte, y nosotros nos adaptamos.</em>
+                    Lo importante no es elegir el servicio más completo, sino el que encaje con tu situación. Por eso trabajamos con un modelo flexible:{' '}
+                    <em className="not-italic font-semibold text-dark/85">tu decides cuánto quieres implicarte, y nosotros nos adaptamos.</em>
                   </p>
                 </div>
               </RevealSection>
@@ -363,7 +415,7 @@ export default function AlquilarPage() {
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <RevealSection>
             <div className="text-center mb-16">
-              <span className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-3">
+              <span className="inline-block text-[#B8A88A] text-xs font-bold tracking-[0.2em] uppercase mb-3">
                 Servicios de alquiler
               </span>
               <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-dark leading-tight">
@@ -469,27 +521,102 @@ export default function AlquilarPage() {
                       {pack.cta}
                     </Link>
 
-                    {/* Post-service sub-section for Resuelve */}
-                    {'postService' in pack && pack.postService && (
-                      <div className="mt-6 pt-6 border-t border-white/15">
-                        <p className="text-sm font-bold text-cream/80 mb-3">
-                          {pack.postService.title}
-                        </p>
-                        <ul className="space-y-2">
-                          {pack.postService.features.map((f) => (
-                            <li key={f} className="flex items-start gap-2.5">
-                              <span className="text-cream/50">
-                                <CheckIcon />
-                              </span>
-                              <span className="text-white/60 text-xs leading-snug">{f}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
                   </div>
                 </div>
               ))}
+            </div>
+          </RevealSection>
+
+          {/* ── Standalone post-rental management ── */}
+          <RevealSection>
+            <div className="mt-16 md:mt-20 relative">
+              {/* Decorative offset depth frame */}
+              <div
+                aria-hidden
+                className="absolute -top-3 -right-3 w-full h-full rounded-2xl bg-olive/[0.2]"
+              />
+
+              <div className="relative rounded-2xl overflow-hidden bg-white border border-cream-dark/20 shadow-[0_20px_60px_-20px_rgba(26,26,26,0.12)]">
+                {/* Top accent bar */}
+                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-olive/60 via-blue/30 to-transparent" />
+
+                <div className="relative grid md:grid-cols-12 gap-8 md:gap-12 p-8 md:p-12 lg:p-14 items-center">
+                  {/* Left — text content */}
+                  <div className="md:col-span-7">
+                    <span className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-5">
+                      Gestion post-alquiler
+                    </span>
+                    <h3 className="font-serif text-2xl md:text-3xl lg:text-[2rem] font-medium text-dark leading-snug mb-5">
+                      Y después del alquiler... también puedes olvidarte de todo
+                    </h3>
+                    <p className="text-text-light text-base md:text-lg leading-relaxed mb-8 max-w-lg">
+                      Tambien puedes contar con nosotros para gestionar tu alquiler en el día a día.{' '}
+                      <span className="text-text-muted">Para que no tengas que ocuparte de nada.</span>
+                    </p>
+
+                    <Link
+                      to="/entender-mi-situacion"
+                      className="group inline-flex items-center gap-2.5 bg-olive-dark hover:bg-olive text-white font-bold px-7 py-3.5 rounded-lg transition-all duration-300 hover:shadow-lg text-sm"
+                    >
+                      Quiero saber mas
+                      <ArrowIcon />
+                    </Link>
+                  </div>
+
+                  {/* Right — 3 service cards stacked */}
+                  <div className="md:col-span-5 space-y-3">
+                    {[
+                      {
+                        title: 'Seguimiento',
+                        desc: 'Control del arrendamiento y cumplimiento del contrato.',
+                        icon: (
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                          </svg>
+                        ),
+                      },
+                      {
+                        title: 'Comúnicacion',
+                        desc: 'Intermediamos con el inquilino para que no gestiónes directamente.',
+                        icon: (
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                          </svg>
+                        ),
+                      },
+                      {
+                        title: 'Incidencias',
+                        desc: 'Reparaciones, reclamaciones y cualquier situación que surja.',
+                        icon: (
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                          </svg>
+                        ),
+                      },
+                    ].map((s) => (
+                      <div
+                        key={s.title}
+                        className="flex items-start gap-4 bg-cream/40 border border-cream-dark/15 rounded-xl p-5 hover:bg-cream/60 transition-colors duration-300"
+                      >
+                        <div className="w-10 h-10 rounded-lg bg-olive/15 flex items-center justify-center flex-shrink-0 text-olive-dark">
+                          {s.icon}
+                        </div>
+                        <div>
+                          <span className="font-bold text-dark text-sm block mb-1">{s.title}</span>
+                          <span className="text-text-light text-xs leading-relaxed">{s.desc}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bottom tagline bar */}
+                <div className="border-t border-cream-dark/20 px-8 md:px-12 lg:px-14 py-5">
+                  <p className="font-serif italic text-text-muted text-sm md:text-base">
+                    Porque no se trata de elegir un servicio. Se trata de decidir cómo quieres vivir el proceso.
+                  </p>
+                </div>
+              </div>
             </div>
           </RevealSection>
         </div>
@@ -505,18 +632,18 @@ export default function AlquilarPage() {
             />
             <div className="mt-6 space-y-5 max-w-2xl">
               <p className="text-text-light text-lg leading-relaxed">
-                Firmar el contrato no es el final, es el principio. A partir de ahi empieza la convivencia real con un inquilino, la gestion del dia a dia y las decisiones que no siempre son faciles.
+                Firmar el contrato no es el final, es el principio. A partir de ahi empieza la convivencia real con un inquilino, la gestión del día a día y las decisiones que no siempre son fáciles.
               </p>
               <p className="text-text-light text-lg leading-relaxed">
-                Hay propietarios que prefieren gestionar ellos mismos. Y hay otros que quieren tener a alguien de confianza al otro lado del telefono. Para eso tambien estamos.
+                Hay propietarios que prefieren gestionar ellos mismos. Y hay otros que quieren tener a alguien de confianza al otro lado del teléfono. Para eso también estamos.
               </p>
             </div>
 
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-5">
               {[
-                { title: 'Seguimiento', desc: 'Control periodico del estado del arrendamiento y cumplimiento del contrato.' },
-                { title: 'Comunicacion', desc: 'Hacemos de intermediarios con el inquilino para que no tengas que gestionar directamente.' },
-                { title: 'Incidencias', desc: 'Gestionamos reparaciones, reclamaciones y cualquier situacion que surja.' },
+                { title: 'Seguimiento', desc: 'Control periódico del estado del arrendamiento y cumplimiento del contrato.' },
+                { title: 'Comúnicacion', desc: 'Hacemos de intermediarios con el inquilino para que no tengas que gestionar directamente.' },
+                { title: 'Incidencias', desc: 'Gestionamos reparaciones, reclamaciones y cualquier situación que surja.' },
               ].map(({ title, desc }) => (
                 <div key={title} className="bg-white rounded-xl p-6 shadow-soft border border-cream-dark/15">
                   <h3 className="font-sans font-bold text-dark text-base mb-2">{title}</h3>
@@ -535,15 +662,15 @@ export default function AlquilarPage() {
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
               <div className="lg:col-span-3">
                 <SectionHeading
-                  title="Alquilar con tranquilidad tambien es una decision"
+                  title="Alquilar con tranquilidad también es una decisión"
                   center={false}
                 />
                 <div className="mt-6 space-y-5">
                   <p className="text-text-light text-lg leading-relaxed">
-                    Elegir bien al inquilino no es solo una cuestion de intuicion. Hay herramientas concretas que reducen el riesgo: analisis de solvencia, referencias verificables, seguros de impago.
+                    Elegir bien al inquilino no es solo una cuestión de intuicion. Hay herramientas concretas que reducen el riesgo: analisis de solvencia, referencias verificables, seguros de impago.
                   </p>
                   <p className="text-text-light text-lg leading-relaxed">
-                    No eliminan el riesgo al cien por cien, pero lo reducen significativamente. Y sobre todo, te permiten tomar una decision informada en lugar de una decision a ciegas.
+                    No eliminan el riesgo al cien por cien, pero lo reducen significativamente. Y sobre todo, te permiten tomar una decisión informada en lugar de una decisión a ciegas.
                   </p>
                 </div>
               </div>
@@ -579,21 +706,21 @@ export default function AlquilarPage() {
           <RevealSection>
             <div className="flex items-end justify-between gap-6 mb-12 md:mb-14 flex-wrap">
               <div className="max-w-2xl">
-                <span className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-5">
+                <span className="inline-block text-[#B8A88A] text-xs font-bold tracking-[0.2em] uppercase mb-5">
                   Guia
                 </span>
                 <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-dark leading-tight tracking-tight">
-                  Entender el alquiler tambien es parte de la decision
+                  Entender el alquiler también es parte de la decisión
                 </h2>
                 <p className="text-text-light text-base md:text-lg leading-relaxed mt-5 max-w-xl">
-                  Hemos escrito una serie de articulos para propietarios que quieren entender bien el proceso antes de dar el paso.
+                  Hemos escrito una serie de artículos para propietarios que quieren entender bien el proceso antes de dar el paso.
                 </p>
               </div>
               <Link
                 to="/guia"
                 className="group inline-flex items-center gap-2 text-sm font-bold text-blue hover:text-blue-dark transition-colors whitespace-nowrap pb-2"
               >
-                Ver guia inmobiliaria
+                Ver guía inmobiliaria
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-1">
                   <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
                 </svg>
@@ -621,7 +748,7 @@ export default function AlquilarPage() {
                     {art.title}
                   </h3>
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold text-blue tracking-wide">
-                    Leer articulo
+                    Leer artículo
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-1">
                       <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
                     </svg>
@@ -638,28 +765,59 @@ export default function AlquilarPage() {
       </section>
 
       {/* ═══════════ BLOCK 10: CTA FINAL ═══════════ */}
-      <section className="py-20 md:py-28 bg-blue relative overflow-hidden">
-        {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.06]" style={{
-          backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-          backgroundSize: '32px 32px',
+      <section className="relative py-24 md:py-32 overflow-hidden">
+        {/* Layered background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2E2E26] via-[#3A3830] to-[#2E2E26]" />
+
+        {/* Texture overlay */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, white 0.5px, transparent 0)',
+          backgroundSize: '24px 24px',
         }} />
 
-        <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
+        {/* Ambient glows */}
+        <div className="absolute top-0 left-1/4 w-[500px] h-[300px] rounded-full opacity-[0.07] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #2A79A9 0%, transparent 70%)' }} />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] rounded-full opacity-[0.05] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #868C4D 0%, transparent 70%)' }} />
+
+        <div className="relative max-w-3xl mx-auto px-6 text-center z-10">
           <RevealSection>
-            <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-white leading-tight mb-6">
-              Antes de tomar una decision, conviene entender bien tu situacion
+            {/* Decorative line */}
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <span className="block w-12 h-px bg-white/20" />
+              <span className="text-cream/40 text-[10px] font-bold tracking-[0.25em] uppercase">Tu alquiler</span>
+              <span className="block w-12 h-px bg-white/20" />
+            </div>
+
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">
+              Antes de tomar una decisión, conviene entender bien tu situación
             </h2>
-            <p className="text-white/60 text-lg mb-10 max-w-xl mx-auto">
+            <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
               Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
             </p>
-            <Link
-              to="/entender-mi-situacion"
-              className="inline-flex items-center gap-2 bg-cream hover:bg-cream-dark text-dark font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg text-sm"
-            >
-              Entender mi situacion
-              <ArrowIcon />
-            </Link>
+
+            {/* Two buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                to="/entender-mi-situacion"
+                className="group inline-flex items-center gap-2.5 bg-white hover:bg-cream text-dark font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg text-sm"
+              >
+                Entender mi situación
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </Link>
+              <a
+                href="https://wa.me/34637863678"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 bg-white/10 hover:bg-white/15 text-white/80 hover:text-white font-bold px-7 py-4 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-300 text-sm"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-[#25D366]"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                Escríbenos por WhatsApp
+              </a>
+            </div>
+
+            <p className="text-white/35 text-sm mt-8">
+              Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
+            </p>
           </RevealSection>
         </div>
       </section>

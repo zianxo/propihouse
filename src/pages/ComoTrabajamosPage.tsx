@@ -120,17 +120,17 @@ const PILLARS = [
   {
     num: '01',
     title: 'Entender antes de actuar',
-    body: 'Porque cada decision parte de una situacion concreta, no de una formula estandar.',
+    body: 'Porque cada decisión parte de una situación concreta, no de una fórmula estándar.',
   },
   {
     num: '02',
     title: 'Dar contexto, no solo respuestas',
-    body: 'Para que entiendas por que se toma cada decision, no solo que hacer.',
+    body: 'Para que entiendas por qué se toma cada decisión, no solo que hacer.',
   },
   {
     num: '03',
-    title: 'Acompanar sin sustituir',
-    body: 'Para que tengas apoyo en todo momento, pero sin perder el control de la decision.',
+    title: 'Acompañar sin sustituir',
+    body: 'Para que tengas apoyo en todo momento, pero sin perder el control de la decisión.',
   },
 ]
 
@@ -138,8 +138,8 @@ const PILLARS = [
 const STEPS = [
   {
     num: '01',
-    title: 'Primero entendemos la situacion',
-    body: 'Antes de hablar de precios o portales, analizamos el contexto. Cada vivienda tiene una historia detras, y cada propietario una situacion diferente.',
+    title: 'Primero entendemos la situación',
+    body: 'Antes de hablar de precios o portales, analizamos el contexto. Cada vivienda tiene una historia detrás, y cada propietario una situación diferente.',
   },
   {
     num: '02',
@@ -149,22 +149,22 @@ const STEPS = [
   {
     num: '03',
     title: 'Preparamos la vivienda para el mercado',
-    body: 'Identificamos el valor real de tu vivienda, que aspectos potenciar y que ajustes pueden ayudar a presentarla de la mejor forma posible.',
+    body: 'Identificamos el valor real de tu vivienda, qué aspectos potenciar y qué ajustes pueden ayudar a presentarla de la mejor forma posible.',
   },
   {
     num: '04',
     title: 'Cuidamos al comprador',
-    body: 'Un comprador informado toma mejores decisiones. En cada visita explicamos la propiedad, la documentacion y el contexto de la operacion.',
+    body: 'Un comprador informado toma mejores decisiones. En cada visita explicamos la propiedad, la documentación y el contexto de la operación.',
   },
   {
     num: '05',
     title: 'Te mantenemos informado durante todo el proceso',
-    body: 'Comunicacion constante: visitas realizadas, opiniones de compradores, ajustes de estrategia. Sin silencios ni sorpresas.',
+    body: 'Comúnicación constante: visitas realizadas, opiniones de compradores, ajustes de estrategia. Sin silencios ni sorpresas.',
   },
   {
     num: '06',
-    title: 'Acompanamos la negociacion y el cierre',
-    body: 'Analisis de ofertas, negociacion de condiciones, deposito y arras, coordinacion de documentacion hasta la firma ante notario.',
+    title: 'Acompañamos la negociación y el cierre',
+    body: 'Análisis de ofertas, negociación de condiciones, depósito y arras, coordinación de documentación hasta la firma ante notario.',
   },
 ]
 
@@ -173,7 +173,7 @@ const DONT_DO = [
   'No forzamos decisiones para cerrar operaciones',
   'No hacemos visitas sin una base clara',
   'No prometemos resultados que el mercado no puede sostener',
-  'No trabajamos con informacion poco clara',
+  'No trabajamos con información poco clara',
   'No tratamos todas las situaciones de la misma manera',
 ]
 
@@ -185,7 +185,7 @@ const RECEIVE = [
         <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
       </svg>
     ),
-    text: 'Sabes que esta pasando en todo momento',
+    text: 'Sabes qué está pasando en todo momento',
   },
   {
     icon: (
@@ -209,7 +209,7 @@ const RECEIVE = [
         <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />
       </svg>
     ),
-    text: 'Informacion real, no intuiciones',
+    text: 'Información real, no intuiciones',
   },
   {
     icon: (
@@ -225,23 +225,30 @@ const RECEIVE = [
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
       </svg>
     ),
-    text: 'Acompanamiento hasta el cierre',
+    text: 'Acompañamiento hasta el cierre',
   },
 ]
 
 /* ─── Testimonial Quotes ─── */
 const QUOTES = [
-  'Por primera vez entendi realmente el proceso',
-  'No senti presion en ningun momento',
+  'Por primera vez entendí realmente el proceso',
+  'No sentí presión en ningún momento',
   'Todo estaba claro, sin sorpresas',
-  'Cada decision tenia una explicacion',
+  'Cada decisión tenía una explicación',
 ]
 
 export default function ComoTrabajamosPage() {
+  useEffect(() => {
+    document.title = "Cómo trabajamos en PropiHouse — Inmobiliaria L'Hospitalet"
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', 'Conoce nuestra forma de trabajar. Primero entendemos, después actuamos. Sin presiones, con criterio.')
+    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+  }, [])
+
   return (
     <>
       {/* ═══════════ BLOCK 1 — INTRO HERO ═══════════ */}
-      <section className="relative pt-32 pb-24 md:pt-44 md:pb-32 overflow-hidden bg-dark">
+      <section className="relative pt-32 pb-24 md:pt-44 md:pb-32 overflow-hidden bg-gradient-to-br from-[#2A3328] via-[#344030] to-[#2A3328]">
         {/* Subtle texture */}
         <div className="absolute inset-0 opacity-[0.03]" style={{
           backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
@@ -256,10 +263,10 @@ export default function ComoTrabajamosPage() {
         <div className="max-w-4xl mx-auto px-6 relative z-10">
           <RevealSection>
             <span className="inline-block text-cream/60 text-xs font-bold tracking-[0.2em] uppercase mb-6">
-              Como trabajamos
+              Cómo trabajamos
             </span>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-[3.5rem] font-medium text-white leading-[1.12] mb-5">
-              Como trabajamos tu vivienda{' '}
+              Cómo trabajamos tu vivienda{' '}
               <span className="block mt-1">
                 en <em className="italic text-cream">L'Hospitalet de Llobregat</em>
               </span>
@@ -268,7 +275,7 @@ export default function ComoTrabajamosPage() {
               Lo que ves es lo que es
             </p>
             <p className="text-white/55 text-base md:text-lg leading-relaxed max-w-2xl mb-10">
-              Te ensenamos como analizamos cada caso, como tomamos decisiones y que puedes esperar en cada fase del proceso.
+              Te enseñamos cómo analizamos cada caso, cómo tomamos decisiones y qué puedes esperar en cada fase del proceso.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
@@ -307,7 +314,7 @@ export default function ComoTrabajamosPage() {
           <RevealSection>
             <div className="text-center mb-10">
               <span className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-4">
-                Nuestra filosofia
+                Nuestra filosofía
               </span>
               <h2 className="font-serif text-3xl md:text-4xl font-medium text-dark leading-tight">
                 Tomar decisiones inmobiliarias con criterio
@@ -317,13 +324,13 @@ export default function ComoTrabajamosPage() {
           <RevealSection>
             <div className="space-y-5 text-text-light text-base md:text-[17px] leading-relaxed">
               <p>
-                En PropiHouse creemos que las decisiones importantes sobre una vivienda no deberian tomarse con prisas ni con informacion incompleta. Nuestro trabajo no consiste simplemente en ensenar viviendas o publicarlas en portales.
+                En PropiHouse creemos que las decisiones importantes sobre una vivienda no deberían tomarse con prisas ni con información incompleta. Nuestro trabajo no consiste simplemente en enseñar viviendas o publicarlas en portales.
               </p>
               <p className="font-medium text-dark">
-                Consiste en analizar cada situacion y ayudar a tomar decisiones con sentido desde el principio.
+                Consiste en analizar cada situación y ayudar a tomar decisiones con sentido desde el principio.
               </p>
               <p>
-                Empezamos por entender el contexto. El objetivo que se quiere conseguir. La situacion personal. Las necesidades reales.
+                Empezamos por entender el contexto. El objetivo que se quiere conseguir. La situación personal. Las necesidades reales.
               </p>
             </div>
           </RevealSection>
@@ -344,7 +351,7 @@ export default function ComoTrabajamosPage() {
           <RevealSection>
             <SectionHeading
               eyebrow="Principios"
-              title="Tres ideas que definen como trabajamos"
+              title="Tres ideas que definen cómo trabajamos"
             />
           </RevealSection>
           <RevealSection>
@@ -378,7 +385,7 @@ export default function ComoTrabajamosPage() {
           <RevealSection>
             <SectionHeading
               eyebrow="El proceso"
-              title="Asi trabajamos, paso a paso"
+              title="Así trabajamos, paso a paso"
             />
           </RevealSection>
 
@@ -391,7 +398,7 @@ export default function ComoTrabajamosPage() {
               to="/entender-mi-situacion"
               className="inline-flex items-center gap-2.5 bg-blue hover:bg-blue-dark text-white text-sm font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue/20"
             >
-              Entender mi situacion
+              Entender mi situación
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
               </svg>
@@ -401,7 +408,7 @@ export default function ComoTrabajamosPage() {
       </section>
 
       {/* ═══════════ BLOCK 5 — WHAT WE DON'T DO ═══════════ */}
-      <section className="py-20 md:py-28 bg-dark relative overflow-hidden">
+      <section className="py-20 md:py-28 bg-gradient-to-br from-[#2A3328] via-[#344030] to-[#2A3328] relative overflow-hidden">
         {/* Texture */}
         <div className="absolute inset-0 opacity-[0.025]" style={{
           backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
@@ -420,10 +427,10 @@ export default function ComoTrabajamosPage() {
                 Lo que decidimos no hacer
               </span>
               <h2 className="font-serif text-3xl md:text-4xl font-medium text-white leading-tight">
-                Decisiones que definen como trabajamos
+                Decisiones que definen cómo trabajamos
               </h2>
               <p className="mt-5 text-white/45 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
-                Nuestra forma de trabajar no solo se basa en lo que hacemos. Tambien en lo que decidimos no hacer.
+                Nuestra forma de trabajar no solo se basa en lo que hacemos. También en lo que decidimos no hacer.
               </p>
             </div>
           </RevealSection>
@@ -442,7 +449,7 @@ export default function ComoTrabajamosPage() {
                       <line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
                   </div>
-                  <span className="text-white/70 text-sm md:text-base leading-relaxed">
+                  <span className="text-white/80 text-sm md:text-base leading-relaxed">
                     {item}
                   </span>
                 </div>
@@ -451,8 +458,8 @@ export default function ComoTrabajamosPage() {
           </RevealSection>
 
           <RevealSection>
-            <p className="text-center text-cream/40 text-base md:text-lg font-serif italic mt-12">
-              Porque no se trata de hacer mas. Se trata de hacer lo que tiene sentido.
+            <p className="text-center text-cream/70 text-base md:text-lg font-serif italic mt-12">
+              Porque no se trata de hacer más. Se trata de hacer lo que tiene sentido.
             </p>
           </RevealSection>
         </div>
@@ -533,7 +540,7 @@ export default function ComoTrabajamosPage() {
               to="/entender-mi-situacion"
               className="inline-flex items-center gap-2.5 bg-olive-dark hover:bg-olive text-white text-sm font-bold px-7 py-3.5 rounded-lg transition-all duration-300"
             >
-              Entender mi situacion
+              Entender mi situación
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
               </svg>
@@ -543,30 +550,58 @@ export default function ComoTrabajamosPage() {
       </section>
 
       {/* ═══════════ BLOCK 8 — CTA FINAL ═══════════ */}
-      <section className="py-20 md:py-28 bg-olive-dark relative overflow-hidden">
-        {/* Pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.06]" style={{
-          backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-          backgroundSize: '32px 32px',
+      <section className="relative py-24 md:py-32 overflow-hidden">
+        {/* Layered background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2A3328] via-[#344030] to-[#2A3328]" />
+
+        {/* Texture overlay */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, white 0.5px, transparent 0)',
+          backgroundSize: '24px 24px',
         }} />
-        <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
+
+        {/* Ambient glows */}
+        <div className="absolute top-0 left-1/4 w-[500px] h-[300px] rounded-full opacity-[0.07] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #2A79A9 0%, transparent 70%)' }} />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] rounded-full opacity-[0.05] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #868C4D 0%, transparent 70%)' }} />
+
+        <div className="relative max-w-3xl mx-auto px-6 text-center z-10">
           <RevealSection>
+            {/* Decorative line */}
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <span className="block w-12 h-px bg-white/20" />
+              <span className="text-cream/40 text-[10px] font-bold tracking-[0.25em] uppercase">El primer paso</span>
+              <span className="block w-12 h-px bg-white/20" />
+            </div>
+
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">
-              Antes de tomar una decision, conviene entender bien la situacion
+              Antes de tomar una decisión, conviene entender bien la situación
             </h2>
-            <div className="mt-10">
+            <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+              Sin compromiso. Analizamos tu caso y vemos qué tiene sentido para ti.
+            </p>
+
+            {/* Two buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/entender-mi-situacion"
-                className="inline-flex items-center gap-2.5 bg-cream hover:bg-cream-dark text-dark text-sm font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg"
+                className="group inline-flex items-center gap-2.5 bg-white hover:bg-cream text-dark font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg text-sm"
               >
-                Entender mi situacion
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
-                </svg>
+                Entender mi situación
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </Link>
+              <a
+                href="https://wa.me/34637863678"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 bg-white/10 hover:bg-white/15 text-white/80 hover:text-white font-bold px-7 py-4 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-300 text-sm"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-[#25D366]"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                Escríbenos por WhatsApp
+              </a>
             </div>
-            <p className="text-white/40 text-sm mt-6 max-w-md mx-auto leading-relaxed">
-              Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
+
+            <p className="text-white/35 text-sm mt-8">
+              Sin compromiso. Analizamos tu caso y vemos qué tiene sentido para ti.
             </p>
           </RevealSection>
         </div>

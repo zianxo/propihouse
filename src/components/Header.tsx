@@ -6,8 +6,9 @@ const NAV_LINKS = [
   { to: '/vender', label: 'Vender' },
   { to: '/alquilar', label: 'Alquilar' },
   { to: '/financiar', label: 'Financiar' },
-  { to: '/como-trabajamos', label: 'Como trabajamos' },
-  { to: '/guia', label: 'Guia' },
+  { to: '/cuanto-vale-mi-vivienda', label: 'Valorador' },
+  { to: '/como-trabajamos', label: 'Cómo trabajamos' },
+  { to: '/guia', label: 'Guía' },
 ]
 
 // Pages whose hero section sits flush with the top and has a dark background.
@@ -25,7 +26,7 @@ export default function Header() {
   useEffect(() => {
     const onScroll = () => {
       // Homepage: 400vh hero, stay transparent through it.
-      // Como trabajamos: ~half-viewport dark hero.
+      // Cómo trabajamos: ~half-viewport dark hero.
       // Other pages: trip almost immediately.
       const threshold =
         pathname === '/'
@@ -49,8 +50,8 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-soft py-3'
-          : 'bg-transparent py-5'
+          ? 'bg-white/95 backdrop-blur-md shadow-soft py-1.5'
+          : 'bg-transparent py-2'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -58,7 +59,7 @@ export default function Header() {
           <img
             src="/logos/logo.png"
             alt="PropiHouse"
-            className="h-10 md:h-12 w-auto transition-all duration-300"
+            className="h-18 md:h-22 w-auto transition-all duration-300"
           />
         </Link>
 
@@ -92,7 +93,7 @@ export default function Header() {
             to="/entender-mi-situacion"
             className="hidden md:inline-flex items-center gap-2 bg-blue hover:bg-blue-dark text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-all duration-300 hover:shadow-lg"
           >
-            Entender mi situacion
+            Empezar
           </Link>
 
           <button
@@ -151,7 +152,7 @@ export default function Header() {
             onClick={() => setMenuOpen(false)}
             className="mt-6 bg-blue hover:bg-blue-dark text-white text-lg font-bold px-8 py-3.5 rounded-lg transition-all duration-300"
           >
-            Entender mi situacion
+            Entender mi situación
           </Link>
         </div>
       </div>
