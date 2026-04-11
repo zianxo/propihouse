@@ -1,0 +1,16 @@
+{
+  "name": "PropiHouse",
+  "short_name": "PropiHouse",
+  "description": "Tu inmobiliaria de confianza en L'Hospitalet de Llobregat",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDFBF5",
+  "theme_color": "#2A79A9",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

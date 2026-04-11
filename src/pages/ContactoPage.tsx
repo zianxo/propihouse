@@ -1,7 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { RevealSection, SectionHeading } from '../components/ui'
 
 export default function ContactoPage() {
+  useEffect(() => {
+    document.title = "Contacto — PropiHouse"
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', 'Contacta con PropiHouse en L\'Hospitalet de Llobregat. Estamos en Carrer d\'Enric Prat de la Riba, 187.')
+    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+  }, [])
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '', service: '' })
   const [sent, setSent] = useState(false)
 
@@ -73,7 +79,7 @@ export default function ContactoPage() {
               <RevealSection>
                 <ContactInfoCard icon="📍" title="Dirección" lines={["C/ Enric Prat de la Riba, 187", "08901 L'Hospitalet de Llobregat"]} />
                 <div className="mt-6"><ContactInfoCard icon="📞" title="Teléfono" lines={["637 86 36 78"]} href="tel:+34637863678" /></div>
-                <div className="mt-6"><ContactInfoCard icon="✉️" title="Email" lines={["info@propihouse.es"]} href="mailto:info@propihouse.es" /></div>
+                <div className="mt-6"><ContactInfoCard icon="✉️" title="Email" lines={["hola@propihouse.es"]} href="mailto:hola@propihouse.es" /></div>
                 <div className="mt-6"><ContactInfoCard icon="🕐" title="Horario" lines={["L-V: 9:30–14:00 / 16:00–19:30", "Sáb: 10:00–13:00"]} /></div>
               </RevealSection>
               <RevealSection>

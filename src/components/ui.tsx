@@ -92,7 +92,7 @@ export function SectionHeading({
 export function CTASection({
   title,
   subtitle,
-  buttonText = 'Entender mi situacion',
+  buttonText = 'Entender mi situación',
   buttonTo = '/entender-mi-situacion',
   light = true,
 }: {

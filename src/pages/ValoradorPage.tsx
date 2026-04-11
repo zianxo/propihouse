@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 
 /* ────────────────────────────────────────────
@@ -13,8 +13,8 @@ interface CardOption {
 const HOUSING_TYPES: CardOption[] = [
   { label: 'Piso', value: 'piso', icon: '▦' },
   { label: 'Casa', value: 'casa', icon: '⌂' },
-  { label: 'Atico', value: 'atico', icon: '△' },
-  { label: 'Duplex', value: 'duplex', icon: '▥' },
+  { label: 'Ático', value: 'atico', icon: '△' },
+  { label: 'Dúplex', value: 'duplex', icon: '▥' },
 ]
 
 const CONDITION_OPTIONS: CardOption[] = [
@@ -28,11 +28,12 @@ const EXTRAS_OPTIONS = [
   { label: 'Ascensor', value: 'ascensor' },
   { label: 'Parking', value: 'parking' },
   { label: 'Terraza', value: 'terraza' },
-  { label: 'Balcon', value: 'balcon' },
+  { label: 'Balcón', value: 'balcon' },
   { label: 'Ninguno', value: 'ninguno' },
 ]
 
 const TOTAL_STEPS = 5
+const REFINE_TOTAL_STEPS = 7
 
 /* Price multipliers */
 const CONDITION_MULTIPLIER: Record<string, number> = {
@@ -55,13 +56,13 @@ const BASE_PRICE_M2 = 2800 // EUR/m2 base for L'Hospitalet
 /* ────────────────────────────────────────────
    Progress bar
    ──────────────────────────────────────────── */
-function ProgressBar({ step, total }: { step: number; total: number }) {
+function ProgressBar({ step, total, label }: { step: number; total: number; label?: string }) {
   const pct = ((step - 1) / (total - 1)) * 100
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs tracking-widest uppercase text-[#1A1A1A]/35 font-medium font-[Lato]">
-          Paso {step} de {total}
+          {label || `Paso ${step} de ${total}`}
         </span>
         <span className="text-xs text-[#1A1A1A]/25 font-[Lato]">{Math.round(pct)}%</span>
       </div>
@@ -151,7 +152,7 @@ function CalculatingScreen({ onDone }: { onDone: () => void }) {
           phase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}
       >
-        Estamos analizando los datos segun el comportamiento actual del mercado en L'Hospitalet de Llobregat...
+        Estamos analizando los datos según el comportamiento actual del mercado en L'Hospitalet de Llobregat...
       </p>
     </div>
   )
@@ -164,10 +165,12 @@ function ResultScreen({
   metros,
   condition,
   extras,
+  onRefine,
 }: {
   metros: number
   condition: string
   extras: string[]
+  onRefine: () => void
 }) {
   const [visible, setVisible] = useState(false)
 
@@ -240,8 +243,8 @@ function ResultScreen({
         {/* Explanation */}
         <div className="max-w-lg mx-auto text-center mb-12">
           <p className="text-[#1A1A1A]/50 text-[15px] leading-relaxed font-light font-[Lato]">
-            Esta estimacion se basa en datos generales del mercado en L'Hospitalet de Llobregat. El valor final depende
-            de factores como la presentacion de la vivienda, el tipo de comprador, la estrategia de venta y el momento
+            Esta estimación se basa en datos generales del mercado en L'Hospitalet de Llobregat. El valor final depende
+            de factores como la presentación de la vivienda, el tipo de comprador, la estrategia de venta y el momento
             concreto del mercado.
           </p>
         </div>
@@ -252,11 +255,12 @@ function ResultScreen({
             Quieres afinar este valor?
           </h3>
           <p className="text-[#1A1A1A]/45 text-[15px] font-light mb-6 font-[Lato]">
-            Podemos analizar tu vivienda en detalle y darte una valoracion precisa.
+            Podemos analizar tu vivienda en detalle y darte una valoración precisa.
           </p>
-          <Link
-            to="/entender-mi-situacion?tipo=vender"
-            className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-7 py-4 rounded-xl text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato]"
+          <button
+            type="button"
+            onClick={onRefine}
+            className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-7 py-4 rounded-xl text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato] cursor-pointer"
           >
             Analizar mi vivienda
             <svg
@@ -271,7 +275,7 @@ function ResultScreen({
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
             </svg>
-          </Link>
+          </button>
         </div>
 
         {/* Share */}
@@ -313,19 +317,287 @@ function ResultScreen({
 }
 
 /* ────────────────────────────────────────────
+   Refinement success screen
+   ──────────────────────────────────────────── */
+function RefineSuccessScreen() {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const t = requestAnimationFrame(() => setVisible(true))
+    return () => cancelAnimationFrame(t)
+  }, [])
+
+  return (
+    <div
+      className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}
+    >
+      <div className="max-w-2xl mx-auto px-6 py-12 md:py-20">
+        {/* Icon */}
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#868C4D]/10">
+            <svg className="w-7 h-7 text-[#868C4D]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+        </div>
+
+        {/* Title */}
+        <h2 className="font-[Playfair_Display] text-2xl md:text-3xl font-light text-[#1A1A1A] tracking-tight text-center mb-8">
+          Ya estamos analizando tu vivienda
+        </h2>
+
+        {/* Body */}
+        <div className="max-w-lg mx-auto space-y-5 mb-12">
+          <p className="text-[#1A1A1A]/55 text-[15px] leading-relaxed font-light font-[Lato]">
+            Hemos recibido la información correctamente y estamos revisando los datos para darte una orientación más ajustada.
+          </p>
+          <p className="text-[#1A1A1A]/55 text-[15px] leading-relaxed font-light font-[Lato]">
+            En breve recibirás una primera valoración teniendo en cuenta el mercado actual en L'Hospitalet de Llobregat.
+          </p>
+          <p className="text-[#1A1A1A]/55 text-[15px] leading-relaxed font-light font-[Lato]">
+            Además, analizaremos algunos aspectos que pueden influir directamente en el resultado, como la percepción de la vivienda o el tipo de comprador que puede encajar.
+          </p>
+          <p className="text-[#1A1A1A]/55 text-[15px] leading-relaxed font-light font-[Lato]">
+            Si es necesario, nos pondremos en contacto contigo para comentarlo contigo de forma clara y sin compromiso.
+          </p>
+          <p className="text-[#1A1A1A]/40 text-sm font-[Lato] italic">
+            En la mayoría de casos respondemos en menos de 24h.
+          </p>
+        </div>
+
+        {/* CTA */}
+        <div className="text-center mb-16">
+          <Link
+            to="/guia"
+            className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-7 py-4 rounded-xl text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato]"
+          >
+            Volver a la guía inmobiliaria
+            <svg
+              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </Link>
+        </div>
+
+        {/* Retention block */}
+        <div className="rounded-2xl border border-[#1A1A1A]/[0.06] bg-white/50 p-8 md:p-10">
+          <p className="text-[#1A1A1A]/50 text-[15px] leading-relaxed font-light font-[Lato] mb-6">
+            Mientras tanto, si quieres entender mejor cómo funciona el mercado en L'Hospitalet de Llobregat, puedes consultar algunos de nuestros artículos:
+          </p>
+
+          <div className="space-y-3 mb-8">
+            <Link
+              to="/guia/cuanto-vale-piso-hospitalet"
+              className="flex items-center gap-3 rounded-xl border border-[#1A1A1A]/[0.06] bg-white px-5 py-4 text-[15px] text-[#1A1A1A]/70 hover:border-[#2A79A9]/30 hover:text-[#2A79A9] transition-all duration-300 font-[Lato] group"
+            >
+              <svg className="w-4 h-4 text-[#2A79A9]/40 group-hover:text-[#2A79A9] transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+              Cómo saber cuánto vale mi piso en L'Hospitalet
+            </Link>
+            <Link
+              to="/guia/cuanto-tarda-vender-piso"
+              className="flex items-center gap-3 rounded-xl border border-[#1A1A1A]/[0.06] bg-white px-5 py-4 text-[15px] text-[#1A1A1A]/70 hover:border-[#2A79A9]/30 hover:text-[#2A79A9] transition-all duration-300 font-[Lato] group"
+            >
+              <svg className="w-4 h-4 text-[#2A79A9]/40 group-hover:text-[#2A79A9] transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+              Cuánto tarda vender un piso en L'Hospitalet
+            </Link>
+            <Link
+              to="/guia/errores-vender-vivienda"
+              className="flex items-center gap-3 rounded-xl border border-[#1A1A1A]/[0.06] bg-white px-5 py-4 text-[15px] text-[#1A1A1A]/70 hover:border-[#2A79A9]/30 hover:text-[#2A79A9] transition-all duration-300 font-[Lato] group"
+            >
+              <svg className="w-4 h-4 text-[#2A79A9]/40 group-hover:text-[#2A79A9] transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+              Errores al vender una vivienda
+            </Link>
+          </div>
+
+          <div className="text-center mb-6">
+            <Link
+              to="/guia"
+              className="inline-flex items-center gap-2 text-sm text-[#2A79A9] hover:text-[#236891] transition-colors font-medium font-[Lato]"
+            >
+              Ver guía inmobiliaria
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </Link>
+          </div>
+
+          <p className="text-center text-[#1A1A1A]/30 text-sm font-[Lato] italic">
+            Cada vivienda es diferente, y cada decisión también.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ────────────────────────────────────────────
+   Shared layout shell
+   ──────────────────────────────────────────── */
+function PageShell({ children, headerRight }: { children: React.ReactNode; headerRight?: React.ReactNode }) {
+  return (
+    <main className="min-h-screen bg-[#FDFBF5] relative">
+      <div
+        className="pointer-events-none fixed inset-0 z-0 opacity-[0.018]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundSize: '128px 128px',
+        }}
+      />
+      <header className="relative z-10 flex items-center justify-between px-6 md:px-10 py-5">
+        <Link
+          to="/"
+          className="font-[Playfair_Display] text-lg tracking-tight text-[#1A1A1A] hover:opacity-70 transition-opacity"
+        >
+          PropiHouse
+        </Link>
+        {headerRight}
+      </header>
+      <div className="relative z-10">{children}</div>
+    </main>
+  )
+}
+
+/* ────────────────────────────────────────────
+   Option card (reusable for refine steps)
+   ──────────────────────────────────────────── */
+function OptionCard({
+  label,
+  selected,
+  onClick,
+}: {
+  label: string
+  selected: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`w-full flex items-center gap-4 rounded-2xl border-2 py-5 px-6 transition-all duration-300 cursor-pointer text-left
+        ${
+          selected
+            ? 'border-[#2A79A9] bg-[#2A79A9]/[0.06] shadow-[0_0_0_1px_rgba(42,121,169,0.15)]'
+            : 'border-[#1A1A1A]/[0.08] bg-white hover:border-[#2A79A9]/40 hover:bg-[#2A79A9]/[0.02] hover:shadow-sm'
+        }`}
+    >
+      <span
+        className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-full border-2 transition-all duration-300 ${
+          selected ? 'border-[#2A79A9] bg-[#2A79A9]' : 'border-[#1A1A1A]/20'
+        }`}
+      >
+        {selected && (
+          <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        )}
+      </span>
+      <span
+        className={`text-[15px] transition-colors font-[Lato] ${
+          selected ? 'text-[#1A1A1A] font-medium' : 'text-[#1A1A1A]/60'
+        }`}
+      >
+        {label}
+      </span>
+    </button>
+  )
+}
+
+/* ────────────────────────────────────────────
+   Count selector (for rooms / bathrooms)
+   ──────────────────────────────────────────── */
+function CountSelector({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string
+  options: string[]
+  value: string
+  onChange: (v: string) => void
+}) {
+  return (
+    <div>
+      <p className="text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-3">{label}</p>
+      <div className="flex gap-2">
+        {options.map((opt) => (
+          <button
+            key={opt}
+            type="button"
+            onClick={() => onChange(opt)}
+            className={`flex-1 py-3.5 rounded-xl border-2 text-sm font-medium transition-all duration-300 cursor-pointer font-[Lato]
+              ${
+                value === opt
+                  ? 'border-[#2A79A9] bg-[#2A79A9]/[0.06] text-[#1A1A1A] shadow-[0_0_0_1px_rgba(42,121,169,0.15)]'
+                  : 'border-[#1A1A1A]/[0.08] bg-white text-[#1A1A1A]/50 hover:border-[#2A79A9]/40 hover:bg-[#2A79A9]/[0.02]'
+              }`}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ────────────────────────────────────────────
    Main component
    ──────────────────────────────────────────── */
 export default function ValoradorPage() {
+  useEffect(() => {
+    document.title = "Valorador de vivienda en L'Hospitalet de Llobregat — PropiHouse"
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', "Calcula el valor orientativo de tu vivienda en L'Hospitalet de Llobregat. Herramienta gratuita sin necesidad de registro.")
+    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+  }, [])
+
   const [step, setStep] = useState(1)
   const [direction, setDirection] = useState<'forward' | 'back'>('forward')
-  const [phase, setPhase] = useState<'form' | 'calculating' | 'result'>('form')
+  const [phase, setPhase] = useState<'form' | 'calculating' | 'result' | 'refine' | 'refine-success'>('form')
 
-  /* Form data */
+  /* Initial form data */
   const [tipoVivienda, setTipoVivienda] = useState('')
-  const [ubicacion, setUbicacion] = useState('')
+  const [ubicación, setUbicacion] = useState('')
   const [metros, setMetros] = useState(80)
   const [estado, setEstado] = useState('')
   const [extras, setExtras] = useState<string[]>([])
+
+  /* Refinement form data */
+  const [refineStep, setRefineStep] = useState(1)
+  const [refineDirection, setRefineDirection] = useState<'forward' | 'back'>('forward')
+  const [refDireccion, setRefDireccion] = useState('')
+  const [refCatastral, setRefCatastral] = useState('')
+  const [refHabitaciones, setRefHabitaciones] = useState('')
+  const [refBanos, setRefBanos] = useState('')
+  const [refLuz, setRefLuz] = useState('')
+  const [refPlanta, setRefPlanta] = useState('')
+  const [refSituacion, setRefSituacion] = useState('')
+  const [refTiming, setRefTiming] = useState('')
+  const [refNombre, setRefNombre] = useState('')
+  const [refTeléfono, setRefTeléfono] = useState('')
+  const [refEmail, setRefEmail] = useState('')
+  const [refPhotos, setRefPhotos] = useState<File[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const goForward = useCallback(() => {
     setDirection('forward')
@@ -361,36 +633,83 @@ export default function ValoradorPage() {
     setPhase('result')
   }, [])
 
+  /* Refinement navigation */
+  const refineGoForward = useCallback(() => {
+    setRefineDirection('forward')
+    setRefineStep((s) => Math.min(s + 1, REFINE_TOTAL_STEPS))
+  }, [])
+
+  const refineGoBack = useCallback(() => {
+    setRefineDirection('back')
+    setRefineStep((s) => Math.max(s - 1, 1))
+  }, [])
+
+  const refineSelectAndAdvance = (setter: (v: string) => void, value: string) => {
+    setter(value)
+    setTimeout(() => refineGoForward(), 350)
+  }
+
+  const handleRefineSubmit = () => {
+    setPhase('refine-success')
+  }
+
+  const handlePhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setRefPhotos(Array.from(e.target.files))
+    }
+  }
+
   /* ─── Calculating ─── */
   if (phase === 'calculating') {
     return (
-      <main className="min-h-screen bg-[#FDFBF5] relative">
-        <div
-          className="pointer-events-none fixed inset-0 z-0 opacity-[0.018]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            backgroundSize: '128px 128px',
-          }}
-        />
-        <header className="relative z-10 flex items-center justify-between px-6 md:px-10 py-5">
-          <Link
-            to="/"
-            className="font-[Playfair_Display] text-lg tracking-tight text-[#1A1A1A] hover:opacity-70 transition-opacity"
-          >
-            PropiHouse
-          </Link>
-        </header>
-        <div className="relative z-10">
-          <CalculatingScreen onDone={handleCalcDone} />
-        </div>
-      </main>
+      <PageShell>
+        <CalculatingScreen onDone={handleCalcDone} />
+      </PageShell>
     )
   }
 
   /* ─── Result ─── */
   if (phase === 'result') {
     return (
-      <main className="min-h-screen bg-[#FDFBF5] relative">
+      <PageShell
+        headerRight={
+          <Link
+            to="/cuanto-vale-mi-vivienda"
+            className="text-sm text-[#1A1A1A]/40 hover:text-[#1A1A1A]/60 transition-colors font-[Lato]"
+          >
+            Mas sobre valoración
+          </Link>
+        }
+      >
+        <ResultScreen metros={metros} condition={estado} extras={extras} onRefine={() => setPhase('refine')} />
+      </PageShell>
+    )
+  }
+
+  /* ─── Refine success ─── */
+  if (phase === 'refine-success') {
+    return (
+      <PageShell>
+        <RefineSuccessScreen />
+      </PageShell>
+    )
+  }
+
+  /* ─── Refinement form ─── */
+  if (phase === 'refine') {
+    const refineStepTitles: Record<number, string> = {
+      1: 'Donde se encuentra exactamente la vivienda?',
+      2: 'Cuentaños un poco más sobre la vivienda',
+      3: 'Como es la luz natural en la vivienda?',
+      4: 'En que planta se encuentra?',
+      5: 'En que momento estás con tu vivienda?',
+      6: 'Cuando te gustaria tomar una decisión?',
+      7: 'Donde te podemos enviar el analisis?',
+    }
+
+    return (
+      <main className="min-h-screen bg-[#FDFBF5] relative overflow-hidden">
+        {/* Grain */}
         <div
           className="pointer-events-none fixed inset-0 z-0 opacity-[0.018]"
           style={{
@@ -398,6 +717,8 @@ export default function ValoradorPage() {
             backgroundSize: '128px 128px',
           }}
         />
+
+        {/* Top bar */}
         <header className="relative z-10 flex items-center justify-between px-6 md:px-10 py-5">
           <Link
             to="/"
@@ -405,21 +726,279 @@ export default function ValoradorPage() {
           >
             PropiHouse
           </Link>
-          <Link
-            to="/cuanto-vale-mi-vivienda"
-            className="text-sm text-[#1A1A1A]/40 hover:text-[#1A1A1A]/60 transition-colors font-[Lato]"
-          >
-            Mas sobre valoracion
-          </Link>
+          <span className="hidden sm:block text-xs text-[#1A1A1A]/30 tracking-widest uppercase font-[Lato]">
+            Analisis detallado
+          </span>
         </header>
-        <div className="relative z-10">
-          <ResultScreen metros={metros} condition={estado} extras={extras} />
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-center px-6 pt-6 md:pt-12 pb-20">
+          {/* Progress */}
+          <ProgressBar step={refineStep} total={REFINE_TOTAL_STEPS} label={`Paso ${refineStep} de ${REFINE_TOTAL_STEPS}`} />
+
+          {/* Step heading */}
+          <div className="mt-10 mb-8 text-center max-w-xl mx-auto">
+            <h2 className="font-[Playfair_Display] text-xl md:text-2xl font-light text-[#1A1A1A] tracking-tight">
+              {refineStepTitles[refineStep]}
+            </h2>
+          </div>
+
+          {/* Steps */}
+          <div className="w-full max-w-2xl mx-auto">
+            {/* REFINE STEP 1 — Ubicacion real */}
+            <StepWrapper active={refineStep === 1} direction={refineDirection}>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-2">
+                    Direccion o zona exacta
+                  </label>
+                  <input
+                    type="text"
+                    value={refDireccion}
+                    onChange={(e) => setRefDireccion(e.target.value)}
+                    placeholder="Ej: Calle Major 15, Santa Eulalia..."
+                    autoFocus
+                    className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
+                  />
+                </div>
+
+                {/* Optional catastral */}
+                <div className="rounded-xl border border-[#1A1A1A]/[0.06] bg-white/60 p-5">
+                  <p className="text-sm text-[#1A1A1A]/40 font-[Lato] mb-3">
+                    Quieres ayudarnos a afinar más el analisis?
+                  </p>
+                  <label className="block text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-2">
+                    Referencia catastral
+                  </label>
+                  <input
+                    type="text"
+                    value={refCatastral}
+                    onChange={(e) => setRefCatastral(e.target.value)}
+                    placeholder="Ej: 1234567AB1234C0001XY"
+                    className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-3.5 text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
+                  />
+                  <p className="mt-2 text-xs text-[#1A1A1A]/30 font-[Lato]">
+                    Solo lo usamos para hacer un analisis más preciso
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={refineGoForward}
+                  disabled={!refDireccion.trim()}
+                  className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                >
+                  Continuar
+                </button>
+              </div>
+            </StepWrapper>
+
+            {/* REFINE STEP 2 — Caracteristicas clave */}
+            <StepWrapper active={refineStep === 2} direction={refineDirection}>
+              <div className="space-y-8">
+                <CountSelector
+                  label="Habitaciones"
+                  options={['1', '2', '3', '4', '5+']}
+                  value={refHabitaciones}
+                  onChange={setRefHabitaciones}
+                />
+                <CountSelector
+                  label="Baños"
+                  options={['1', '2', '3+']}
+                  value={refBanos}
+                  onChange={setRefBanos}
+                />
+
+                <button
+                  type="button"
+                  onClick={refineGoForward}
+                  disabled={!refHabitaciones || !refBanos}
+                  className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                >
+                  Continuar
+                </button>
+              </div>
+            </StepWrapper>
+
+            {/* REFINE STEP 3 — Luminosidad (auto-advance) */}
+            <StepWrapper active={refineStep === 3} direction={refineDirection}>
+              <div className="space-y-3">
+                {['Muy luminosa', 'Normal', 'Poco luminosa', 'No estoy seguro'].map((opt) => (
+                  <OptionCard
+                    key={opt}
+                    label={opt}
+                    selected={refLuz === opt}
+                    onClick={() => refineSelectAndAdvance(setRefLuz, opt)}
+                  />
+                ))}
+              </div>
+            </StepWrapper>
+
+            {/* REFINE STEP 4 — Altura / planta (auto-advance) */}
+            <StepWrapper active={refineStep === 4} direction={refineDirection}>
+              <div className="space-y-3">
+                {['Bajo', 'Intermedio', 'Alto', 'Ático', 'No lo se'].map((opt) => (
+                  <OptionCard
+                    key={opt}
+                    label={opt}
+                    selected={refPlanta === opt}
+                    onClick={() => refineSelectAndAdvance(setRefPlanta, opt)}
+                  />
+                ))}
+              </div>
+            </StepWrapper>
+
+            {/* REFINE STEP 5 — Situacion del propietario (auto-advance) */}
+            <StepWrapper active={refineStep === 5} direction={refineDirection}>
+              <div className="space-y-3">
+                {[
+                  'Quiero vender mi vivienda',
+                  'Estoy valorando vender',
+                  'Es una herencia',
+                  'Es una separación o cambio personal',
+                  'Solo quiero saber el valor',
+                ].map((opt) => (
+                  <OptionCard
+                    key={opt}
+                    label={opt}
+                    selected={refSituacion === opt}
+                    onClick={() => refineSelectAndAdvance(setRefSituacion, opt)}
+                  />
+                ))}
+              </div>
+            </StepWrapper>
+
+            {/* REFINE STEP 6 — Timing (auto-advance) */}
+            <StepWrapper active={refineStep === 6} direction={refineDirection}>
+              <div className="space-y-3">
+                {['Lo antes posible', 'En los proximos meses', 'Solo estoy informandome'].map((opt) => (
+                  <OptionCard
+                    key={opt}
+                    label={opt}
+                    selected={refTiming === opt}
+                    onClick={() => refineSelectAndAdvance(setRefTiming, opt)}
+                  />
+                ))}
+              </div>
+            </StepWrapper>
+
+            {/* REFINE STEP 7 — Contacto */}
+            <StepWrapper active={refineStep === 7} direction={refineDirection}>
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-2">Nombre</label>
+                  <input
+                    type="text"
+                    value={refNombre}
+                    onChange={(e) => setRefNombre(e.target.value)}
+                    placeholder="Tu nombre"
+                    autoFocus
+                    className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-2">Teléfono (WhatsApp)</label>
+                  <input
+                    type="tel"
+                    value={refTeléfono}
+                    onChange={(e) => setRefTeléfono(e.target.value)}
+                    placeholder="Ej: 612 345 678"
+                    className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-2">Email (opcional)</label>
+                  <input
+                    type="email"
+                    value={refEmail}
+                    onChange={(e) => setRefEmail(e.target.value)}
+                    placeholder="tu@email.com"
+                    className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
+                  />
+                </div>
+
+                <p className="text-sm text-[#1A1A1A]/35 font-[Lato] leading-relaxed">
+                  Te enviaremos el analisis y, si quieres, te ayudaremos a interpretarlo.
+                </p>
+
+                {/* Photo upload section */}
+                <div className="rounded-xl border border-[#1A1A1A]/[0.06] bg-white/60 p-5">
+                  <p className="text-sm text-[#1A1A1A]/40 font-[Lato] mb-3">
+                    Quieres que el analisis sea más preciso? Puedes anadir algunas fotos de la vivienda.
+                  </p>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handlePhotosChange}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="inline-flex items-center gap-2 rounded-xl border-2 border-dashed border-[#1A1A1A]/[0.12] bg-white px-5 py-3.5 text-sm text-[#1A1A1A]/50 hover:border-[#2A79A9]/40 hover:text-[#2A79A9] transition-all duration-300 cursor-pointer font-[Lato]"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <polyline points="21 15 16 10 5 21" />
+                    </svg>
+                    Anadir fotos de la vivienda
+                  </button>
+                  {refPhotos.length > 0 && (
+                    <p className="mt-2 text-xs text-[#868C4D] font-[Lato]">
+                      {refPhotos.length} {refPhotos.length === 1 ? 'foto seleccionada' : 'fotos seleccionadas'}
+                    </p>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleRefineSubmit}
+                  disabled={!refNombre.trim() || !refTeléfono.trim()}
+                  className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                >
+                  Recibir mi analisis
+                </button>
+              </div>
+            </StepWrapper>
+          </div>
+
+          {/* Back button */}
+          {refineStep > 1 && (
+            <button
+              type="button"
+              onClick={refineGoBack}
+              className="mt-8 inline-flex items-center gap-2 text-sm text-[#1A1A1A]/35 hover:text-[#1A1A1A]/60 transition-colors cursor-pointer font-[Lato]"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
+              </svg>
+              Paso anterior
+            </button>
+          )}
         </div>
+
+        {/* Bottom gradient */}
+        <div className="fixed bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#FDFBF5] to-transparent pointer-events-none z-[5]" />
       </main>
     )
   }
 
-  /* ─── Multi-step form ─── */
+  /* ─── Multi-step form (initial calculator) ─── */
   return (
     <main className="min-h-screen bg-[#FDFBF5] relative overflow-hidden">
       {/* Grain */}
@@ -459,7 +1038,7 @@ export default function ValoradorPage() {
             Calcula el valor de tu vivienda en L'Hospitalet de Llobregat
           </h1>
           <p className="mt-3 text-[#1A1A1A]/50 text-base font-light font-[Lato] leading-relaxed">
-            En menos de un minuto podras obtener una estimacion basada en el mercado actual.
+            En menos de un minuto podrás obtener una estimación basada en el mercado actual.
           </p>
           <p className="mt-2 text-[#1A1A1A]/30 text-sm font-[Lato]">
             Sin necesidad de dejar tus datos. Resultado inmediato.
@@ -486,7 +1065,7 @@ export default function ValoradorPage() {
           {/* STEP 1 - Housing type */}
           <StepWrapper active={step === 1} direction={direction}>
             <p className="text-xs tracking-widest uppercase text-[#1A1A1A]/35 mb-4 font-medium font-[Lato] text-center">
-              Que tipo de vivienda quieres valorar?
+              Qué tipo de vivienda quieres valorar?
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {HOUSING_TYPES.map((opt) => (
@@ -525,16 +1104,16 @@ export default function ValoradorPage() {
             <div className="space-y-6">
               <input
                 type="text"
-                value={ubicacion}
+                value={ubicación}
                 onChange={(e) => setUbicacion(e.target.value)}
-                placeholder="Zona, calle o codigo postal..."
+                placeholder="Zona, calle o código postal..."
                 autoFocus
                 className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
               />
               <button
                 type="button"
                 onClick={goForward}
-                disabled={!ubicacion.trim()}
+                disabled={!ubicación.trim()}
                 className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
               >
                 Continuar

@@ -1,7 +1,14 @@
-import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
 import { EntenderSituacionForm } from '../components/EntenderSituacionForm'
 
 export default function EntenderSituacionPage() {
+  useEffect(() => {
+    document.title = "Entender mi situación inmobiliaria — PropiHouse"
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', 'Cuéntanos tu situación y te ayudaremos a tomar decisiones inmobiliarias con criterio. Sin compromiso.')
+    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+  }, [])
+
   return (
     <main className="min-h-screen bg-[#FDFBF5] relative overflow-hidden">
       {/* Subtle grain */}
@@ -13,18 +20,8 @@ export default function EntenderSituacionPage() {
         }}
       />
 
-      {/* Top bar (sits below the global header) */}
-      <header className="relative z-10 flex items-center justify-between px-6 md:px-10 pt-28 pb-5">
-        <Link
-          to="/"
-          className="font-[Playfair_Display] text-lg tracking-tight text-[#1A1A1A] hover:opacity-70 transition-opacity"
-        >
-          PropiHouse
-        </Link>
-        <span className="hidden sm:block text-xs text-[#1A1A1A]/30 tracking-widest uppercase font-[Lato]">
-          Consulta personalizada
-        </span>
-      </header>
+      {/* Spacer for global header */}
+      <div className="pt-28" />
 
       {/* Form */}
       <div className="relative z-10 flex flex-col items-center px-6 pt-6 md:pt-12 pb-20">

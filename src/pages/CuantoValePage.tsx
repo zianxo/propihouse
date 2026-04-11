@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { RevealSection, SectionHeading } from '../components/ui'
 
@@ -7,42 +8,42 @@ import { RevealSection, SectionHeading } from '../components/ui'
 const FACTORS = [
   {
     title: 'Estado del inmueble',
-    text: 'Una reforma reciente puede cambiar completamente la percepcion de valor. No es solo estetica -- es lo que el comprador imagina al entrar.',
+    text: 'Una reforma reciente puede cambiar completamente la percepción de valor. No es solo estética -- es lo que el comprador imagina al entrar.',
     icon: '◈',
   },
   {
     title: 'Demanda del barrio',
-    text: 'Cada zona de L\'Hospitalet tiene su ritmo. Hay barrios donde las viviendas vuelan y otros donde se necesita mas estrategia.',
+    text: 'Cada zona de L\'Hospitalet tiene su ritmo. Hay barrios donde las viviendas vuelan y otros donde se necesita más estrategia.',
     icon: '◎',
   },
   {
     title: 'Tipo de comprador',
-    text: 'No es lo mismo vender a una familia que busca su primer hogar que a un inversor. El perfil cambia la negociacion.',
+    text: 'No es lo mismo vender a una familia que busca su primer hogar que a un inversor. El perfil cambia la negociación.',
     icon: '⟡',
   },
   {
     title: 'Momento del mercado',
-    text: 'El contexto economico, los tipos de interes y la oferta disponible afectan directamente al precio final de cierre.',
+    text: 'El contexto económico, los tipos de interés y la oferta disponible afectan directamente al precio final de cierre.',
     icon: '◇',
   },
 ]
 
 const BEYOND_PRICE = [
   {
-    title: 'Percepcion del comprador',
-    text: 'Como se siente alguien al entrar en la vivienda importa mas de lo que parece. La primera impresion marca la negociacion.',
+    title: 'Percepción del comprador',
+    text: 'Cómo se siente alguien al entrar en la vivienda importa más de lo que parece. La primera impresión marca la negociación.',
   },
   {
     title: 'Tipo de comprador',
-    text: 'Familias, inversores, parejas jovenes -- cada perfil tiene prioridades distintas y disposicion de pago diferente.',
+    text: 'Familias, inversores, parejas jóvenes -- cada perfil tiene prioridades distintas y disposición de pago diferente.',
   },
   {
-    title: 'Presentacion de la vivienda',
-    text: 'Una vivienda bien presentada puede venderse por mas y en menos tiempo. No hablamos de Home Staging caro, sino de criterio.',
+    title: 'Presentación de la vivienda',
+    text: 'Una vivienda bien presentada puede venderse por más y en menos tiempo. No hablamos de Home Staging caro, sino de criterio.',
   },
   {
     title: 'Feedback de las visitas',
-    text: 'Las primeras visitas dan informacion real. Si nadie hace oferta, algo falla -- y no siempre es el precio.',
+    text: 'Las primeras visitas dan información real. Si nadie hace oferta, algo falla -- y no siempre es el precio.',
   },
 ]
 
@@ -60,18 +61,18 @@ const PROCESS_STEPS = [
   {
     number: '03',
     title: 'Definimos la estrategia',
-    text: 'Precio, posicionamiento, presentacion. Trazamos un plan coherente que maximice el resultado.',
+    text: 'Precio, posicionamiento, presentación. Trazamos un plan coherente que maximice el resultado.',
   },
   {
     number: '04',
-    title: 'Acompanamos el proceso',
-    text: 'Desde la primera visita hasta la firma. Cada paso con transparencia y comunicacion constante.',
+    title: 'Acompañamos el proceso',
+    text: 'Desde la primera visita hasta la firma. Cada paso con transparencia y comunicación constante.',
   },
 ]
 
 const ARTICLES = [
-  { n: '01', cat: 'Valoracion', title: 'Como saber cuanto vale mi piso en L\'Hospitalet', href: '/guia/cuanto-vale-piso-hospitalet' },
-  { n: '02', cat: 'Preparacion', title: 'Como preparar una vivienda antes de venderla', href: '/guia/preparar-vivienda-vender' },
+  { n: '01', cat: 'Valoración', title: 'Cómo saber cuánto vale mi piso en L\'Hospitalet', href: '/guia/cuanto-vale-piso-hospitalet' },
+  { n: '02', cat: 'Preparación', title: 'Cómo preparar una vivienda antes de venderla', href: '/guia/preparar-vivienda-vender' },
   { n: '03', cat: 'Mercado', title: 'Es buen momento para vender en L\'Hospitalet?', href: '/guia/buen-momento-vender' },
   { n: '04', cat: 'Errores', title: 'Errores habituales al vender una vivienda', href: '/guia/errores-vender-vivienda' },
 ]
@@ -80,6 +81,13 @@ const ARTICLES = [
    Component
    ──────────────────────────────────────────── */
 export default function CuantoValePage() {
+  useEffect(() => {
+    document.title = "Cuánto vale mi vivienda en L'Hospitalet — PropiHouse"
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', 'Descubre el valor orientativo de tu vivienda en L\'Hospitalet de Llobregat con nuestro valorador gratuito.')
+    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+  }, [])
+
   return (
     <main className="bg-[#FDFBF5] min-h-screen relative overflow-hidden">
       {/* Grain */}
@@ -100,21 +108,21 @@ export default function CuantoValePage() {
           <RevealSection>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#1A1A1A]/[0.08] bg-white/60 mb-8">
               <span className="w-1.5 h-1.5 rounded-full bg-[#2A79A9]" />
-              <span className="text-[11px] tracking-widest uppercase text-[#1A1A1A]/40 font-medium font-[Lato]">
-                Valoracion inmobiliaria
+              <span className="text-[11px] tracking-widest uppercase text-[#1A1A1A]/55 font-medium font-[Lato]">
+                Valoración inmobiliaria
               </span>
             </div>
           </RevealSection>
 
           <RevealSection delay={100}>
             <h1 className="font-[Playfair_Display] text-4xl md:text-5xl lg:text-[3.5rem] font-light text-[#1A1A1A] tracking-tight leading-[1.1] mb-6">
-              Cuanto vale realmente tu vivienda en L'Hospitalet de Llobregat?
+              Cuánto vale realmente tu vivienda en L'Hospitalet de Llobregat?
             </h1>
           </RevealSection>
 
           <RevealSection delay={200}>
             <p className="text-lg md:text-xl text-[#1A1A1A]/55 font-light leading-relaxed max-w-2xl mb-10 font-[Lato]">
-              Conoce una referencia real del valor de tu vivienda y entiende como encaja en el mercado actual antes de tomar una decision.
+              Conoce una referencia real del valor de tu vivienda y entiende cómo encaja en el mercado actual antes de tomar una decisión.
             </p>
           </RevealSection>
 
@@ -151,8 +159,8 @@ export default function CuantoValePage() {
         <div className="max-w-5xl mx-auto">
           <RevealSection>
             <SectionHeading
-              title="Saber cuanto vale una vivienda no es tan simple"
-              subtitle="El precio de una vivienda depende de factores que no aparecen en los portales. Estos son algunos de los mas relevantes."
+              title="Saber cuánto vale una vivienda no es tan simple"
+              subtitle="El precio de una vivienda depende de factores que no aparecen en los portales. Estos son algunos de los más relevantes."
             />
           </RevealSection>
 
@@ -164,7 +172,7 @@ export default function CuantoValePage() {
                     {f.icon}
                   </span>
                   <h3 className="text-lg font-medium text-[#1A1A1A] mb-2 font-[Lato]">{f.title}</h3>
-                  <p className="text-[#1A1A1A]/50 text-[15px] leading-relaxed font-light font-[Lato]">
+                  <p className="text-[#1A1A1A]/65 text-[15px] leading-relaxed font-light font-[Lato]">
                     {f.text}
                   </p>
                 </div>
@@ -185,8 +193,8 @@ export default function CuantoValePage() {
             <h2 className="relative font-[Playfair_Display] text-2xl md:text-3xl font-light text-white tracking-tight mb-4">
               Calcula el valor de tu vivienda
             </h2>
-            <p className="relative text-white/60 text-base font-light mb-8 max-w-lg mx-auto font-[Lato]">
-              Herramienta gratuita. En menos de un minuto tendras una estimacion basada en datos reales del mercado.
+            <p className="relative text-white/80 text-base font-light mb-8 max-w-lg mx-auto font-[Lato]">
+              Herramienta gratuita. En menos de un minuto tendrás una estimación basada en datos reales del mercado.
             </p>
             <Link
               to="/valorador"
@@ -216,7 +224,7 @@ export default function CuantoValePage() {
           <RevealSection>
             <SectionHeading
               title="El valor de una vivienda es solo el punto de partida"
-              subtitle="Hay factores que no se miden en euros pero que determinan el resultado final de una operacion."
+              subtitle="Hay factores que no se miden en euros pero que determinan el resultado final de una operación."
             />
           </RevealSection>
 
@@ -229,7 +237,7 @@ export default function CuantoValePage() {
                     <h3 className="text-base font-medium text-[#1A1A1A] mb-2 font-[Lato]">
                       {item.title}
                     </h3>
-                    <p className="text-[#1A1A1A]/50 text-[15px] leading-relaxed font-light font-[Lato]">
+                    <p className="text-[#1A1A1A]/65 text-[15px] leading-relaxed font-light font-[Lato]">
                       {item.text}
                     </p>
                   </div>
@@ -241,7 +249,7 @@ export default function CuantoValePage() {
       </section>
 
       {/* ─── BLOCK 5: PROPIHOUSE PROCESS ─── */}
-      <section className="relative z-10 py-20 md:py-28 px-6 bg-[#1A1A1A]">
+      <section className="relative z-10 py-20 md:py-28 px-6 bg-[#3D4A2E]">
         {/* Subtle top accent line */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-[#2A79A9]/40 to-transparent" />
 
@@ -249,10 +257,10 @@ export default function CuantoValePage() {
           <RevealSection>
             <div className="mb-14">
               <h2 className="font-[Playfair_Display] text-3xl md:text-4xl font-light text-white tracking-tight leading-[1.15] mb-4">
-                Que hacemos en PropiHouse despues de conocer el valor?
+                Qué hacemos en PropiHouse después de conocer el valor?
               </h2>
-              <p className="text-white/40 text-lg font-light max-w-2xl font-[Lato]">
-                Un numero no es suficiente. Esto es lo que hacemos para que tomes la mejor decision posible.
+              <p className="text-white/70 text-lg font-light max-w-2xl font-[Lato]">
+                Un número no es suficiente. Esto es lo que hacemos para que tomes la mejor decisión posible.
               </p>
             </div>
           </RevealSection>
@@ -261,11 +269,11 @@ export default function CuantoValePage() {
             {PROCESS_STEPS.map((s, i) => (
               <RevealSection key={s.number} delay={i * 100}>
                 <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-7 hover:bg-white/[0.05] transition-all duration-500 h-full">
-                  <span className="font-[Playfair_Display] text-3xl font-light text-[#2A79A9]/50 mb-3 block">
+                  <span className="font-[Playfair_Display] text-3xl font-light text-[#EFE8CD]/50 mb-3 block">
                     {s.number}
                   </span>
                   <h3 className="text-lg font-medium text-white mb-2 font-[Lato]">{s.title}</h3>
-                  <p className="text-white/40 text-[15px] leading-relaxed font-light font-[Lato]">
+                  <p className="text-white/65 text-[15px] leading-relaxed font-light font-[Lato]">
                     {s.text}
                   </p>
                 </div>
@@ -280,13 +288,13 @@ export default function CuantoValePage() {
         <RevealSection>
           <div className="max-w-2xl mx-auto text-center">
             <p className="font-[Playfair_Display] text-2xl md:text-3xl font-light text-[#1A1A1A] tracking-tight leading-snug mb-8">
-              El valor de una vivienda es solo una parte de la decision.
+              El valor de una vivienda es solo una parte de la decisión.
             </p>
             <Link
               to="/entender-mi-situacion"
               className="inline-flex items-center gap-3 bg-[#1A1A1A] text-[#EFE8CD] px-7 py-4 rounded-xl text-base font-medium tracking-wide hover:bg-[#2A2A2A] transition-all duration-300 group font-[Lato]"
             >
-              Ver mi situacion
+              Ver mi situación
               <svg
                 className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
                 viewBox="0 0 24 24"
@@ -314,17 +322,17 @@ export default function CuantoValePage() {
                   Guia
                 </span>
                 <h2 className="font-[Playfair_Display] text-[clamp(1.85rem,4.2vw,2.85rem)] font-normal leading-[1.15] tracking-[-0.015em] text-[#1A1A1A] max-w-2xl">
-                  Articulos para entender el mercado
+                  Artículos para entender el mercado
                 </h2>
                 <p className="mt-4 text-base md:text-lg text-[#1A1A1A]/55 max-w-xl font-[Lato] font-light leading-relaxed">
-                  Lecturas practicas para tomar decisiones informadas sobre tu vivienda.
+                  Lecturas prácticas para tomar decisiones informadas sobre tu vivienda.
                 </p>
               </div>
               <Link
                 to="/guia"
                 className="group inline-flex items-center gap-2 text-sm font-semibold text-[#2A79A9] hover:text-[#2A79A9]/80 transition-colors whitespace-nowrap pb-2 font-[Lato]"
               >
-                Ver guia inmobiliaria
+                Ver guía inmobiliaria
                 <svg
                   className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1"
                   viewBox="0 0 24 24"
@@ -361,7 +369,7 @@ export default function CuantoValePage() {
                     {art.title}
                   </h3>
                   <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#2A79A9] tracking-wide font-[Lato]">
-                    Leer articulo
+                    Leer artículo
                     <svg className="w-3 h-3 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="5" y1="12" x2="19" y2="12" />
                       <polyline points="12 5 19 12 12 19" />
@@ -379,35 +387,54 @@ export default function CuantoValePage() {
       </section>
 
       {/* ─── BLOCK 8: CTA FINAL ─── */}
-      <section className="relative z-10 py-20 md:py-28 px-6 bg-[#EFE8CD]/30">
-        <RevealSection>
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="font-[Playfair_Display] text-3xl md:text-4xl font-light text-[#1A1A1A] tracking-tight leading-[1.15] mb-4">
-              Antes de tomar una decision, conviene entender bien la situacion
+      <section className="relative z-10 py-24 md:py-32 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1E2D38] via-[#253846] to-[#1E2D38]" />
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, white 0.5px, transparent 0)',
+          backgroundSize: '24px 24px',
+        }} />
+        <div className="absolute top-0 left-1/4 w-[500px] h-[300px] rounded-full opacity-[0.10] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #2A79A9 0%, transparent 70%)' }} />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] rounded-full opacity-[0.05] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #868C4D 0%, transparent 70%)' }} />
+
+        <div className="relative max-w-3xl mx-auto px-6 text-center z-10">
+          <RevealSection>
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <span className="block w-12 h-px bg-white/20" />
+              <span className="text-cream/40 text-[10px] font-bold tracking-[0.25em] uppercase">Tu vivienda</span>
+              <span className="block w-12 h-px bg-white/20" />
+            </div>
+
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">
+              Antes de tomar una decisión, conviene entender bien la situación
             </h2>
-            <p className="text-[#1A1A1A]/50 text-base font-light mb-10 font-[Lato]">
+            <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
               Te ayudamos a ver tu caso con perspectiva. Sin prisa, sin compromiso.
             </p>
-            <Link
-              to="/entender-mi-situacion"
-              className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-7 py-4 rounded-xl text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato]"
-            >
-              Quiero entender mi situacion
-              <svg
-                className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                to="/entender-mi-situacion"
+                className="group inline-flex items-center gap-2.5 bg-white hover:bg-cream text-dark font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg text-sm"
               >
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </Link>
-          </div>
-        </RevealSection>
+                Entender mi situación
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </Link>
+              <a
+                href="https://wa.me/34637863678"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 bg-white/10 hover:bg-white/15 text-white/80 hover:text-white font-bold px-7 py-4 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-300 text-sm"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-[#25D366]"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                Escríbenos por WhatsApp
+              </a>
+            </div>
+
+            <p className="text-white/35 text-sm mt-8">
+              Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
+            </p>
+          </RevealSection>
+        </div>
       </section>
     </main>
   )

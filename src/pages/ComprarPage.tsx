@@ -145,6 +145,13 @@ function SectionDivider() {
 /* ── Main page ────────────────────────────────────────────────── */
 
 export default function ComprarPage() {
+  useEffect(() => {
+    document.title = "Comprar vivienda en L'Hospitalet de Llobregat — PropiHouse"
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', 'Te ayudamos a comprar vivienda en L\'Hospitalet con criterio. Analizamos tu situación, tu presupuesto y te acompañamos en cada paso.')
+    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+  }, [])
+
   return (
     <main className="min-h-screen bg-[#FDFBF5] font-[Lato]">
       {/* ╔══════════════════════════════════════════════════════╗
@@ -165,7 +172,7 @@ export default function ComprarPage() {
 
         <div className="relative max-w-3xl mx-auto px-6 pt-32 pb-24 md:pt-44 md:pb-32">
           <RevealSection>
-            <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#868C4D] mb-8">
+            <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#2A79A9] mb-8">
               Comprar vivienda
             </span>
           </RevealSection>
@@ -230,7 +237,7 @@ export default function ComprarPage() {
             {/* LEFT — heading + closing copy */}
             <div className="md:col-span-5">
               <RevealSection>
-                <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#868C4D] mb-6">
+                <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#2A79A9] mb-6">
                   El problema
                 </span>
                 <h2 className="font-[Playfair_Display] text-[clamp(1.85rem,4.2vw,2.85rem)] font-normal leading-[1.15] tracking-[-0.015em] text-[#1A1A1A]">
@@ -285,8 +292,8 @@ export default function ComprarPage() {
                     >
                       {/* Index */}
                       <div className="flex-shrink-0">
-                        <div className="w-10 h-10 md:w-11 md:h-11 rounded-lg bg-[#EFE8CD]/60 border border-[#868C4D]/20 flex items-center justify-center group-hover:bg-[#868C4D]/[0.12] transition-colors">
-                          <span className="font-[Playfair_Display] text-sm md:text-base text-[#868C4D]">
+                        <div className="w-10 h-10 md:w-11 md:h-11 rounded-lg bg-[#2A79A9]/[0.06] border border-[#2A79A9]/20 flex items-center justify-center group-hover:bg-[#2A79A9]/[0.12] transition-colors">
+                          <span className="font-[Playfair_Display] text-sm md:text-base text-[#2A79A9]">
                             {sym.n}
                           </span>
                         </div>
@@ -298,7 +305,7 @@ export default function ComprarPage() {
                       {/* Right edge accent */}
                       <span
                         aria-hidden
-                        className="absolute top-1/2 -translate-y-1/2 right-0 h-8 w-[3px] rounded-l-full bg-[#868C4D]/0 group-hover:bg-[#868C4D]/40 transition-colors duration-500"
+                        className="absolute top-1/2 -translate-y-1/2 right-0 h-8 w-[3px] rounded-l-full bg-[#2A79A9]/0 group-hover:bg-[#2A79A9]/40 transition-colors duration-500"
                       />
                     </div>
                   </RevealSection>
@@ -317,7 +324,7 @@ export default function ComprarPage() {
       <section className="bg-[#FDFBF5]">
         <div className="max-w-3xl mx-auto px-6 py-24 md:py-32">
           <RevealSection>
-            <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#868C4D] mb-6">
+            <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#2A79A9] mb-6">
               Antes de buscar
             </span>
             <h2 className="font-[Playfair_Display] text-[clamp(1.85rem,4.2vw,2.85rem)] font-normal leading-[1.15] tracking-[-0.015em] text-[#1A1A1A]">
@@ -387,7 +394,7 @@ export default function ComprarPage() {
       <section className="bg-[#EFE8CD]/40">
         <div className="max-w-3xl mx-auto px-6 py-24 md:py-32">
           <RevealSection>
-            <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#868C4D] mb-6">
+            <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#2A79A9] mb-6">
               Capacidad de compra
             </span>
             <h2 className="font-[Playfair_Display] text-[clamp(1.85rem,4.2vw,2.85rem)] font-normal leading-[1.15] tracking-[-0.015em] text-[#1A1A1A]">
@@ -456,7 +463,7 @@ export default function ComprarPage() {
         <div className="relative max-w-5xl mx-auto px-6 py-24 md:py-32">
           <RevealSection>
             <div className="text-center md:text-left max-w-3xl">
-              <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#868C4D] mb-6">
+              <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#2A79A9] mb-6">
                 Nuestro enfoque
               </span>
               <h2 className="font-[Playfair_Display] text-[clamp(1.85rem,4.2vw,2.85rem)] font-normal leading-[1.15] tracking-[-0.015em] text-[#1A1A1A]">
@@ -514,7 +521,7 @@ export default function ComprarPage() {
       <section className="bg-[#EFE8CD]/40">
         <div className="max-w-3xl mx-auto px-6 py-24 md:py-36">
           <RevealSection>
-            <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#868C4D] mb-6">
+            <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#2A79A9] mb-6">
               Nuestro m&eacute;todo
             </span>
             <h2 className="font-[Playfair_Display] text-[clamp(1.85rem,4.2vw,2.85rem)] font-normal leading-[1.15] tracking-[-0.015em] text-[#1A1A1A]">
@@ -562,7 +569,7 @@ export default function ComprarPage() {
           <RevealSection>
             <div className="flex items-end justify-between gap-6 mb-12 md:mb-14 flex-wrap">
               <div>
-                <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#868C4D] mb-5">
+                <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#2A79A9] mb-5">
                   Gu&iacute;a
                 </span>
                 <h2 className="font-[Playfair_Display] text-[clamp(1.85rem,4.2vw,2.85rem)] font-normal leading-[1.15] tracking-[-0.015em] text-[#1A1A1A] max-w-2xl">
@@ -641,41 +648,59 @@ export default function ComprarPage() {
       {/* ╔══════════════════════════════════════════════════════╗
           ║  BLOCK 8 — CTA FINAL                                ║
           ╚══════════════════════════════════════════════════════╝ */}
-      <section className="relative overflow-hidden bg-[#2A79A9]">
+      <section className="relative py-24 md:py-32 overflow-hidden">
+        {/* Layered background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1E2D38] via-[#253846] to-[#1E2D38]" />
+
         {/* Texture overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.04] pointer-events-none"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            backgroundSize: '128px 128px',
-          }}
-        />
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, white 0.5px, transparent 0)',
+          backgroundSize: '24px 24px',
+        }} />
 
-        {/* Subtle radial glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06)_0%,transparent_70%)] pointer-events-none" />
+        {/* Ambient glows */}
+        <div className="absolute top-0 left-1/4 w-[500px] h-[300px] rounded-full opacity-[0.10] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #2A79A9 0%, transparent 70%)' }} />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] rounded-full opacity-[0.05] pointer-events-none" style={{ background: 'radial-gradient(ellipse, #868C4D 0%, transparent 70%)' }} />
 
-        <div className="relative max-w-3xl mx-auto px-6 py-24 md:py-32 text-center">
+        <div className="relative max-w-3xl mx-auto px-6 text-center z-10">
           <RevealSection>
-            <h2 className="font-[Playfair_Display] text-[clamp(1.85rem,4.2vw,2.85rem)] font-normal leading-[1.15] tracking-[-0.015em] text-white">
-              Antes de avanzar, conviene entender bien tu situaci&oacute;n
+            {/* Decorative line */}
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <span className="block w-12 h-px bg-white/20" />
+              <span className="text-cream/40 text-[10px] font-bold tracking-[0.25em] uppercase">El primer paso</span>
+              <span className="block w-12 h-px bg-white/20" />
+            </div>
+
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">
+              Antes de avanzar, conviene entender bien tu situación
             </h2>
-          </RevealSection>
-
-          <RevealSection delay={120}>
-            <p className="mt-6 text-base md:text-lg leading-[1.75] text-white/65 max-w-xl mx-auto">
-              Sin compromiso, sin prisa. Solo una conversaci&oacute;n para entender tu momento
-              y ver si podemos ayudarte.
+            <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+              Sin compromiso, sin prisa. Solo una conversación para entender tu momento y ver si podemos ayudarte.
             </p>
-          </RevealSection>
 
-          <RevealSection delay={200} className="mt-10">
-            <Link
-              to="/entender-mi-situacion"
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-lg bg-white text-[#2A79A9] text-sm font-semibold tracking-wide hover:bg-white/90 transition-all hover:shadow-lg hover:shadow-black/10 active:scale-[0.98]"
-            >
-              Entender mi situaci&oacute;n
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            {/* Two buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                to="/entender-mi-situacion"
+                className="group inline-flex items-center gap-2.5 bg-white hover:bg-cream text-dark font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg text-sm"
+              >
+                Entender mi situación
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </Link>
+              <a
+                href="https://wa.me/34637863678"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 bg-white/10 hover:bg-white/15 text-white/80 hover:text-white font-bold px-7 py-4 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-300 text-sm"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-[#25D366]"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                Escríbenos por WhatsApp
+              </a>
+            </div>
+
+            <p className="text-white/35 text-sm mt-8">
+              Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
+            </p>
           </RevealSection>
         </div>
       </section>

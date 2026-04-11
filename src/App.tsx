@@ -14,6 +14,10 @@ const CuantoValePage = lazy(() => import('./pages/CuantoValePage'))
 const ValoradorPage = lazy(() => import('./pages/ValoradorPage'))
 const GuiaPage = lazy(() => import('./pages/GuiaPage'))
 const ArticlePage = lazy(() => import('./pages/ArticlePage'))
+const PrivacidadPage = lazy(() => import('./pages/PrivacidadPage'))
+const AvisoLegalPage = lazy(() => import('./pages/AvisoLegalPage'))
+const CookiesPage = lazy(() => import('./pages/CookiesPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 function Loading() {
   return (
@@ -40,6 +44,10 @@ export default function App() {
           <Route path="valorador" element={<ValoradorPage />} />
           <Route path="guia" element={<GuiaPage />} />
           <Route path="guia/:slug" element={<ArticlePage />} />
+          <Route path="privacidad" element={<PrivacidadPage />} />
+          <Route path="aviso-legal" element={<AvisoLegalPage />} />
+          <Route path="cookies" element={<CookiesPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </Suspense>

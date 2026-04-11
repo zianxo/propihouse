@@ -114,22 +114,27 @@ footer a:hover { color: var(--text-2); }
     msg.className = 'msg';
 
     // Check if it's the secret preview code
+    var unlockOk = false;
     try {
       var unlockRes = await fetch('/api/unlock', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: val })
       });
-
-      if (unlockRes.ok) {
-        // Code accepted — cookie is set, reload to enter the real site
-        btn.textContent = 'Entrando...';
-        msg.textContent = 'Acceso concedido. Redirigiendo...';
-        setTimeout(function() { window.location.href = '/'; }, 600);
-        return;
-      }
+      unlockOk = unlockRes.ok;
+      // 403 = wrong code, anything else = API might be unavailable
+      if (!unlockOk && unlockRes.status !== 403) throw new Error('api unavailable');
     } catch (_) {
-      // unlock failed — not a code, treat as email
+      // API unavailable (localhost / network error) — client-side fallback
+      if (val.toUpperCase() === 'PROPIHOUSE2026') unlockOk = true;
+    }
+
+    if (unlockOk) {
+      document.cookie = 'propihouse_preview=true; path=/; max-age=7776000; SameSite=Lax';
+      btn.textContent = 'Entrando...';
+      msg.textContent = 'Acceso concedido. Redirigiendo...';
+      setTimeout(function() { window.location.href = '/'; }, 600);
+      return;
     }
 
     // Not a code — treat as normal email subscription
