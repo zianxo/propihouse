@@ -42,6 +42,9 @@
   "pnpm": {
     "overrides": {
       "vite": "^8.0.0-beta.13"
+    },
+    "patchedDependencies": {
+      "@tailwindcss/vite@4.2.1": "patches/@tailwindcss__vite@4.2.1.patch"
     }
   }
 }
