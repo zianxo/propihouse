@@ -19,7 +19,7 @@ export default function PrivacidadPage() {
               En cumplimiento del Reglamento General de Protección de Datos (RGPD) y la Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales (LOPD-GDD), le informamos de que el responsable del tratamiento de sus datos personales es:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-text-light">
-              <li><strong>Titular:</strong> Pau Manovel (Propi House)</li>
+              <li><strong>Titular:</strong> Gabinete Punto L&apos;Hospitalet SL (Propi House)</li>
               <li><strong>Dirección:</strong> Carrer d'Enric Prat de la Riba, 187, 08901 L'Hospitalet de Llobregat, Barcelona</li>
               <li><strong>Correo electrónico:</strong> hola@propihouse.es</li>
               <li><strong>Teléfono:</strong> 637 86 36 78</li>

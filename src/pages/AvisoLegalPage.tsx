@@ -21,7 +21,7 @@ export default function AvisoLegalPage() {
             <h2 className="font-serif text-xl font-medium text-dark mt-10 mb-4">1. Datos identificativos del titular</h2>
             <ul className="list-disc pl-6 space-y-2 text-text-light">
               <li><strong>Denominación:</strong> Propi House</li>
-              <li><strong>Titular:</strong> Pau Manovel</li>
+              <li><strong>Titular:</strong> Gabinete Punto L&apos;Hospitalet SL</li>
               <li><strong>Domicilio:</strong> Carrer d'Enric Prat de la Riba, 187, 08901 L'Hospitalet de Llobregat, Barcelona</li>
               <li><strong>Correo electrónico:</strong> hola@propihouse.es</li>
               <li><strong>Teléfono:</strong> 637 86 36 78</li>
