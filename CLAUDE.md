@@ -1,6 +1,6 @@
-# PropiHouse Website
+# Propi House Website
 
-Real estate agency website for **PropiHouse** (Pau Manovel), located in L'Hospitalet de Llobregat, Barcelona.
+Real estate agency website for **Propi House** (Pau Manovel), located in L'Hospitalet de Llobregat, Barcelona.
 
 ## Tech Stack
 
@@ -104,7 +104,7 @@ The site is behind a cookie-based gate for preview access:
 ## Client Info
 
 - **Owner**: Pau Manovel
-- **Business**: PropiHouse (real estate agency)
+- **Business**: Propi House (real estate agency)
 - **Location**: Carrer d'Enric Prat de la Riba, 187, 08901 L'Hospitalet de Llobregat, Barcelona
 - **Phone**: 637 86 36 78
 - **Email**: hola@propihouse.es

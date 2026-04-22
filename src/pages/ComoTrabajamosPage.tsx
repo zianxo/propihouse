@@ -1,119 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { RevealSection, SectionHeading } from '../components/ui'
-
-/* ─── Scroll-Linked Timeline ─── */
-function MethodTimeline({ steps }: { steps: { num: string; title: string; body: string }[] }) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const dotRefs = useRef<(HTMLDivElement | null)[]>([])
-  const [progress, setProgress] = useState(0)
-  const [reachedDots, setReachedDots] = useState<boolean[]>(() => steps.map(() => false))
-  const rafRef = useRef<number>(0)
-
-  useEffect(() => {
-    const update = () => {
-      const container = containerRef.current
-      if (!container) return
-
-      const rect = container.getBoundingClientRect()
-      const viewportH = window.innerHeight
-      // Trigger line sits ~55% down the viewport — line "draws" toward it.
-      const triggerY = viewportH * 0.55
-      const start = rect.top
-      const end = rect.bottom
-      const total = end - start
-      const raw = (triggerY - start) / total
-      const clamped = Math.max(0, Math.min(1, raw))
-      setProgress(clamped)
-
-      // Mark dots as reached once the trigger line has crossed each one.
-      const next = dotRefs.current.map((dot) => {
-        if (!dot) return false
-        const dotRect = dot.getBoundingClientRect()
-        const dotCenter = dotRect.top + dotRect.height / 2
-        return dotCenter <= triggerY
-      })
-      setReachedDots((prev) =>
-        prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next
-      )
-    }
-
-    const onScroll = () => {
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = requestAnimationFrame(update)
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll, { passive: true })
-    update()
-
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-      cancelAnimationFrame(rafRef.current)
-    }
-  }, [])
-
-  return (
-    <div ref={containerRef} className="relative mt-16">
-      {/* Gray base line */}
-      <div className="absolute left-[19px] md:left-[23px] top-0 bottom-0 w-[2px] bg-cream-dark/30 rounded-full" />
-
-      {/* Animated filled line that grows on scroll */}
-      <div
-        className="absolute left-[19px] md:left-[23px] top-0 w-[2px] rounded-full bg-gradient-to-b from-blue via-blue/90 to-blue/40"
-        style={{
-          height: `${progress * 100}%`,
-          transition: 'height 120ms linear',
-          boxShadow: '0 0 12px rgba(42, 121, 169, 0.35)',
-        }}
-      />
-
-      <div className="space-y-10 md:space-y-14">
-        {steps.map(({ num, title, body }, i) => {
-          const reached = reachedDots[i]
-          return (
-            <div key={num} className="relative flex gap-6 md:gap-8">
-              {/* Dot */}
-              <div className="relative z-10 flex-shrink-0">
-                <div
-                  ref={(el) => { dotRefs.current[i] = el }}
-                  className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center shadow-soft transition-all duration-500 ${
-                    reached
-                      ? 'bg-blue border-2 border-blue scale-110'
-                      : 'bg-white border-2 border-blue/30'
-                  }`}
-                  style={reached ? { boxShadow: '0 0 0 6px rgba(42,121,169,0.12), 0 4px 12px rgba(42,121,169,0.25)' } : undefined}
-                >
-                  <span
-                    className={`font-serif text-sm md:text-base font-bold transition-colors duration-500 ${
-                      reached ? 'text-white' : 'text-blue'
-                    }`}
-                  >
-                    {num}
-                  </span>
-                </div>
-              </div>
-              {/* Content */}
-              <div
-                className={`pt-1 pb-2 transition-all duration-500 ${
-                  reached ? 'opacity-100 translate-x-0' : 'opacity-60 -translate-x-1'
-                }`}
-              >
-                <h3 className="font-sans font-bold text-dark text-lg md:text-xl mb-2 leading-snug">
-                  {title}
-                </h3>
-                <p className="text-text-light text-sm md:text-base leading-relaxed max-w-xl">
-                  {body}
-                </p>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
+import { MethodTimeline, RevealSection, SectionHeading } from '../components/ui'
 
 /* ─── Three Pillars ─── */
 const PILLARS = [
@@ -139,32 +26,32 @@ const STEPS = [
   {
     num: '01',
     title: 'Primero entendemos la situación',
-    body: 'Antes de hablar de precios o portales, analizamos el contexto. Cada vivienda tiene una historia detrás, y cada propietario una situación diferente.',
+    desc: 'Antes de hablar de precios o portales, analizamos el contexto. Cada vivienda tiene una historia detrás, y cada propietario una situación diferente.',
   },
   {
     num: '02',
     title: 'Analizamos el mercado con perspectiva',
-    body: "Estudiamos el mercado de L'Hospitalet, las propiedades comparables, los tipos de compradores y las tendencias que afectan a tu zona.",
+    desc: "Estudiamos el mercado de L'Hospitalet, las propiedades comparables, los tipos de compradores y las tendencias que afectan a tu zona.",
   },
   {
     num: '03',
     title: 'Preparamos la vivienda para el mercado',
-    body: 'Identificamos el valor real de tu vivienda, qué aspectos potenciar y qué ajustes pueden ayudar a presentarla de la mejor forma posible.',
+    desc: 'Identificamos el valor real de tu vivienda, qué aspectos potenciar y qué ajustes pueden ayudar a presentarla de la mejor forma posible.',
   },
   {
     num: '04',
     title: 'Cuidamos al comprador',
-    body: 'Un comprador informado toma mejores decisiones. En cada visita explicamos la propiedad, la documentación y el contexto de la operación.',
+    desc: 'Un comprador informado toma mejores decisiones. En cada visita explicamos la propiedad, la documentación y el contexto de la operación.',
   },
   {
     num: '05',
     title: 'Te mantenemos informado durante todo el proceso',
-    body: 'Comúnicación constante: visitas realizadas, opiniones de compradores, ajustes de estrategia. Sin silencios ni sorpresas.',
+    desc: 'Comunicación constante: visitas realizadas, opiniones de compradores, ajustes de estrategia. Sin silencios ni sorpresas.',
   },
   {
     num: '06',
     title: 'Acompañamos la negociación y el cierre',
-    body: 'Análisis de ofertas, negociación de condiciones, depósito y arras, coordinación de documentación hasta la firma ante notario.',
+    desc: 'Análisis de ofertas, negociación de condiciones, depósito y arras, coordinación de documentación hasta la firma ante notario.',
   },
 ]
 
@@ -177,6 +64,90 @@ const DONT_DO = [
   'No tratamos todas las situaciones de la misma manera',
 ]
 
+/* ─── Scroll-animated strikethrough list ─── */
+function DontDoList({ items }: { items: string[] }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [active, setActive] = useState<boolean[]>(() => items.map(() => false))
+
+  useEffect(() => {
+    const update = () => {
+      const container = containerRef.current
+      if (!container) return
+      const rows = Array.from(container.querySelectorAll('[data-dont-row]')) as HTMLElement[]
+      const triggerY = window.innerHeight * 0.72
+      const next = rows.map((r) => r.getBoundingClientRect().top <= triggerY)
+      setActive((prev) =>
+        prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next
+      )
+    }
+    let raf = 0
+    const onScroll = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(update) }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+    update()
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      cancelAnimationFrame(raf)
+    }
+  }, [])
+
+  return (
+    <div ref={containerRef} className="space-y-4">
+      {items.map((item, i) => {
+        const on = active[i]
+        return (
+          <div
+            key={item}
+            data-dont-row
+            className={`flex items-center gap-4 border rounded-xl px-6 py-5 backdrop-blur-sm transition-all duration-500 ${
+              on
+                ? 'bg-white/[0.08] border-[#C94A4A]/30'
+                : 'bg-white/[0.03] border-white/[0.05]'
+            }`}
+          >
+            {/* X icon */}
+            <div
+              className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${
+                on ? 'bg-[#C94A4A]/20 scale-110' : 'bg-white/[0.06] scale-90'
+              }`}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`transition-colors duration-500 ${on ? 'text-[#E88]' : 'text-cream/50'}`}
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </div>
+            {/* Text with animated strike */}
+            <span className="relative flex-1 text-white/85 text-sm md:text-base leading-relaxed">
+              <span className={`transition-colors duration-500 ${on ? 'text-white/55' : 'text-white/90'}`}>
+                {item}
+              </span>
+              <span
+                aria-hidden
+                className="absolute left-0 right-0 top-1/2 h-px bg-[#E88]/70 origin-left"
+                style={{
+                  transform: `translateY(-50%) scaleX(${on ? 1 : 0})`,
+                  transition: `transform 700ms cubic-bezier(0.16,1,0.3,1) ${i * 140}ms`,
+                }}
+              />
+            </span>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 /* ─── What You Receive ─── */
 const RECEIVE = [
   {
@@ -186,6 +157,7 @@ const RECEIVE = [
       </svg>
     ),
     text: 'Sabes qué está pasando en todo momento',
+    detail: 'Sabes en qué punto estamos, qué se está haciendo y qué viene después.',
   },
   {
     icon: (
@@ -194,6 +166,7 @@ const RECEIVE = [
       </svg>
     ),
     text: 'Una estrategia adaptada a tu caso',
+    detail: 'No aplicamos la misma fórmula a todas las viviendas. Cada decisión parte de tu situación, tu objetivo y el momento del inmueble.',
   },
   {
     icon: (
@@ -202,6 +175,7 @@ const RECEIVE = [
       </svg>
     ),
     text: 'Apoyo en las decisiones clave',
+    detail: 'No te dejamos solo cuando toca valorar opciones, ajustar la estrategia o tomar una decisión que puede cambiar el resultado.',
   },
   {
     icon: (
@@ -210,6 +184,7 @@ const RECEIVE = [
       </svg>
     ),
     text: 'Información real, no intuiciones',
+    detail: 'Te mantenemos al día para que entiendas cómo está respondiendo el mercado y puedas decidir con información real.',
   },
   {
     icon: (
@@ -218,6 +193,7 @@ const RECEIVE = [
       </svg>
     ),
     text: 'Un proceso ordenado y sin desgaste',
+    detail: 'Filtramos, organizamos y damos contexto para que el proceso no dependa de la improvisación ni te cargue con más de lo necesario.',
   },
   {
     icon: (
@@ -226,8 +202,75 @@ const RECEIVE = [
       </svg>
     ),
     text: 'Acompañamiento hasta el cierre',
+    detail: 'Nuestro trabajo no acaba cuando aparece interés. Seguimos contigo hasta que la operación puede cerrarse con sentido y con seguridad.',
   },
 ]
+
+/* ─── Expandable receive grid ─── */
+function ReceiveGrid({ items }: { items: { icon: React.ReactNode; text: string; detail: string }[] }) {
+  const [open, setOpen] = useState<number | null>(null)
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+      {items.map(({ icon, text, detail }, i) => {
+        const isOpen = open === i
+        return (
+          <button
+            type="button"
+            key={text}
+            onClick={() => setOpen(isOpen ? null : i)}
+            aria-expanded={isOpen}
+            className={`text-left flex items-start gap-4 rounded-xl p-6 shadow-soft hover:shadow-card transition-all duration-500 cursor-pointer border ${
+              isOpen
+                ? 'bg-cream border-cream-dark/40 shadow-card'
+                : 'bg-white border-transparent hover:-translate-y-0.5'
+            }`}
+          >
+            <div
+              className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center transition-colors duration-500 ${
+                isOpen ? 'bg-olive-dark text-cream' : 'bg-cream text-olive-dark'
+              }`}
+            >
+              {icon}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p
+                className={`font-medium text-[15px] leading-snug pt-1.5 transition-colors duration-500 ${
+                  isOpen ? 'text-olive-dark' : 'text-dark'
+                }`}
+              >
+                {text}
+              </p>
+              <div
+                className="grid transition-all duration-500 ease-out"
+                style={{
+                  gridTemplateRows: isOpen ? '1fr' : '0fr',
+                  opacity: isOpen ? 1 : 0,
+                  marginTop: isOpen ? 12 : 0,
+                }}
+              >
+                <div className="overflow-hidden">
+                  <p className="text-sm leading-relaxed text-olive-dark/85">
+                    {detail}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <span
+              aria-hidden
+              className={`flex-shrink-0 mt-2 text-xs transition-all duration-500 ${
+                isOpen ? 'text-olive-dark rotate-180' : 'text-dark/30'
+              }`}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
 
 /* ─── Testimonial Quotes ─── */
 const QUOTES = [
@@ -239,10 +282,10 @@ const QUOTES = [
 
 export default function ComoTrabajamosPage() {
   useEffect(() => {
-    document.title = "Cómo trabajamos en PropiHouse — Inmobiliaria L'Hospitalet"
+    document.title = "Cómo trabajamos en Propi House — Inmobiliaria L'Hospitalet"
     const meta = document.querySelector('meta[name="description"]')
     if (meta) meta.setAttribute('content', 'Conoce nuestra forma de trabajar. Primero entendemos, después actuamos. Sin presiones, con criterio.')
-    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+    return () => { document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat" }
   }, [])
 
   return (
@@ -271,7 +314,7 @@ export default function ComoTrabajamosPage() {
                 en <em className="italic text-cream">L'Hospitalet de Llobregat</em>
               </span>
             </h1>
-            <p className="text-cream/50 text-lg md:text-xl font-serif italic mb-6 tracking-wide">
+            <p className="text-cream/70 text-2xl md:text-3xl lg:text-[2rem] font-serif italic mb-6 tracking-wide leading-snug">
               Lo que ves es lo que es
             </p>
             <p className="text-white/55 text-base md:text-lg leading-relaxed max-w-2xl mb-10">
@@ -324,7 +367,7 @@ export default function ComoTrabajamosPage() {
           <RevealSection>
             <div className="space-y-5 text-text-light text-base md:text-[17px] leading-relaxed">
               <p>
-                En PropiHouse creemos que las decisiones importantes sobre una vivienda no deberían tomarse con prisas ni con información incompleta. Nuestro trabajo no consiste simplemente en enseñar viviendas o publicarlas en portales.
+                En Propi House creemos que las decisiones importantes sobre una vivienda no deberían tomarse con prisas ni con información incompleta. Nuestro trabajo no consiste simplemente en enseñar viviendas o publicarlas en portales.
               </p>
               <p className="font-medium text-dark">
                 Consiste en analizar cada situación y ayudar a tomar decisiones con sentido desde el principio.
@@ -354,16 +397,13 @@ export default function ComoTrabajamosPage() {
               title="Tres ideas que definen cómo trabajamos"
             />
           </RevealSection>
-          <RevealSection>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-4">
-              {PILLARS.map(({ num, title, body }) => (
-                <div
-                  key={num}
-                  className="relative bg-white rounded-xl p-8 shadow-soft group hover:shadow-elevated transition-all duration-500 hover:-translate-y-1"
-                >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-4">
+            {PILLARS.map(({ num, title, body }, i) => (
+              <RevealSection key={num} delay={120 + i * 140}>
+                <div className="relative bg-white rounded-xl p-8 shadow-soft group hover:shadow-elevated transition-all duration-500 hover:-translate-y-1 h-full">
                   {/* Accent top bar */}
                   <div className="absolute top-0 left-8 right-8 h-[3px] rounded-b-full bg-gradient-to-r from-blue/60 via-olive/40 to-transparent" />
-                  <span className="inline-block font-serif text-3xl font-bold text-cream-dark mb-4">
+                  <span className="inline-block font-serif text-3xl font-bold text-cream-dark mb-4 group-hover:text-blue/70 transition-colors duration-500">
                     {num}
                   </span>
                   <h3 className="font-sans font-bold text-dark text-lg mb-3 leading-snug">
@@ -373,9 +413,9 @@ export default function ComoTrabajamosPage() {
                     {body}
                   </p>
                 </div>
-              ))}
-            </div>
-          </RevealSection>
+              </RevealSection>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -390,7 +430,7 @@ export default function ComoTrabajamosPage() {
           </RevealSection>
 
           {/* Timeline */}
-          <MethodTimeline steps={STEPS} />
+          <MethodTimeline steps={STEPS} color="blue" />
 
           {/* Mid-page CTA */}
           <RevealSection className="text-center mt-16">
@@ -436,29 +476,11 @@ export default function ComoTrabajamosPage() {
           </RevealSection>
 
           <RevealSection>
-            <div className="space-y-5">
-              {DONT_DO.map((item) => (
-                <div
-                  key={item}
-                  className="flex items-start gap-4 bg-white/[0.04] border border-white/[0.06] rounded-xl px-6 py-5 backdrop-blur-sm"
-                >
-                  {/* X icon */}
-                  <div className="flex-shrink-0 w-7 h-7 rounded-full bg-white/[0.06] flex items-center justify-center mt-0.5">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-cream/60">
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                  </div>
-                  <span className="text-white/80 text-sm md:text-base leading-relaxed">
-                    {item}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <DontDoList items={DONT_DO} />
           </RevealSection>
 
           <RevealSection>
-            <p className="text-center text-cream/70 text-base md:text-lg font-serif italic mt-12">
+            <p className="text-center text-cream text-2xl md:text-3xl lg:text-[2rem] font-serif italic mt-16 leading-snug max-w-2xl mx-auto">
               Porque no se trata de hacer más. Se trata de hacer lo que tiene sentido.
             </p>
           </RevealSection>
@@ -475,21 +497,7 @@ export default function ComoTrabajamosPage() {
             />
           </RevealSection>
           <RevealSection>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-              {RECEIVE.map(({ icon, text }) => (
-                <div
-                  key={text}
-                  className="flex items-start gap-4 bg-white rounded-xl p-6 shadow-soft hover:shadow-card transition-shadow duration-400"
-                >
-                  <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-cream flex items-center justify-center text-olive-dark">
-                    {icon}
-                  </div>
-                  <p className="text-dark font-medium text-[15px] leading-snug pt-2">
-                    {text}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <ReceiveGrid items={RECEIVE} />
           </RevealSection>
         </div>
       </section>
@@ -574,7 +582,7 @@ export default function ComoTrabajamosPage() {
             </div>
 
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">
-              Antes de tomar una decisión, conviene entender bien la situación
+              Antes de tomar una decisión, conviene entender bien la{' '}situación
             </h2>
             <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
               Sin compromiso. Analizamos tu caso y vemos qué tiene sentido para ti.

@@ -1,114 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { RevealSection } from '../components/ui'
-
-/* ─── Scroll-Linked Method Timeline ─── */
-function MethodTimeline({
-  steps,
-}: {
-  steps: { step: number; title: string; desc: string }[]
-}) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const dotRefs = useRef<(HTMLDivElement | null)[]>([])
-  const [progress, setProgress] = useState(0)
-  const [reached, setReached] = useState<boolean[]>(() => steps.map(() => false))
-  const rafRef = useRef<number>(0)
-
-  useEffect(() => {
-    const update = () => {
-      const container = containerRef.current
-      if (!container) return
-      const rect = container.getBoundingClientRect()
-      const triggerY = window.innerHeight * 0.55
-      const total = rect.bottom - rect.top
-      const raw = (triggerY - rect.top) / total
-      setProgress(Math.max(0, Math.min(1, raw)))
-
-      const next = dotRefs.current.map((dot) => {
-        if (!dot) return false
-        const r = dot.getBoundingClientRect()
-        return r.top + r.height / 2 <= triggerY
-      })
-      setReached((prev) =>
-        prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next
-      )
-    }
-    const onScroll = () => {
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = requestAnimationFrame(update)
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll, { passive: true })
-    update()
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-      cancelAnimationFrame(rafRef.current)
-    }
-  }, [])
-
-  return (
-    <div ref={containerRef} className="mt-16 md:mt-20 relative">
-      {/* Gray base line */}
-      <div className="absolute left-[19px] md:left-[19px] top-0 bottom-0 w-[2px] bg-[#1A1A1A]/[0.08] rounded-full" />
-
-      {/* Animated filled line */}
-      <div
-        className="absolute left-[19px] md:left-[19px] top-0 w-[2px] rounded-full bg-gradient-to-b from-[#2A79A9] via-[#2A79A9]/85 to-[#868C4D]/40"
-        style={{
-          height: `${progress * 100}%`,
-          transition: 'height 120ms linear',
-          boxShadow: '0 0 12px rgba(42, 121, 169, 0.32)',
-        }}
-      />
-
-      <div className="space-y-12 md:space-y-14">
-        {steps.map((item, i) => {
-          const active = reached[i]
-          return (
-            <div key={item.step} className="relative flex gap-6 md:gap-10">
-              <div className="relative z-10 flex-shrink-0">
-                <div
-                  ref={(el) => { dotRefs.current[i] = el }}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 ${
-                    active
-                      ? 'bg-[#2A79A9] border-2 border-[#2A79A9] scale-110'
-                      : 'bg-[#FDFBF5] border-2 border-[#868C4D]/60'
-                  }`}
-                  style={
-                    active
-                      ? { boxShadow: '0 0 0 6px rgba(42,121,169,0.10), 0 4px 14px rgba(42,121,169,0.22)' }
-                      : undefined
-                  }
-                >
-                  <span
-                    className={`font-[Playfair_Display] text-sm font-bold transition-colors duration-500 ${
-                      active ? 'text-white' : 'text-[#868C4D]'
-                    }`}
-                  >
-                    {item.step}
-                  </span>
-                </div>
-              </div>
-              <div
-                className={`pt-1 pb-2 transition-all duration-500 ${
-                  active ? 'opacity-100 translate-x-0' : 'opacity-60 -translate-x-1'
-                }`}
-              >
-                <h3 className="font-[Playfair_Display] text-xl md:text-2xl text-[#1A1A1A] mb-3">
-                  {item.title}
-                </h3>
-                <p className="text-base leading-[1.75] text-[#1A1A1A]/60 max-w-lg">
-                  {item.desc}
-                </p>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
+import { MethodTimeline, RevealSection } from '../components/ui'
 
 /* ═══════════════════════════════════════════════════════════════
    ComprarPage
@@ -146,10 +38,10 @@ function SectionDivider() {
 
 export default function ComprarPage() {
   useEffect(() => {
-    document.title = "Comprar vivienda en L'Hospitalet de Llobregat — PropiHouse"
+    document.title = "Comprar vivienda en L'Hospitalet de Llobregat — Propi House"
     const meta = document.querySelector('meta[name="description"]')
     if (meta) meta.setAttribute('content', 'Te ayudamos a comprar vivienda en L\'Hospitalet con criterio. Analizamos tu situación, tu presupuesto y te acompañamos en cada paso.')
-    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+    return () => { document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat" }
   }, [])
 
   return (
@@ -192,25 +84,22 @@ export default function ComprarPage() {
             </p>
           </RevealSection>
 
-          {/* Three key questions */}
-          <RevealSection delay={260} className="mt-16">
-            <div className="grid gap-6 sm:grid-cols-3">
-              {[
+          {/* Three key questions — staggered bottom-up reveal */}
+          <div className="mt-16 grid gap-6 sm:grid-cols-3">
+            {[
                 'Qu\u00e9 tipo de vivienda encaja contigo',
                 'Qu\u00e9 presupuesto tiene sentido',
                 'Qu\u00e9 decisiones son realmente importantes',
-              ].map((q, i) => (
-                <div
-                  key={i}
-                  className="relative pl-5 border-l-2 border-[#868C4D]/30"
-                >
+            ].map((q, i) => (
+              <RevealSection key={i} delay={260 + i * 140}>
+                <div className="relative pl-5 border-l-2 border-[#868C4D]/30">
                   <p className="font-[Playfair_Display] text-base md:text-lg text-[#1A1A1A]/80 leading-snug">
                     {q}
                   </p>
                 </div>
-              ))}
-            </div>
-          </RevealSection>
+              </RevealSection>
+            ))}
+          </div>
 
           <RevealSection delay={340} className="mt-14">
             <p className="text-base leading-[1.8] text-[#1A1A1A]/55 max-w-2xl italic">
@@ -254,10 +143,23 @@ export default function ComprarPage() {
               <RevealSection delay={200} className="mt-8">
                 <Link
                   to="/guia/errores-comprar-vivienda"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#2A79A9] hover:text-[#2A79A9]/80 transition-colors group"
+                  className="group inline-flex items-center gap-3 bg-white hover:bg-[#2A79A9]/[0.06] border border-[#2A79A9]/20 hover:border-[#2A79A9]/45 rounded-xl px-5 py-3.5 transition-all duration-300 hover:shadow-sm"
                 >
-                  Errores habituales al comprar
-                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                  <span className="flex-shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-lg bg-[#2A79A9]/[0.08] group-hover:bg-white text-[#2A79A9] transition-colors">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                    </svg>
+                  </span>
+                  <span className="flex flex-col text-left">
+                    <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-[#2A79A9]/70">
+                      Gu&iacute;a inmobiliaria
+                    </span>
+                    <span className="text-sm font-semibold text-[#1A1A1A] group-hover:text-[#2A79A9] transition-colors">
+                      Errores habituales al comprar
+                    </span>
+                  </span>
+                  <ArrowRight className="w-3.5 h-3.5 ml-1 text-[#2A79A9] transition-transform group-hover:translate-x-1" />
                 </Link>
               </RevealSection>
             </div>
@@ -287,25 +189,25 @@ export default function ComprarPage() {
                 ].map((sym, i) => (
                   <RevealSection key={sym.n} delay={120 + i * 80}>
                     <div
-                      className="group relative flex gap-5 md:gap-6 bg-white/70 backdrop-blur-sm border border-[#1A1A1A]/[0.07] rounded-xl p-5 md:p-6 hover:bg-white hover:border-[#1A1A1A]/[0.12] transition-all duration-500"
+                      className="group relative flex gap-5 md:gap-6 bg-white/70 backdrop-blur-sm border border-[#1A1A1A]/[0.07] rounded-xl p-5 md:p-6 hover:bg-[#2A79A9]/[0.08] hover:border-[#2A79A9]/30 transition-all duration-500"
                       style={{ marginLeft: `${i * 12}px` }}
                     >
                       {/* Index */}
                       <div className="flex-shrink-0">
-                        <div className="w-10 h-10 md:w-11 md:h-11 rounded-lg bg-[#2A79A9]/[0.06] border border-[#2A79A9]/20 flex items-center justify-center group-hover:bg-[#2A79A9]/[0.12] transition-colors">
+                        <div className="w-10 h-10 md:w-11 md:h-11 rounded-lg bg-[#2A79A9]/[0.06] border border-[#2A79A9]/20 flex items-center justify-center group-hover:bg-white group-hover:border-[#2A79A9]/50 group-hover:shadow-sm transition-all duration-500">
                           <span className="font-[Playfair_Display] text-sm md:text-base text-[#2A79A9]">
                             {sym.n}
                           </span>
                         </div>
                       </div>
                       {/* Body */}
-                      <p className="pt-1.5 md:pt-2 text-base md:text-[1.05rem] leading-[1.6] text-[#1A1A1A]/70">
+                      <p className="pt-1.5 md:pt-2 text-base md:text-[1.05rem] leading-[1.6] text-[#1A1A1A]/70 group-hover:text-[#1A1A1A]/85 transition-colors duration-500">
                         {sym.text}
                       </p>
                       {/* Right edge accent */}
                       <span
                         aria-hidden
-                        className="absolute top-1/2 -translate-y-1/2 right-0 h-8 w-[3px] rounded-l-full bg-[#2A79A9]/0 group-hover:bg-[#2A79A9]/40 transition-colors duration-500"
+                        className="absolute top-1/2 -translate-y-1/2 right-0 h-8 w-[3px] rounded-l-full bg-[#2A79A9]/0 group-hover:bg-[#2A79A9]/60 transition-colors duration-500"
                       />
                     </div>
                   </RevealSection>
@@ -369,10 +271,23 @@ export default function ComprarPage() {
           <RevealSection delay={200} className="mt-12">
             <Link
               to="/guia/cuanto-dinero-comprar-vivienda"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#2A79A9] hover:text-[#2A79A9]/80 transition-colors group"
+              className="group inline-flex items-center gap-3 bg-white hover:bg-[#2A79A9]/[0.06] border border-[#2A79A9]/20 hover:border-[#2A79A9]/45 rounded-xl px-5 py-3.5 transition-all duration-300 hover:shadow-sm"
             >
-              Cu&aacute;nto dinero necesitas para comprar
-              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+              <span className="flex-shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-lg bg-[#2A79A9]/[0.08] group-hover:bg-white text-[#2A79A9] transition-colors">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                </svg>
+              </span>
+              <span className="flex flex-col text-left">
+                <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-[#2A79A9]/70">
+                  Gu&iacute;a inmobiliaria
+                </span>
+                <span className="text-sm font-semibold text-[#1A1A1A] group-hover:text-[#2A79A9] transition-colors">
+                  Cu&aacute;nto dinero necesitas para comprar
+                </span>
+              </span>
+              <ArrowRight className="w-3.5 h-3.5 ml-1 text-[#2A79A9] transition-transform group-hover:translate-x-1" />
             </Link>
           </RevealSection>
 
@@ -425,13 +340,20 @@ export default function ComprarPage() {
                   desc: 'No solo tus ingresos actuales, sino la solidez de tu situaci\u00f3n a medio y largo plazo.',
                 },
               ].map((item, i) => (
-                <div key={i} className="flex items-start gap-4">
-                  <span className="mt-1.5 flex-shrink-0 block w-2 h-2 rounded-full border-2 border-[#868C4D]/50" />
+                <div
+                  key={i}
+                  className="group relative flex items-start gap-4 rounded-xl p-4 -mx-4 transition-all duration-500 hover:bg-[#2A79A9]/[0.06]"
+                >
+                  <span
+                    aria-hidden
+                    className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full bg-[#2A79A9]/0 group-hover:bg-[#2A79A9]/70 transition-all duration-500 scale-y-50 group-hover:scale-y-100 origin-center"
+                  />
+                  <span className="mt-1.5 flex-shrink-0 block w-2 h-2 rounded-full border-2 border-[#868C4D]/50 group-hover:border-[#2A79A9] group-hover:bg-[#2A79A9]/30 transition-colors duration-500" />
                   <div>
                     <h4 className="font-semibold text-[#1A1A1A] text-base mb-1">
                       {item.title}
                     </h4>
-                    <p className="text-sm leading-[1.7] text-[#1A1A1A]/55">
+                    <p className="text-sm leading-[1.7] text-[#1A1A1A]/55 group-hover:text-[#1A1A1A]/80 transition-colors duration-500">
                       {item.desc}
                     </p>
                   </div>
@@ -493,12 +415,12 @@ export default function ComprarPage() {
                 </span>
                 <div className="relative pl-6 border-l-2 border-[#2A79A9]/40">
                   <p className="font-[Playfair_Display] text-lg md:text-xl leading-[1.55] italic text-[#1A1A1A]/85">
-                    En PropiHouse, no empezamos ense&ntilde;ando pisos. Empezamos entendiendo a la persona. Su momento vital, sus posibilidades reales y lo que necesita de verdad. A partir de ah&iacute;, todo tiene m&aacute;s sentido.
+                    En Propi House, no empezamos ense&ntilde;ando pisos. Empezamos entendiendo a la persona. Su momento vital, sus posibilidades reales y lo que necesita de verdad. A partir de ah&iacute;, todo tiene m&aacute;s sentido.
                   </p>
                   <div className="mt-4 flex items-center gap-3">
                     <span className="block w-8 h-px bg-[#2A79A9]/50" />
                     <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[#1A1A1A]/40">
-                      PropiHouse
+                      Propi House
                     </span>
                   </div>
                 </div>
@@ -530,29 +452,30 @@ export default function ComprarPage() {
           </RevealSection>
 
           <MethodTimeline
+            color="blue"
             steps={[
               {
-                step: 1,
+                num: '01',
                 title: 'Entender tu situaci\u00f3n',
                 desc: 'Escuchamos tu momento vital, tus necesidades y tus dudas. Sin prisa, sin compromiso. El objetivo es tener una foto clara de d\u00f3nde est\u00e1s y hacia d\u00f3nde quieres ir.',
               },
               {
-                step: 2,
+                num: '02',
                 title: 'Definir un marco claro',
                 desc: 'Trabajamos juntos para establecer un presupuesto realista, prioridades claras y criterios de b\u00fasqueda que tengan sentido con tu situaci\u00f3n.',
               },
               {
-                step: 3,
+                num: '03',
                 title: 'Filtrar y enfocar la b\u00fasqueda',
                 desc: 'En lugar de visitar decenas de viviendas, seleccionamos las que realmente encajan. Cada visita tiene un prop\u00f3sito claro.',
               },
               {
-                step: 4,
+                num: '04',
                 title: 'Analizar cada oportunidad',
                 desc: 'Estudiamos cada vivienda con criterio: estado real, posibilidades de reforma, valoraci\u00f3n de mercado y condiciones de la operaci\u00f3n.',
               },
               {
-                step: 5,
+                num: '05',
                 title: 'Acompa\u00f1ar la decisi\u00f3n',
                 desc: 'Negociaci\u00f3n, financiaci\u00f3n, documentaci\u00f3n legal y cierre. Te acompa\u00f1amos en cada paso hasta que las llaves est\u00e9n en tu mano.',
               },
@@ -699,7 +622,7 @@ export default function ComprarPage() {
             </div>
 
             <p className="text-white/35 text-sm mt-8">
-              Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
+              Escríbenos y te contactaremos en 24-48h.
             </p>
           </RevealSection>
         </div>

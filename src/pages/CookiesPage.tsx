@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 
 export default function CookiesPage() {
   useEffect(() => {
-    document.title = "Política de Cookies — PropiHouse"
+    document.title = "Política de Cookies — Propi House"
     const meta = document.querySelector('meta[name="description"]')
-    if (meta) meta.setAttribute('content', 'Política de cookies de PropiHouse. Información sobre las cookies que utilizamos y cómo gestionarlas.')
+    if (meta) meta.setAttribute('content', 'Política de cookies de Propi House. Información sobre las cookies que utilizamos y cómo gestionarlas.')
   }, [])
 
   return (
@@ -67,7 +67,7 @@ export default function CookiesPage() {
 
             <h2 className="font-serif text-xl font-medium text-dark mt-10 mb-4">5. Actualización de esta política</h2>
             <p className="text-text-light text-base leading-[1.8]">
-              PropiHouse se reserva el derecho de actualizar esta política de cookies en cualquier momento, por ejemplo, si se incorporan nuevas funcionalidades o herramientas de análisis al sitio web. Le recomendamos revisarla periódicamente para estar informado sobre cómo utilizamos las cookies.
+              Propi House se reserva el derecho de actualizar esta política de cookies en cualquier momento, por ejemplo, si se incorporan nuevas funcionalidades o herramientas de análisis al sitio web. Le recomendamos revisarla periódicamente para estar informado sobre cómo utilizamos las cookies.
             </p>
             <p className="text-text-light text-base leading-[1.8]">
               Para más información sobre el tratamiento de sus datos personales, puede consultar nuestra <Link to="/privacidad" className="text-blue underline hover:text-blue/80">Política de Privacidad</Link>.

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { RevealSection } from '../components/ui'
+import { MethodTimeline, RevealSection } from '../components/ui'
 
 /* ═══════════════════════════════════════════════════════════════
    VenderPage
@@ -34,99 +34,62 @@ function SectionDivider() {
   )
 }
 
-/* ── Method timeline with scroll animation ───────────────────── */
+/* ── Scroll-triggered strike-through grid ─────────────────────── */
 
-function MethodTimeline({ steps }: { steps: { step: number; title: string; desc: string }[] }) {
+function StrikeGrid({ steps }: { steps: { n: string; label: string }[] }) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const dotRefs = useRef<(HTMLDivElement | null)[]>([])
-  const [progress, setProgress] = useState(0)
-  const [reached, setReached] = useState<boolean[]>(() => steps.map(() => false))
-  const rafRef = useRef<number>(0)
+  const [active, setActive] = useState<boolean[]>(() => steps.map(() => false))
 
   useEffect(() => {
     const update = () => {
       const container = containerRef.current
       if (!container) return
-      const rect = container.getBoundingClientRect()
-      const triggerY = window.innerHeight * 0.55
-      const raw = (triggerY - rect.top) / (rect.bottom - rect.top)
-      setProgress(Math.max(0, Math.min(1, raw)))
-      const next = dotRefs.current.map((dot) => {
-        if (!dot) return false
-        const r = dot.getBoundingClientRect()
-        return r.top + r.height / 2 <= triggerY
-      })
-      setReached((prev) =>
+      const cards = Array.from(container.querySelectorAll('[data-strike-card]')) as HTMLElement[]
+      const triggerY = window.innerHeight * 0.75
+      const next = cards.map((c) => c.getBoundingClientRect().top <= triggerY)
+      setActive((prev) =>
         prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next
       )
     }
-    const onScroll = () => {
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = requestAnimationFrame(update)
-    }
+    let raf = 0
+    const onScroll = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(update) }
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll, { passive: true })
     update()
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
-      cancelAnimationFrame(rafRef.current)
+      cancelAnimationFrame(raf)
     }
   }, [])
 
   return (
-    <div ref={containerRef} className="relative mt-16 md:mt-20">
-      {/* Gray base line */}
-      <div
-        aria-hidden
-        className="absolute left-[19px] md:left-[19px] top-0 bottom-0 w-px bg-[#1A1A1A]/10"
-      />
-      {/* Animated olive gradient line */}
-      <div
-        aria-hidden
-        className="absolute left-[19px] md:left-[19px] top-0 w-px bg-gradient-to-b from-[#868C4D] via-[#868C4D]/85 to-[#868C4D]/40 origin-top transition-none"
-        style={{ height: `${progress * 100}%` }}
-      />
-
-      {steps.map((item, i) => {
-        const active = reached[i]
-        return (
-          <div key={item.step} className="flex gap-6 md:gap-10 pb-14 last:pb-0">
-            {/* Dot */}
-            <div className="flex flex-col items-center flex-shrink-0 z-10">
-              <div
-                ref={(el) => { dotRefs.current[i] = el }}
-                className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
-                  active
-                    ? 'bg-[#868C4D] border-[#868C4D]'
-                    : 'bg-[#FDFBF5] border-[#868C4D]/40'
-                }`}
-              >
-                <span
-                  className={`font-[Playfair_Display] text-sm transition-colors duration-500 ${
-                    active ? 'text-white' : 'text-[#868C4D]'
-                  }`}
-                >
-                  {item.step}
-                </span>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div
-              className="pt-1.5 transition-opacity duration-700"
-              style={{ opacity: active ? 1 : 0.6 }}
+    <div ref={containerRef} className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+      {steps.map((step, i) => (
+        <div key={step.n} className="relative" data-strike-card>
+          <div className="relative bg-white/70 border border-[#1A1A1A]/[0.08] rounded-lg p-5 md:p-6 backdrop-blur-sm min-h-[120px] flex flex-col justify-center items-center text-center">
+            <span
+              aria-hidden
+              className="absolute left-[8%] right-[8%] top-1/2 h-px bg-[#1A1A1A]/35 origin-left"
+              style={{
+                transform: `translateY(-50%) rotate(-8deg) scaleX(${active[i] ? 1 : 0})`,
+                transition: `transform 700ms cubic-bezier(0.16,1,0.3,1) ${i * 120}ms`,
+              }}
+            />
+            <span className="font-[Playfair_Display] text-xs text-[#1A1A1A]/30 mb-2 block">
+              {step.n}
+            </span>
+            <p
+              className={`text-sm font-medium transition-colors duration-500 ${
+                active[i] ? 'text-[#1A1A1A]/45' : 'text-[#1A1A1A]/75'
+              }`}
+              style={{ transitionDelay: `${i * 120}ms` }}
             >
-              <h3 className="font-[Playfair_Display] text-xl md:text-2xl text-[#1A1A1A] mb-3">
-                {item.title}
-              </h3>
-              <p className="text-base leading-[1.75] text-[#1A1A1A]/60 max-w-lg">
-                {item.desc}
-              </p>
-            </div>
+              {step.label}
+            </p>
           </div>
-        )
-      })}
+        </div>
+      ))}
     </div>
   )
 }
@@ -135,10 +98,10 @@ function MethodTimeline({ steps }: { steps: { step: number; title: string; desc:
 
 export default function VenderPage() {
   useEffect(() => {
-    document.title = "Vender vivienda en L'Hospitalet de Llobregat — PropiHouse"
+    document.title = "Vender vivienda en L'Hospitalet de Llobregat — Propi House"
     const meta = document.querySelector('meta[name="description"]')
     if (meta) meta.setAttribute('content', 'Vende tu vivienda en L\'Hospitalet con una estrategia clara. Valoración, preparación y acompañamiento profesional.')
-    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+    return () => { document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat" }
   }, [])
 
   return (
@@ -216,39 +179,14 @@ export default function VenderPage() {
               Lo habitual / lo que solemos ver
             </p>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-              {[
+            <StrikeGrid
+              steps={[
                 { n: '01', label: 'No entender la vivienda' },
                 { n: '02', label: 'Prometer muchas visitas' },
                 { n: '03', label: 'Esperar que llamen' },
                 { n: '04', label: 'No conocer al comprador' },
-              ].map((step, i) => (
-                <div key={step.n} className="relative">
-                  <div className="relative bg-white/70 border border-[#1A1A1A]/[0.08] rounded-lg p-4 md:p-5 backdrop-blur-sm">
-                    {/* Diagonal strike-through line */}
-                    <div
-                      aria-hidden
-                      className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden rounded-lg"
-                    >
-                      <div className="w-[150%] h-px bg-[#1A1A1A]/15 -rotate-[10deg]" />
-                    </div>
-                    <span className="font-[Playfair_Display] text-xs text-[#1A1A1A]/30">
-                      {step.n}
-                    </span>
-                    <p className="mt-2 text-sm font-medium text-[#1A1A1A]/55 line-through decoration-[#1A1A1A]/25 decoration-1">
-                      {step.label}
-                    </p>
-                  </div>
-
-                  {/* Arrow connector (hidden on last) */}
-                  {i < 3 && (
-                    <div className="hidden md:flex absolute left-full top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 items-center justify-center">
-                      <ArrowRight className="w-3 h-3 text-[#1A1A1A]/30" />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+              ]}
+            />
           </RevealSection>
 
           {/* Body text in editorial layout */}
@@ -297,24 +235,21 @@ export default function VenderPage() {
             </p>
           </RevealSection>
 
-          <RevealSection delay={180} className="mt-10">
-            <div className="grid gap-4 sm:grid-cols-2">
-              {[
-                'El estado del inmueble',
-                'La demanda en el barrio',
-                'El tipo de comprador que puede encajar',
-                'El momento del mercado inmobiliario',
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-4 bg-white/70 border border-[#1A1A1A]/[0.08] rounded-lg p-5 backdrop-blur-sm"
-                >
-                  <span className="flex-shrink-0 w-2 h-2 rounded-full bg-[#868C4D]/50" />
-                  <p className="text-sm md:text-base font-medium text-[#1A1A1A]/70">{item}</p>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {[
+              'El estado del inmueble',
+              'La demanda en el barrio',
+              'El tipo de comprador que puede encajar',
+              'El momento del mercado inmobiliario',
+            ].map((item, i) => (
+              <RevealSection key={i} delay={180 + i * 110}>
+                <div className="group flex items-center gap-4 bg-white/70 border border-[#1A1A1A]/[0.08] rounded-lg p-5 backdrop-blur-sm transition-all duration-500 hover:bg-white hover:border-[#868C4D]/35 hover:shadow-[0_6px_24px_-10px_rgba(134,140,77,0.25)] hover:-translate-y-0.5">
+                  <span className="flex-shrink-0 w-2 h-2 rounded-full bg-[#868C4D]/50 group-hover:bg-[#868C4D] transition-colors" />
+                  <p className="text-sm md:text-base font-medium text-[#1A1A1A]/70 group-hover:text-[#1A1A1A]/90 transition-colors">{item}</p>
                 </div>
-              ))}
-            </div>
-          </RevealSection>
+              </RevealSection>
+            ))}
+          </div>
 
           <RevealSection delay={240} className="mt-10">
             <p className="text-base md:text-lg leading-[1.8] text-[#1A1A1A]/60 max-w-2xl">
@@ -484,7 +419,7 @@ export default function VenderPage() {
           </RevealSection>
 
           <RevealSection delay={180} className="mt-14">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2 [&>div]:transition-all [&>div]:duration-500 [&>div:hover]:bg-white [&>div:hover]:border-[#868C4D]/35 [&>div:hover]:shadow-[0_6px_24px_-10px_rgba(134,140,77,0.25)] [&>div:hover]:-translate-y-0.5">
               {[
                 'C\u00f3mo se percibe la vivienda en el mercado',
                 'Qu\u00e9 tipo de comprador puede encajar',
@@ -527,24 +462,25 @@ export default function VenderPage() {
           </RevealSection>
 
           <MethodTimeline
+            color="olive"
             steps={[
               {
-                step: 1,
+                num: '01',
                 title: 'Entender la situaci\u00f3n',
                 desc: 'Antes de hablar de precios, analizamos el contexto del propietario, su momento personal y el objetivo real de la operaci\u00f3n. No todas las decisiones pasan por vender inmediatamente. A veces lo importante es entender qu\u00e9 opciones existen y cu\u00e1l tiene m\u00e1s sentido.',
               },
               {
-                step: 2,
+                num: '02',
                 title: 'Analizar la vivienda y el mercado',
                 desc: "Estudiamos el valor real del inmueble, la demanda en L'Hospitalet de Llobregat y c\u00f3mo encaja la vivienda dentro del mercado actual. Tambi\u00e9n analizamos c\u00f3mo se percibe la vivienda y qu\u00e9 aspectos pueden trabajarse para que el comprador entienda mejor su potencial.",
               },
               {
-                step: 3,
+                num: '03',
                 title: 'Dise\u00f1ar la estrategia de venta',
                 desc: 'Definimos el posicionamiento, el precio y el tipo de comprador que puede encajar. Cuando tiene sentido, planteamos mejoras en la vivienda \u2014desde peque\u00f1os ajustes hasta una adecuaci\u00f3n m\u00e1s completa\u2014 para aumentar su atractivo y facilitar la decisi\u00f3n del comprador. No se trata de ocultar lo que no gusta, sino de entenderlo y saber c\u00f3mo trabajarlo.',
               },
               {
-                step: 4,
+                num: '04',
                 title: 'Acompa\u00f1ar todo el proceso',
                 desc: 'Acompa\u00f1amos al propietario durante todo el proceso con comunicaci\u00f3n constante y criterio en cada decisi\u00f3n. Analizamos cada visita, interpretamos la informaci\u00f3n del mercado y ajustamos la estrategia cuando es necesario. Porque vender una vivienda no es solo recibir ofertas, es saber leer lo que est\u00e1 pasando para tomar mejores decisiones.',
               },
@@ -559,21 +495,19 @@ export default function VenderPage() {
       <section className="bg-[#EFE8CD]/40">
         <div className="max-w-5xl mx-auto px-6 py-24 md:py-32">
           <RevealSection>
-            <div className="flex items-end justify-between gap-6 mb-12 md:mb-14 flex-wrap">
-              <div>
-                <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#868C4D] mb-5">
-                  Gu&iacute;a
-                </span>
-                <h2 className="font-[Playfair_Display] text-[clamp(1.85rem,4.2vw,2.85rem)] font-normal leading-[1.15] tracking-[-0.015em] text-[#1A1A1A] max-w-2xl">
-                  Entender el mercado antes de vender
-                </h2>
-              </div>
+            <div className="mb-12 md:mb-14">
+              <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#868C4D] mb-5">
+                Gu&iacute;a
+              </span>
+              <h2 className="font-[Playfair_Display] text-[clamp(1.85rem,4.2vw,2.85rem)] font-normal leading-[1.15] tracking-[-0.015em] text-[#1A1A1A] max-w-2xl">
+                Entender el mercado antes de vender
+              </h2>
               <Link
                 to="/guia"
-                className="group inline-flex items-center gap-2 text-sm font-semibold text-[#868C4D] hover:text-[#868C4D]/80 transition-colors whitespace-nowrap pb-2"
+                className="group inline-flex items-center gap-2.5 mt-7 bg-[#868C4D] hover:bg-[#767D42] text-white px-6 py-3 rounded-lg text-sm font-semibold tracking-wide transition-all hover:shadow-lg hover:shadow-[#868C4D]/15 active:scale-[0.98]"
               >
                 Ir a la gu&iacute;a inmobiliaria
-                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
           </RevealSection>
@@ -666,10 +600,10 @@ export default function VenderPage() {
             </div>
 
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">
-              Antes de vender, conviene entender bien la situación
+              Antes de vender, conviene entender bien la{' '}situación
             </h2>
             <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-              Sin compromiso, sin prisa. Solo una conversación para entender tu momento y diseñar el mejor plan para tu vivienda.
+              Una conversación para entender tu momento y diseñar el mejor plan para tu vivienda. Sin compromiso, sin prisa.
             </p>
 
             {/* Two buttons */}
@@ -693,7 +627,7 @@ export default function VenderPage() {
             </div>
 
             <p className="text-white/35 text-sm mt-8">
-              Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
+              Escríbenos y te contactaremos en 24-48h.
             </p>
           </RevealSection>
         </div>

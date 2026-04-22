@@ -3,10 +3,10 @@ import { EntenderSituacionForm } from '../components/EntenderSituacionForm'
 
 export default function EntenderSituacionPage() {
   useEffect(() => {
-    document.title = "Entender mi situación inmobiliaria — PropiHouse"
+    document.title = "Entender mi situación inmobiliaria — Propi House"
     const meta = document.querySelector('meta[name="description"]')
     if (meta) meta.setAttribute('content', 'Cuéntanos tu situación y te ayudaremos a tomar decisiones inmobiliarias con criterio. Sin compromiso.')
-    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+    return () => { document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat" }
   }, [])
 
   return (

@@ -8,7 +8,7 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <img
               src="/logos/logo.png"
-              alt="PropiHouse"
+              alt="Propi House"
               className="h-20 w-auto mb-4" loading="lazy"
             />
             <p className="text-sm leading-relaxed text-white/50 mb-2">
@@ -104,7 +104,7 @@ export default function Footer() {
 
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="text-xs text-white/40">&copy; 2026 PropiHouse. Todos los derechos reservados.</span>
+          <span className="text-xs text-white/40">&copy; 2026 Propi House. Todos los derechos reservados.</span>
           <div className="flex gap-6 text-xs text-white/40">
             <Link to="/privacidad" className="hover:text-white/70 transition-colors">Privacidad</Link>
             <Link to="/aviso-legal" className="hover:text-white/70 transition-colors">Aviso legal</Link>

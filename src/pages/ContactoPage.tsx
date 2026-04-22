@@ -3,10 +3,10 @@ import { RevealSection, SectionHeading } from '../components/ui'
 
 export default function ContactoPage() {
   useEffect(() => {
-    document.title = "Contacto — PropiHouse"
+    document.title = "Contacto — Propi House"
     const meta = document.querySelector('meta[name="description"]')
-    if (meta) meta.setAttribute('content', 'Contacta con PropiHouse en L\'Hospitalet de Llobregat. Estamos en Carrer d\'Enric Prat de la Riba, 187.')
-    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+    if (meta) meta.setAttribute('content', 'Contacta con Propi House en L\'Hospitalet de Llobregat. Estamos en Carrer d\'Enric Prat de la Riba, 187.')
+    return () => { document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat" }
   }, [])
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '', service: '' })
   const [sent, setSent] = useState(false)
@@ -84,7 +84,7 @@ export default function ContactoPage() {
               </RevealSection>
               <RevealSection>
                 <div className="rounded-xl overflow-hidden shadow-soft h-64">
-                  <iframe title="PropiHouse" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2995.5!2d2.099!3d41.359!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z!5e0!3m2!1ses!2ses!4v1" width="100%" height="100%" style={{border:0}} allowFullScreen loading="lazy" />
+                  <iframe title="Propi House" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2995.5!2d2.099!3d41.359!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z!5e0!3m2!1ses!2ses!4v1" width="100%" height="100%" style={{border:0}} allowFullScreen loading="lazy" />
                 </div>
               </RevealSection>
             </div>

@@ -224,22 +224,25 @@ function HeroScrollVideo() {
                 className="inline-block text-cream/80 text-xs font-bold tracking-[0.25em] uppercase mb-6 animate-fade-up"
                 style={{ animationDelay: '0.1s' }}
               >
-                Inmobiliaria en L'Hospitalet de Llobregat
+                Tu refugio inmobiliario
               </span>
 
               <h1
                 className="font-serif text-[2rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] font-medium text-white leading-[1.15] mb-7 animate-fade-up"
                 style={{ animationDelay: '0.25s' }}
               >
-                Entender bien tu situación es el primer paso para{' '}
-                <em className="italic text-cream">decidir con criterio</em>
+                Entender bien tu situación es el primer paso
+                <br />
+                para <em className="italic text-cream">decidir con criterio</em>
               </h1>
 
               <p
                 className="text-white/65 text-lg md:text-xl leading-relaxed mb-10 max-w-xl animate-fade-up"
                 style={{ animationDelay: '0.4s' }}
               >
-                En PropiHouse te ayudamos a tomar decisiones inmobiliarias con claridad en L'Hospitalet de Llobregat.
+                En Propi House te ayudamos a tomar decisiones inmobiliarias
+                <br className="hidden md:inline" />
+                {' '}con claridad en L'Hospitalet de Llobregat.
               </p>
 
               <div className="flex flex-wrap gap-4 animate-fade-up" style={{ animationDelay: '0.55s' }}>
@@ -319,25 +322,25 @@ function HeroScrollVideo() {
 const SERVICES = [
   {
     title: 'Comprar',
-    description: 'Te ayudamos a encontrar la propiedad ideal. Analizamos tu situación, filtramos opciones reales y te acompañamos hasta la entrega de llaves.',
+    description: 'Te ayudamos a encontrar la propiedad ideal. Analizamos tu situación, filtramos opciones reales y te acompañamos hasta la entrega de llaves.',
     link: '/comprar',
     icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
   },
   {
     title: 'Vender',
-    description: 'Valoramos tu propiedad, diseñamos una estrategia de venta personalizada y gestiónamos todo el proceso por ti.',
+    description: 'Valoramos tu propiedad, diseñamos una estrategia de venta personalizada y gestiónamos todo el proceso por ti.',
     link: '/vender',
     icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
   },
   {
     title: 'Alquilar',
-    description: 'Gestionamos tu alquiler con criterio. Desde encontrar inquilino hasta la firma del contrato y el seguimiento posterior.',
+    description: 'Gestionamos tu alquiler con criterio. Desde encontrar inquilino hasta la firma del contrato y el seguimiento posterior.',
     link: '/alquilar',
     icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
   },
   {
     title: 'Financiar',
-    description: 'Te ayudamos a entender tu capacidad real y a encontrar la financiación que tiene sentido para tu situación.',
+    description: 'Te ayudamos a entender tu capacidad real y a encontrar la financiación que tiene sentido para tu situación.',
     link: '/financiar',
     icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 17a5 5 0 0 0 10 0c0-2.76-2.5-5-5-8-2.5 3-5 5.24-5 8Z"/><path d="M12 17a5 5 0 0 0 10 0c0-2.76-2.5-5-5-8-2.5 3-5 5.24-5 8Z"/></svg>,
   },
@@ -345,16 +348,16 @@ const SERVICES = [
 
 /* ─── Review Data ─── */
 const REVIEWS = [
-  { name: 'Maria Garcia', text: 'Desde el primer momento nos sentimos acompañados. Encontramos nuestro piso ideal en menos de un mes. Un trato increíblemente cercano y profesional.', image: '/reviews/2026-02-04.webp' },
-  { name: 'Carlos Rodriguez', text: 'Vendimos nuestro piso con PropiHouse y el proceso fue impecable. Nos guiaron en cada paso y consiguieron un precio por encima de lo esperado.', image: '/reviews/2026-02-04 (1).webp' },
-  { name: 'Ana Martinez', text: 'Buscabamos alquiler y pensábamos que seria imposible. PropiHouse nos encontro una opción perfecta en nuestra zona preferida. Muy agradecidos.', image: '/reviews/2026-02-04 (2).webp' },
-  { name: 'Jordi Puig', text: 'El equipo financiero nos ayudo a conseguir la mejor hipoteca. Sin ellos, no habríamos podido comprar nuestra primera vivienda. Totalmente recomendable.', image: '/reviews/2026-02-04 (3).webp' },
+  { name: 'María García', text: 'Desde el primer momento nos sentimos acompañados. Encontramos nuestro piso ideal en menos de un mes. Un trato increíblemente cercano y profesional.', image: '/reviews/2026-02-04.webp' },
+  { name: 'Carlos Rodríguez', text: 'Vendimos nuestro piso con Propi House y el proceso fue impecable. Nos guiaron en cada paso y consiguieron un precio por encima de lo esperado.', image: '/reviews/2026-02-04 (1).webp' },
+  { name: 'Ana Martínez', text: 'Buscábamos alquiler y pensábamos que sería imposible. Propi House nos encontró una opción perfecta en nuestra zona preferida. Muy agradecidos.', image: '/reviews/2026-02-04 (2).webp' },
+  { name: 'Jordi Puig', text: 'El equipo financiero nos ayudó a conseguir la mejor hipoteca. Sin ellos, no habríamos podido comprar nuestra primera vivienda. Totalmente recomendable.', image: '/reviews/2026-02-04 (3).webp' },
 ]
 
 /* ─── HomePage ─── */
 export default function HomePage() {
   useEffect(() => {
-    document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat"
+    document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat"
     const meta = document.querySelector('meta[name="description"]')
     if (meta) meta.setAttribute('content', "Tu inmobiliaria de confianza en L'Hospitalet de Llobregat. Entender bien tu situación es el primer paso para tomar decisiones inmobiliarias con criterio.")
     // JSON-LD structured data
@@ -364,7 +367,7 @@ export default function HomePage() {
     script.text = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "RealEstateAgent",
-      "name": "PropiHouse",
+      "name": "Propi House",
       "url": "https://www.propihouse.es",
       "telephone": "+34637863678",
       "email": "hola@propihouse.es",
@@ -395,7 +398,13 @@ export default function HomePage() {
             <SectionHeading
               eyebrow="Nuestros servicios"
               title="Te acompañamos en cada decisión"
-              subtitle="Comprar, vender, alquilar o financiar. Sea cual sea tu situación, estamos aquí para ayudarte a entenderla y actuar con criterio."
+              subtitle={
+                <>
+                  Comprar, vender, alquilar o financiar. Sea cual sea tu situación,
+                  <br className="hidden md:inline" />
+                  {' '}estamos aquí para ayudarte a entenderla y actuar con criterio.
+                </>
+              }
             />
           </RevealSection>
           <RevealSection>
@@ -411,9 +420,9 @@ export default function HomePage() {
                   </div>
                   <h3 className="font-serif text-xl font-semibold text-dark group-hover:text-olive-dark transition-colors duration-300">{service.title}</h3>
                   <p className="text-text-light text-[15px] leading-relaxed flex-1">{service.description}</p>
-                  <span className="inline-flex items-center gap-2 text-olive-dark font-bold text-sm group-hover:gap-3 transition-all duration-300">
-                    Saber mas
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  <span className="inline-flex items-center gap-2 text-olive-dark font-bold text-xs tracking-[0.15em] uppercase group-hover:gap-3 transition-all duration-300">
+                    Saber más
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                   </span>
                 </Link>
               ))}
@@ -533,7 +542,7 @@ export default function HomePage() {
                   Qui&eacute;n est&aacute; detr&aacute;s
                 </span>
                 <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.5rem] font-medium text-dark leading-tight tracking-tight mb-8">
-                  Qui&eacute;n est&aacute; detr&aacute;s de PropiHouse
+                  Qui&eacute;n est&aacute; detr&aacute;s de Propi House
                 </h2>
               </RevealSection>
 
@@ -541,7 +550,7 @@ export default function HomePage() {
                 <div className="space-y-6">
                   {/* Lead paragraph */}
                   <p className="font-serif text-xl md:text-[1.45rem] leading-[1.55] text-dark/85">
-                    PropiHouse nace de una idea muy sencilla: que las decisiones inmobiliarias importantes merecen tiempo, informaci&oacute;n clara y alguien que escuche antes de proponer.
+                    Propi House nace de una idea muy sencilla: que las decisiones inmobiliarias importantes merecen tiempo, informaci&oacute;n clara y alguien que escuche antes de proponer.
                   </p>
 
                   {/* Identification */}
@@ -606,8 +615,8 @@ export default function HomePage() {
               <span className="block w-12 h-px bg-white/20" />
             </div>
 
-            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">Antes de tomar una decisión, conviene entender bien la situación</h2>
-            <p className="text-white/65 text-lg mb-10 max-w-xl mx-auto leading-relaxed">Te escuchamos, analizamos tu caso y te damos la información qué necesitas. Sin compromiso, sin presiones.</p>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">Antes de tomar una decisión, conviene entender bien la{' '}situación</h2>
+            <p className="text-white/65 text-lg mb-10 max-w-xl mx-auto leading-relaxed">Te escuchamos, analizamos tu caso y te damos la información que necesitas. Sin compromiso, sin presiones.</p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/entender-mi-situacion" className="group inline-flex items-center gap-2.5 bg-white hover:bg-cream text-dark font-bold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg text-sm">
