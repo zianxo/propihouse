@@ -1,103 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { RevealSection, SectionHeading } from '../components/ui'
-
-/* ─── Scroll-Linked Timeline ─── */
-function AnimatedTimeline({
-  steps,
-  color = 'blue',
-}: {
-  steps: { num: string; title: string; desc: string }[]
-  color?: 'blue' | 'olive'
-}) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const dotRefs = useRef<(HTMLDivElement | null)[]>([])
-  const [progress, setProgress] = useState(0)
-  const [reached, setReached] = useState<boolean[]>(() => steps.map(() => false))
-  const rafRef = useRef<number>(0)
-
-  useEffect(() => {
-    const update = () => {
-      const container = containerRef.current
-      if (!container) return
-      const rect = container.getBoundingClientRect()
-      const triggerY = window.innerHeight * 0.55
-      const raw = (triggerY - rect.top) / (rect.bottom - rect.top)
-      setProgress(Math.max(0, Math.min(1, raw)))
-      const next = dotRefs.current.map((dot) => {
-        if (!dot) return false
-        const r = dot.getBoundingClientRect()
-        return r.top + r.height / 2 <= triggerY
-      })
-      setReached((prev) =>
-        prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next
-      )
-    }
-    const onScroll = () => {
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = requestAnimationFrame(update)
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll, { passive: true })
-    update()
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-      cancelAnimationFrame(rafRef.current)
-    }
-  }, [])
-
-  const isBlue = color === 'blue'
-  const fillGradient = isBlue
-    ? 'from-[#2A79A9] via-[#2A79A9]/85 to-[#2A79A9]/40'
-    : 'from-[#868C4D] via-[#868C4D]/85 to-[#868C4D]/40'
-  const glowColor = isBlue ? 'rgba(42,121,169,0.32)' : 'rgba(134,140,77,0.3)'
-  const activeBg = isBlue ? 'bg-blue' : 'bg-olive'
-  const activeBorder = isBlue ? 'border-blue' : 'border-olive'
-  const activeGlow = isBlue
-    ? '0 0 0 6px rgba(42,121,169,0.12), 0 4px 14px rgba(42,121,169,0.22)'
-    : '0 0 0 6px rgba(134,140,77,0.12), 0 4px 14px rgba(134,140,77,0.22)'
-  const inactiveBorder = isBlue ? 'border-blue/30' : 'border-cream-dark/40'
-  const textActive = isBlue ? 'text-blue' : 'text-dark'
-
-  return (
-    <div ref={containerRef} className="relative mt-12 md:mt-14">
-      {/* Gray base line */}
-      <div className="absolute left-[23px] top-0 bottom-0 w-[2px] bg-cream-dark/30 rounded-full" />
-      {/* Animated fill line */}
-      <div
-        className={`absolute left-[23px] top-0 w-[2px] rounded-full bg-gradient-to-b ${fillGradient}`}
-        style={{ height: `${progress * 100}%`, transition: 'height 120ms linear', boxShadow: `0 0 12px ${glowColor}` }}
-      />
-      <div className="space-y-10 md:space-y-12">
-        {steps.map((step, i) => {
-          const active = reached[i]
-          return (
-            <div key={step.num} className="flex gap-6 items-start relative">
-              <div className="relative z-10 flex-shrink-0">
-                <div
-                  ref={(el) => { dotRefs.current[i] = el }}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-serif text-lg font-bold transition-all duration-500 ${
-                    active
-                      ? `${activeBg} ${activeBorder} border-2 text-white scale-110`
-                      : `bg-white border-2 ${inactiveBorder} shadow-soft ${textActive}`
-                  }`}
-                  style={active ? { boxShadow: activeGlow } : undefined}
-                >
-                  {step.num}
-                </div>
-              </div>
-              <div className={`pt-2 transition-all duration-500 ${active ? 'opacity-100 translate-x-0' : 'opacity-60 -translate-x-1'}`}>
-                <h3 className="font-sans font-bold text-dark text-lg mb-1">{step.title}</h3>
-                <p className="text-text-light text-base leading-relaxed">{step.desc}</p>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
+import { MethodTimeline, RevealSection, SectionHeading } from '../components/ui'
 
 /* ─── Method Steps ─── */
 const METHOD_STEPS = [
@@ -141,7 +44,7 @@ const HIDDEN_COSTS = [
       </svg>
     ),
     title: 'Ahorro previo',
-    desc: 'Lo habitual es necesitar entre un 20% y un 30% del valor del inmueble como entrada y gastos asociados.',
+    desc: 'Lo habitual es necesitar entre un 20% y un 30% del valor del inmueble como entrada para impuestos y gastos asociados.',
   },
   {
     icon: (
@@ -149,7 +52,7 @@ const HIDDEN_COSTS = [
         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
       </svg>
     ),
-    title: 'Porcentaje de financiación',
+    title: 'Tasación bancaria',
     desc: 'Los bancos financian habitualmente hasta el 80% de la tasación. Hay excepciones, pero conviene planificar con el escenario más realista.',
   },
   {
@@ -168,7 +71,7 @@ const ORDER_ASPECTS = [
   {
     num: '01',
     title: 'Cuánto puedes pagar realmente',
-    desc: 'No cuanto te prestaría un banco, sino cuánto puedes asumir sin que tu día a día se resienta.',
+    desc: 'No cuánto te prestaría un banco, sino cuánto puedes asumir sin que tu día a día se resienta.',
   },
   {
     num: '02',
@@ -291,8 +194,43 @@ function MortgageCalculator() {
     debtRatio <= 35 ? 'Ajustado' :
     'Riesgo elevado'
 
-  const fmtPct = (v: number) => `${v}%`
-  const fmtYears = (v: number) => `${v} anos`
+  const fmtPct2 = (v: number) => {
+    const s = v.toFixed(2).replace(/\.?0+$/, '')
+    return `${s}%`
+  }
+  const fmtYears = (v: number) => `${v} años`
+
+  const pctFinanciacion = precio > 0 ? Math.min(100, (capital / precio) * 100) : 0
+
+  const handlePrint = () => {
+    document.body.classList.add('calc-printing')
+    window.print()
+    window.setTimeout(() => document.body.classList.remove('calc-printing'), 500)
+  }
+
+  const handleSendEmail = () => {
+    const body = [
+      'Resultados del simulador de hipoteca — Propi House',
+      '',
+      `Precio de la vivienda: ${fmtEUR.format(precio)}`,
+      `Ahorros disponibles: ${fmtEUR.format(ahorros)}`,
+      `Tipo de interés: ${fmtPct2(interes)}`,
+      `Plazo: ${plazo} años`,
+      `Ingresos netos: ${fmtEUR.format(ingresos)}/mes`,
+      '',
+      `Capital a financiar: ${fmtEUR.format(capital)}`,
+      `Cuota mensual: ${fmtEUR.format(Math.round(monthlyPayment))}`,
+      `Total a pagar: ${fmtEUR.format(Math.round(totalCost))}`,
+      `Total intereses: ${fmtEUR.format(Math.round(totalInterest))}`,
+      `Gastos de compra (~10%): ${fmtEUR.format(gastosCompra)}`,
+      `Financiación / precio: ${pctFinanciacion.toFixed(1)}%`,
+      `Endeudamiento: ${debtRatio.toFixed(1)}% (${debtLabel})`,
+      '',
+      'Generado en https://www.propihouse.es/financiar',
+    ].join('\n')
+    const subject = 'Simulación de hipoteca — Propi House'
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  }
 
   return (
     <section className="py-20 md:py-28 bg-cream/40 relative overflow-hidden">
@@ -313,7 +251,7 @@ function MortgageCalculator() {
         </RevealSection>
 
         <RevealSection delay={150}>
-          <div className="grid lg:grid-cols-[1fr,1fr] gap-8 lg:gap-12 items-start">
+          <div className="calc-print-area grid lg:grid-cols-[1fr,1fr] gap-8 lg:gap-12 items-start">
             {/* ── Left: Inputs ── */}
             <div className="space-y-7 bg-white rounded-2xl p-7 md:p-9 shadow-soft border border-cream-dark/15">
               <SliderInput
@@ -322,7 +260,7 @@ function MortgageCalculator() {
                 value={precio}
                 min={50000}
                 max={800000}
-                step={5000}
+                step={500}
                 format={fmtEUR.format}
                 onChange={setPrecio}
               />
@@ -338,12 +276,12 @@ function MortgageCalculator() {
               />
               <SliderInput
                 id="calc-interes"
-                label="Tipo de interes anual"
+                label="Tipo de interés anual"
                 value={interes}
                 min={1}
                 max={6}
-                step={0.1}
-                format={fmtPct}
+                step={0.05}
+                format={fmtPct2}
                 onChange={setInteres}
               />
               <SliderInput
@@ -351,7 +289,7 @@ function MortgageCalculator() {
                 label="Plazo"
                 value={plazo}
                 min={5}
-                max={35}
+                max={40}
                 step={1}
                 format={fmtYears}
                 onChange={setPlazo}
@@ -362,7 +300,7 @@ function MortgageCalculator() {
                 <label htmlFor="calc-ingresos" className="text-sm font-bold text-dark block mb-2">
                   Ingresos mensuales netos
                 </label>
-                <div className="relative">
+                <div className="relative flex items-center">
                   <input
                     id="calc-ingresos"
                     type="number"
@@ -370,9 +308,11 @@ function MortgageCalculator() {
                     step={100}
                     value={ingresos}
                     onChange={(e) => setIngresos(Math.max(0, Number(e.target.value)))}
-                    className="w-full border border-cream-dark/30 rounded-lg px-4 py-3 text-dark font-serif text-lg focus:outline-none focus:ring-2 focus:ring-blue/40 focus:border-blue transition-all bg-warm-white"
+                    className="calc-number-input flex-1 w-0 border border-cream-dark/30 rounded-l-lg rounded-r-none border-r-0 px-4 py-3 text-dark font-serif text-lg focus:outline-none focus:ring-2 focus:ring-blue/40 focus:border-blue focus:z-10 transition-all bg-warm-white"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted text-sm pointer-events-none">EUR/mes</span>
+                  <span className="inline-flex items-center px-4 py-3 rounded-r-lg border border-cream-dark/30 bg-cream/60 text-text-muted text-sm font-medium select-none">
+                    EUR/mes
+                  </span>
                 </div>
               </div>
             </div>
@@ -411,7 +351,7 @@ function MortgageCalculator() {
                       <p className="font-serif text-4xl md:text-5xl text-dark font-medium mt-2 tabular-nums">
                         {fmtEUR.format(Math.round(monthlyPayment))}
                       </p>
-                      <span className="text-text-muted text-sm mt-1 block">/mes durante {plazo} anos</span>
+                      <span className="text-text-muted text-sm mt-1 block">/mes durante {plazo} años</span>
                     </div>
 
                     {/* Grid of details */}
@@ -429,21 +369,75 @@ function MortgageCalculator() {
                         <span className="font-serif text-lg text-dark font-medium">{fmtEUR.format(gastosCompra)}</span>
                       </div>
                       <div className="bg-cream/40 rounded-xl p-4">
-                        <span className="text-xs text-text-muted block mb-1">Endeudamiento</span>
-                        <span className="font-serif text-lg text-dark font-medium">{debtRatio.toFixed(1)}%</span>
-                        <span className={`inline-block mt-1.5 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full ${debtColor}`}>
-                          {debtLabel}
-                        </span>
+                        <span className="text-xs text-text-muted block mb-1">Financiación / precio</span>
+                        <span className="font-serif text-lg text-dark font-medium">{pctFinanciacion.toFixed(1)}%</span>
+                        <div className="mt-1.5 relative h-1 bg-cream-dark/40 rounded-full overflow-hidden">
+                          <div
+                            className="absolute inset-y-0 left-0 bg-blue rounded-full transition-all duration-300"
+                            style={{ width: `${pctFinanciacion}%` }}
+                          />
+                        </div>
+                      </div>
+                      <div className="bg-cream/40 rounded-xl p-4 col-span-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-text-muted">Endeudamiento</span>
+                          <span className={`inline-block text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full ${debtColor}`}>
+                            {debtLabel}
+                          </span>
+                        </div>
+                        <span className="font-serif text-lg text-dark font-medium mt-1 block">{debtRatio.toFixed(1)}%</span>
                       </div>
                     </div>
                   </>
                 )}
+
+                {/* Action row — print / save PDF / send */}
+                <div className="no-print mt-6 pt-6 border-t border-cream-dark/15 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={handlePrint}
+                    className="inline-flex items-center gap-2 bg-blue/10 hover:bg-blue hover:text-white text-blue text-xs font-bold tracking-wide uppercase px-3.5 py-2.5 rounded-lg transition-colors border border-blue/20 hover:border-blue cursor-pointer"
+                    aria-label="Guardar como PDF"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Guardar PDF
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handlePrint}
+                    className="inline-flex items-center gap-2 bg-cream-dark/30 hover:bg-cream-dark/60 text-dark text-xs font-bold tracking-wide uppercase px-3.5 py-2.5 rounded-lg transition-colors border border-cream-dark/30 cursor-pointer"
+                    aria-label="Imprimir resultados"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="6 9 6 2 18 2 18 9" />
+                      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                      <rect x="6" y="14" width="12" height="8" />
+                    </svg>
+                    Imprimir
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSendEmail}
+                    className="inline-flex items-center gap-2 bg-olive/15 hover:bg-olive hover:text-white text-olive-dark text-xs font-bold tracking-wide uppercase px-3.5 py-2.5 rounded-lg transition-colors border border-olive/30 hover:border-olive cursor-pointer"
+                    aria-label="Enviar resultados por email"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                      <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                    Enviar
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Disclaimer & CTA */}
-          <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="no-print mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <p className="text-text-muted text-sm leading-relaxed max-w-xl italic">
               Esta simulación es orientativa. Las condiciones reales dependen de cada entidad bancaria y de tu perfil financiero.
             </p>
@@ -463,10 +457,10 @@ function MortgageCalculator() {
 
 export default function FinanciarPage() {
   useEffect(() => {
-    document.title = "Financiar vivienda en L'Hospitalet — PropiHouse"
+    document.title = "Financiar vivienda en L'Hospitalet — Propi House"
     const meta = document.querySelector('meta[name="description"]')
     if (meta) meta.setAttribute('content', 'Entiende tu capacidad de compra antes de buscar hipoteca. Analizamos tu situación financiera con criterio.')
-    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+    return () => { document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat" }
   }, [])
 
   return (
@@ -483,14 +477,17 @@ export default function FinanciarPage() {
         <div className="max-w-4xl mx-auto px-6 relative z-10">
           <RevealSection>
             <span className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-5">
-              Financiacion
+              Financiación
             </span>
-            <h1 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-dark leading-tight mb-8 max-w-3xl">
+            <h1 className="font-[Playfair_Display] text-[clamp(2rem,5.5vw,3.5rem)] font-normal leading-[1.12] tracking-[-0.015em] text-dark mb-8 max-w-3xl">
               Entender la financiación es el primer paso antes de comprar una vivienda
             </h1>
             <div className="max-w-2xl space-y-5">
               <p className="text-text-light text-lg leading-relaxed">
-                Cuando alguien piensa en comprar, lo primero que suele buscar son pisos. Pero antes de mirar propiedades, hay una pregunta que conviene responder: cuanto puedo pagar realmente?
+                Cuando alguien piensa en comprar, lo primero que suele buscar es la vivienda. Pero antes de mirar propiedades, hay una pregunta que conviene responder:
+              </p>
+              <p className="font-serif italic text-xl md:text-2xl text-dark leading-snug">
+                ¿Cuánto puedo pagar realmente?
               </p>
               <p className="text-text-light text-lg leading-relaxed">
                 No es solo una cuestión de hipoteca. Es entender tu situación financiera, los plazos que puedes asumir, los riesgos que estás dispuesto a correr y las condiciones que puedes negociar.
@@ -510,11 +507,29 @@ export default function FinanciarPage() {
             />
             <div className="mt-6 space-y-5 max-w-2xl">
               <p className="text-text-light text-lg leading-relaxed">
-                Tipos de interes, bonificaciones, seguros vinculados, comisiones ocultas. Es fácil perderse. Y cuando no entiendes bien lo que estás firmando, es difícil tomar buenas decisiones.
+                Tipos de interés, bonificaciones, seguros vinculados, comisiones ocultas.
+              </p>
+              <p className="font-serif italic text-xl md:text-2xl text-dark leading-snug">
+                Es fácil perderse.
               </p>
               <p className="text-text-light text-lg leading-relaxed">
-                Por eso antes de hablar de hipotecas, preferimos hablar de números reales: cuánto necesitas ahorrar, cuánto puedes destinar a la cuota, y que margen te queda para imprevistos.
+                Y cuando no entiendes bien lo que estás firmando, es difícil tomar buenas decisiones.
               </p>
+              <p className="text-text-light text-lg leading-relaxed">
+                Por eso antes de hablar de hipotecas, preferimos hablar de números reales:
+              </p>
+              <ul className="space-y-3 pl-1">
+                {[
+                  '¿Cuánto necesitas ahorrar?',
+                  '¿Cuánto puedes destinar a la cuota?',
+                  '¿Qué margen te queda para imprevistos?',
+                ].map((q) => (
+                  <li key={q} className="flex items-start gap-3 text-text-light text-lg leading-relaxed">
+                    <span className="mt-[11px] flex-shrink-0 w-1.5 h-1.5 rounded-full bg-olive/70" />
+                    <span>{q}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className="mt-8">
@@ -547,10 +562,16 @@ export default function FinanciarPage() {
         <div className="max-w-4xl mx-auto px-6">
           <RevealSection>
             <SectionHeading
-              title="Antes de mirar hipotecas, hay algo que conviene tener claro"
+              title={
+                <>
+                  Antes de mirar hipotecas,
+                  <br className="hidden md:inline" />
+                  {' '}hay algo que conviene tener claro
+                </>
+              }
               center={false}
             />
-            <AnimatedTimeline steps={ORDER_ASPECTS} color="olive" />
+            <MethodTimeline steps={ORDER_ASPECTS} color="olive" />
 
             <div className="mt-12">
               <Link
@@ -576,20 +597,24 @@ export default function FinanciarPage() {
               center={false}
             />
             <p className="text-text-light text-lg leading-relaxed mt-4 mb-10 max-w-2xl">
-              No se trata de asustarte, sino de que tengas toda la información antes de comprometerte con una decisión a 20 o 30 años.
+              No se trata de asustarte, sino de que tengas toda la información antes de comprometerte con un banco.
+            </p>
+
+            <p className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-5">
+              Aspectos a tener en cuenta
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {HIDDEN_COSTS.map(({ icon, title, desc }) => (
                 <div
                   key={title}
-                  className="bg-white rounded-xl p-6 shadow-soft border border-cream-dark/15 transition-all duration-300 hover:shadow-card hover:-translate-y-0.5"
+                  className="group bg-white hover:bg-cream rounded-xl p-6 shadow-soft border border-cream-dark/15 hover:border-cream-dark/40 transition-all duration-400 hover:shadow-card hover:-translate-y-0.5"
                 >
-                  <div className="w-11 h-11 rounded-lg bg-cream flex items-center justify-center text-olive-dark mb-4">
+                  <div className="w-11 h-11 rounded-lg bg-cream group-hover:bg-white flex items-center justify-center text-olive-dark mb-4 transition-colors duration-400">
                     {icon}
                   </div>
-                  <h3 className="font-sans font-bold text-dark text-base mb-2">{title}</h3>
-                  <p className="text-text-light text-sm leading-relaxed">{desc}</p>
+                  <h3 className="font-sans font-bold text-dark group-hover:text-olive-dark text-base mb-2 transition-colors duration-400">{title}</h3>
+                  <p className="text-text-light group-hover:text-olive-dark text-sm leading-relaxed transition-colors duration-400">{desc}</p>
                 </div>
               ))}
             </div>
@@ -636,7 +661,7 @@ export default function FinanciarPage() {
               </p>
               <div className="mt-4 flex items-center gap-3">
                 <div className="w-8 h-[2px] bg-blue rounded-full" />
-                <span className="text-text-muted text-sm font-medium">PropiHouse</span>
+                <span className="text-text-muted text-sm font-medium">Propi House</span>
               </div>
             </div>
           </RevealSection>
@@ -654,7 +679,7 @@ export default function FinanciarPage() {
             />
           </RevealSection>
 
-          <AnimatedTimeline steps={METHOD_STEPS} color="blue" />
+          <MethodTimeline steps={METHOD_STEPS} color="blue" />
         </div>
       </section>
 
@@ -665,7 +690,7 @@ export default function FinanciarPage() {
             <div className="flex items-end justify-between gap-6 mb-12 md:mb-14 flex-wrap">
               <div className="max-w-2xl">
                 <span className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-5">
-                  Guia
+                  Guía
                 </span>
                 <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-dark leading-tight tracking-tight">
                   Entender la financiación también es parte de la decisión
@@ -750,7 +775,7 @@ export default function FinanciarPage() {
               Antes de avanzar, conviene entender bien tu situación
             </h2>
             <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-              Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
+              Sin compromiso. Analizamos tu caso y vemos qué tiene sentido para ti.
             </p>
 
             {/* Two buttons */}
@@ -774,7 +799,7 @@ export default function FinanciarPage() {
             </div>
 
             <p className="text-white/35 text-sm mt-8">
-              Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
+              Escríbenos y te contactaremos en 24-48h.
             </p>
           </RevealSection>
         </div>

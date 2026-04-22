@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { RevealSection, SectionHeading } from '../components/ui'
+import { MethodTimeline, RevealSection, SectionHeading } from '../components/ui'
 
 /* ─── Pricing Tiers ─── */
 const PACKS = [
@@ -24,7 +24,7 @@ const PACKS = [
       'Revisión del contrato de alquiler',
       'Consultoría en dudas legales',
       'Consultoría en zonas tensionadas',
-      'Soporte durante 7 dias',
+      'Soporte durante 7 días',
     ],
     includes: 'Incluye todo lo de Cumple',
     cta: 'Quiero hacerlo bien',
@@ -35,10 +35,10 @@ const PACKS = [
     price: '249',
     tagline: 'Para quien quiere hacerlo bien y sin improvisar',
     features: [
-      'Redacción contrato personalizado PropiHouse',
+      'Redacción contrato personalizado Propi House',
       'Inventario fotografico',
       'Consultoría personalizada',
-      'Soporte durante 15 dias',
+      'Soporte durante 15 días',
     ],
     includes: 'Incluye Cumple + Cuadra',
     cta: 'Quiero hacerlo seguro',
@@ -47,14 +47,14 @@ const PACKS = [
   {
     name: 'Resuelve',
     price: null,
-    priceLabel: 'Gestion completa',
+    priceLabel: 'Gestión completa',
     tagline: 'Para quien quiere delegar todo el proceso con tranquilidad',
     features: [
       'Búsqueda de inquilino y gestión de visitas',
       'Estudio de solvencia documentado',
       'Acompañamiento durante todo el proceso',
       'Seguro de impagos incluido (1 año, sujeto a aprobación)',
-      'Opcion sin seguro de impagos',
+      'Opción sin seguro de impagos',
     ],
     includes: 'Incluye Cumple + Cuadra + Blinda',
     note: 'Honorarios vinculados al alquiler realizado',
@@ -151,82 +151,12 @@ function ArrowIcon({ size = 16 }: { size?: number }) {
   )
 }
 
-/* ─── Scroll-linked animated timeline ─────────────────────── */
-
-function AnimatedTimeline({ steps }: { steps: { num: string; title: string; desc: string }[] }) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const dotRefs = useRef<(HTMLDivElement | null)[]>([])
-  const [progress, setProgress] = useState(0)
-  const [reached, setReached] = useState<boolean[]>(() => steps.map(() => false))
-  const rafRef = useRef<number>(0)
-
-  useEffect(() => {
-    const update = () => {
-      const container = containerRef.current
-      if (!container) return
-      const rect = container.getBoundingClientRect()
-      const triggerY = window.innerHeight * 0.55
-      const raw = (triggerY - rect.top) / (rect.bottom - rect.top)
-      setProgress(Math.max(0, Math.min(1, raw)))
-      const next = dotRefs.current.map((dot) => {
-        if (!dot) return false
-        const r = dot.getBoundingClientRect()
-        return r.top + r.height / 2 <= triggerY
-      })
-      setReached((prev) =>
-        prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next
-      )
-    }
-    const onScroll = () => { cancelAnimationFrame(rafRef.current); rafRef.current = requestAnimationFrame(update) }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll, { passive: true })
-    update()
-    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(rafRef.current) }
-  }, [])
-
-  return (
-    <div ref={containerRef} className="relative mt-12">
-      {/* Gray base line */}
-      <div className="absolute left-[23px] top-0 bottom-0 w-[2px] bg-cream-dark/30 rounded-full" />
-      {/* Animated fill line */}
-      <div
-        className="absolute left-[23px] top-0 w-[2px] rounded-full bg-gradient-to-b from-olive via-olive/85 to-olive/40"
-        style={{ height: `${progress * 100}%`, transition: 'height 120ms linear', boxShadow: '0 0 12px rgba(134,140,77,0.3)' }}
-      />
-      <div className="space-y-10">
-        {steps.map((step, i) => {
-          const active = reached[i]
-          return (
-            <div key={step.num} className="flex gap-6 items-start relative">
-              <div className="relative z-10 flex-shrink-0">
-                <div
-                  ref={(el) => { dotRefs.current[i] = el }}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-serif text-lg font-bold transition-all duration-500 ${
-                    active ? 'bg-olive text-white scale-110' : 'bg-white text-dark border-2 border-cream-dark/40 shadow-soft'
-                  }`}
-                  style={active ? { boxShadow: '0 0 0 6px rgba(134,140,77,0.12), 0 4px 14px rgba(134,140,77,0.22)' } : undefined}
-                >
-                  {step.num}
-                </div>
-              </div>
-              <div className={`pt-2 transition-all duration-500 ${active ? 'opacity-100 translate-x-0' : 'opacity-60 -translate-x-1'}`}>
-                <h3 className="font-sans font-bold text-dark text-lg mb-1">{step.title}</h3>
-                <p className="text-text-light text-base leading-relaxed">{step.desc}</p>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
 export default function AlquilarPage() {
   useEffect(() => {
-    document.title = "Alquilar vivienda en L'Hospitalet de Llobregat — PropiHouse"
+    document.title = "Alquilar vivienda en L'Hospitalet de Llobregat — Propi House"
     const meta = document.querySelector('meta[name="description"]')
     if (meta) meta.setAttribute('content', 'Gestión de alquileres en L\'Hospitalet. Contratos, inquilinos solventes y acompañamiento completo.')
-    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+    return () => { document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat" }
   }, [])
 
   return (
@@ -243,9 +173,9 @@ export default function AlquilarPage() {
         <div className="max-w-4xl mx-auto px-6 relative z-10">
           <RevealSection>
             <span className="inline-block text-[#B8A88A] text-xs font-bold tracking-[0.2em] uppercase mb-5">
-              Alquilar en L'Hospitalet
+              Alquilar vivienda
             </span>
-            <h1 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-dark leading-tight mb-8 max-w-3xl">
+            <h1 className="font-[Playfair_Display] text-[clamp(2rem,5.5vw,3.5rem)] font-normal leading-[1.12] tracking-[-0.015em] text-dark mb-8 max-w-3xl">
               Alquilar una vivienda en L'Hospitalet de Llobregat no siempre es una decisión sencilla
             </h1>
             <div className="max-w-2xl space-y-5">
@@ -253,7 +183,7 @@ export default function AlquilarPage() {
                 Muchas personas tienen una propiedad que podrían alquilar, pero no lo hacen. O lo hacen con dudas.
               </p>
               <p className="text-text-light text-lg leading-relaxed">
-                Dudas sobre el precio, sobre quien entra en tu vivienda, sobre qué pasa si algo sale mal. Preguntas normales que, sin una respuestá clara, acaban frenando una decisión que podria tener mucho sentido.
+                Dudas sobre el precio, sobre quién entra en tu vivienda, sobre qué pasa si algo sale mal. Preguntas normales que, sin una respuesta clara, acaban frenando una decisión que podría tener mucho sentido.
               </p>
             </div>
           </RevealSection>
@@ -330,7 +260,7 @@ export default function AlquilarPage() {
               ))}
             </div>
             <p className="mt-8 text-text-light text-base leading-relaxed max-w-2xl">
-              Son miedos reales. Y la respuestá no es dejar de alquilar, sino hacerlo de una forma que minimice esos riesgos desde el principio.
+              Son miedos reales. Y la respuesta no es dejar de alquilar, sino hacerlo de una forma que minimice esos riesgos desde el principio.
             </p>
           </RevealSection>
         </div>
@@ -346,7 +276,7 @@ export default function AlquilarPage() {
             />
           </RevealSection>
 
-          <AnimatedTimeline steps={ASPECTS} />
+          <MethodTimeline steps={ASPECTS} color="olive" />
 
           <div className="mt-12">
             <Link
@@ -544,13 +474,13 @@ export default function AlquilarPage() {
                   {/* Left — text content */}
                   <div className="md:col-span-7">
                     <span className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-5">
-                      Gestion post-alquiler
+                      Gestión post-alquiler
                     </span>
                     <h3 className="font-serif text-2xl md:text-3xl lg:text-[2rem] font-medium text-dark leading-snug mb-5">
                       Y después del alquiler... también puedes olvidarte de todo
                     </h3>
                     <p className="text-text-light text-base md:text-lg leading-relaxed mb-8 max-w-lg">
-                      Tambien puedes contar con nosotros para gestionar tu alquiler en el día a día.{' '}
+                      También puedes contar con nosotros para gestionar tu alquiler en el día a día.{' '}
                       <span className="text-text-muted">Para que no tengas que ocuparte de nada.</span>
                     </p>
 
@@ -558,12 +488,12 @@ export default function AlquilarPage() {
                       to="/entender-mi-situacion"
                       className="group inline-flex items-center gap-2.5 bg-olive-dark hover:bg-olive text-white font-bold px-7 py-3.5 rounded-lg transition-all duration-300 hover:shadow-lg text-sm"
                     >
-                      Quiero saber mas
+                      Quiero saber más
                       <ArrowIcon />
                     </Link>
                   </div>
 
-                  {/* Right — 3 service cards stacked */}
+                  {/* Right — 2 service cards stacked (Comunicación lifted out) */}
                   <div className="md:col-span-5 space-y-3">
                     {[
                       {
@@ -572,15 +502,6 @@ export default function AlquilarPage() {
                         icon: (
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                          </svg>
-                        ),
-                      },
-                      {
-                        title: 'Comúnicacion',
-                        desc: 'Intermediamos con el inquilino para que no gestiónes directamente.',
-                        icon: (
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                           </svg>
                         ),
                       },
@@ -610,9 +531,28 @@ export default function AlquilarPage() {
                   </div>
                 </div>
 
+                {/* Standalone Comunicación highlight */}
+                <div className="border-t border-cream-dark/20 px-8 md:px-12 lg:px-14 py-8 md:py-10 bg-cream/30">
+                  <div className="flex items-start gap-5 md:gap-6">
+                    <div className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-olive/15 flex items-center justify-center flex-shrink-0 text-olive-dark">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-serif text-xl md:text-2xl font-medium text-dark mb-2 leading-snug">
+                        Comunicación
+                      </h4>
+                      <p className="text-text-light text-base md:text-lg leading-relaxed max-w-2xl">
+                        Intermediamos con el inquilino para que no tengas que gestionar directamente.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Bottom tagline bar */}
-                <div className="border-t border-cream-dark/20 px-8 md:px-12 lg:px-14 py-5">
-                  <p className="font-serif italic text-text-muted text-sm md:text-base">
+                <div className="border-t border-cream-dark/20 px-8 md:px-12 lg:px-14 py-6 md:py-7">
+                  <p className="font-serif italic text-dark/70 text-base md:text-lg leading-snug">
                     Porque no se trata de elegir un servicio. Se trata de decidir cómo quieres vivir el proceso.
                   </p>
                 </div>
@@ -632,7 +572,7 @@ export default function AlquilarPage() {
             />
             <div className="mt-6 space-y-5 max-w-2xl">
               <p className="text-text-light text-lg leading-relaxed">
-                Firmar el contrato no es el final, es el principio. A partir de ahi empieza la convivencia real con un inquilino, la gestión del día a día y las decisiones que no siempre son fáciles.
+                Firmar el contrato no es el final, es el principio. A partir de ahí empieza la convivencia real con un inquilino, la gestión del día a día y las decisiones que no siempre son fáciles.
               </p>
               <p className="text-text-light text-lg leading-relaxed">
                 Hay propietarios que prefieren gestionar ellos mismos. Y hay otros que quieren tener a alguien de confianza al otro lado del teléfono. Para eso también estamos.
@@ -642,7 +582,7 @@ export default function AlquilarPage() {
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-5">
               {[
                 { title: 'Seguimiento', desc: 'Control periódico del estado del arrendamiento y cumplimiento del contrato.' },
-                { title: 'Comúnicacion', desc: 'Hacemos de intermediarios con el inquilino para que no tengas que gestionar directamente.' },
+                { title: 'Comunicación', desc: 'Hacemos de intermediarios con el inquilino para que no tengas que gestionar directamente.' },
                 { title: 'Incidencias', desc: 'Gestionamos reparaciones, reclamaciones y cualquier situación que surja.' },
               ].map(({ title, desc }) => (
                 <div key={title} className="bg-white rounded-xl p-6 shadow-soft border border-cream-dark/15">
@@ -667,7 +607,7 @@ export default function AlquilarPage() {
                 />
                 <div className="mt-6 space-y-5">
                   <p className="text-text-light text-lg leading-relaxed">
-                    Elegir bien al inquilino no es solo una cuestión de intuicion. Hay herramientas concretas que reducen el riesgo: analisis de solvencia, referencias verificables, seguros de impago.
+                    Elegir bien al inquilino no es solo una cuestión de intuición. Hay herramientas concretas que reducen el riesgo: análisis de solvencia, referencias verificables, seguros de impago.
                   </p>
                   <p className="text-text-light text-lg leading-relaxed">
                     No eliminan el riesgo al cien por cien, pero lo reducen significativamente. Y sobre todo, te permiten tomar una decisión informada en lugar de una decisión a ciegas.
@@ -677,9 +617,9 @@ export default function AlquilarPage() {
               <div className="lg:col-span-2">
                 <div className="bg-cream/60 rounded-2xl p-7 space-y-5 border border-cream-dark/20">
                   {[
-                    { label: 'Seleccion de inquilino', desc: 'Perfil verificado y compatible con tu propiedad.' },
-                    { label: 'Analisis de solvencia', desc: 'Documentacion financiera revisada antes de firmar.' },
-                    { label: 'Proteccion legal', desc: 'Contratos blindados y opciones de seguro de impago.' },
+                    { label: 'Selección de inquilino', desc: 'Perfil verificado y compatible con tu propiedad.' },
+                    { label: 'Análisis de solvencia', desc: 'Documentación financiera revisada antes de firmar.' },
+                    { label: 'Protección legal', desc: 'Contratos blindados y opciones de seguro de impago.' },
                   ].map(({ label, desc }) => (
                     <div key={label} className="flex gap-3">
                       <div className="w-8 h-8 rounded-lg bg-olive/15 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -707,7 +647,7 @@ export default function AlquilarPage() {
             <div className="flex items-end justify-between gap-6 mb-12 md:mb-14 flex-wrap">
               <div className="max-w-2xl">
                 <span className="inline-block text-[#B8A88A] text-xs font-bold tracking-[0.2em] uppercase mb-5">
-                  Guia
+                  Guía
                 </span>
                 <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-dark leading-tight tracking-tight">
                   Entender el alquiler también es parte de la decisión

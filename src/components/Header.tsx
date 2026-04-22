@@ -58,7 +58,7 @@ export default function Header() {
         <Link to="/" className="flex-shrink-0" onClick={() => setMenuOpen(false)}>
           <img
             src="/logos/logo.png"
-            alt="PropiHouse"
+            alt="Propi House"
             className="h-18 md:h-22 w-auto transition-all duration-300"
           />
         </Link>
@@ -125,13 +125,14 @@ export default function Header() {
       </div>
 
       <div
-        className={`lg:hidden fixed inset-0 top-0 bg-warm-white z-40 transition-all duration-500 ${
+        className={`lg:hidden fixed inset-0 top-0 bg-warm-white z-40 transition-all duration-500 overflow-y-auto overscroll-contain ${
           menuOpen
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
         }`}
+        style={{ WebkitOverflowScrolling: 'touch' }}
       >
-        <div className="flex flex-col items-center justify-center h-full gap-2 p-8">
+        <div className="min-h-full flex flex-col items-center justify-center gap-2 px-8 pt-28 pb-12">
           {NAV_LINKS.map(({ to, label }, i) => (
             <NavLink
               key={to}

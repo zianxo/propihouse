@@ -21,6 +21,12 @@ interface Article {
 
 /* ─── FAQ Accordion Item ─── */
 
+function formatQuestion(q: string) {
+  const trimmed = q.trim()
+  const withOpen = trimmed.startsWith('¿') ? trimmed : `¿${trimmed}`
+  return withOpen.endsWith('?') ? withOpen : `${withOpen}?`
+}
+
 function FAQItem({ q, a }: FAQ) {
   const [open, setOpen] = useState(false)
 
@@ -31,7 +37,7 @@ function FAQItem({ q, a }: FAQ) {
         className="w-full flex items-start justify-between gap-4 py-5 text-left group cursor-pointer"
       >
         <span className="font-sans font-bold text-dark text-[15px] leading-snug group-hover:text-blue transition-colors duration-200">
-          {q}
+          {formatQuestion(q)}
         </span>
         <svg
           width="20"
@@ -150,7 +156,7 @@ const ARTICLES: Record<string, Article> = {
 
         <H2>Qué factores influyen en el valor de tu piso</H2>
         <P>
-          El valor de una vivienda no depende de un solo factor. Es una combinacion de elementos que el mercado pondera de forma diferente según el momento y el tipo de comprador.
+          El valor de una vivienda no depende de un solo factor. Es una combinación de elementos que el mercado pondera de forma diferente según el momento y el tipo de comprador.
         </P>
         <UL items={[
           'Ubicacion: no es lo mismo un piso en Sant Josep que en Santa Eulalia o Collblanc. Cada barrio tiene su propia dinámica de precios, su demanda y su perfil de comprador.',
@@ -178,7 +184,7 @@ const ARTICLES: Record<string, Article> = {
 
         <H2>Es fiable comparar precios en Idealista o Fotocasa?</H2>
         <P>
-          Los portales inmobiliarios son una herramienta útil para hacerse una idea general, pero no reflejan la realidad del mercado. Los precios publicados no coinciden con los precios finales de venta. No se tiene en cuenta el estado real de cada vivienda, ni las condiciones de la operación. Además, hay viviendas que se venden sin pasar por portales, y otras que permanecen meses publicadas porque estan fuera de mercado.
+          Los portales inmobiliarios son una herramienta útil para hacerse una idea general, pero no reflejan la realidad del mercado. Los precios publicados no coinciden con los precios finales de venta. No se tiene en cuenta el estado real de cada vivienda, ni las condiciones de la operación. Además, hay viviendas que se venden sin pasar por portales, y otras que permanecen meses publicadas porque están fuera de mercado.
         </P>
 
         <H2>Como analizar el mercado inmobiliario en L'Hospitalet</H2>
@@ -186,10 +192,10 @@ const ARTICLES: Record<string, Article> = {
           Para entender realmente cuánto vale tu piso, es necesario analizar datos reales del mercado:
         </P>
         <UL items={[
-          'Viviendas vendidas recientemente en tu zona, no solo las que estan en venta.',
+          'Viviendas vendidas recientemente en tu zona, no solo las que están en venta.',
           'Precios medios por zona, ajustados al tipo de vivienda y estado.',
           'Tipologias con más demanda: que buscan los compradores activos en tu barrio.',
-          'Comportamiento del mercado: si los precios estan subiendo, estabilizados o bajando.',
+          'Comportamiento del mercado: si los precios están subiendo, estabilizados o bajando.',
         ]} />
 
         <H2>Antes de vender, conviene entender la estrategia</H2>
@@ -197,15 +203,15 @@ const ARTICLES: Record<string, Article> = {
           Saber cuánto vale tu piso no es solo un número. Es entender qué tipo de comprador puede estar interesado, a que precio tiene sentido salir al mercado y cual es la mejor estrategia para conseguir una venta en buenas condiciones.
         </P>
         <P>
-          En PropiHouse analizamos cada propiedad teniendo en cuenta el mercado real, la tipología, el perfil de comprador y las condiciones actuales. No damos un número al azar: explicamos por que tu vivienda vale lo que vale y como podemos ayudarte a conseguir el mejor resultado posible.
+          En Propi House analizamos cada propiedad teniendo en cuenta el mercado real, la tipología, el perfil de comprador y las condiciones actuales. No damos un número al azar: explicamos por qué tu vivienda vale lo que vale y cómo podemos ayudarte a conseguir el mejor resultado posible.
         </P>
         <ArticleLink to="/entender-mi-situacion">Entender mi situación y el valor de mi vivienda</ArticleLink>
       </>
     ),
     faqs: [
       {
-        q: 'Cuánto cuestá hacer una tasación de un piso?',
-        a: 'Una tasación oficial realizada por una sociedad de tasación homologada suele costar entre 300 y 500 euros, dependiendo de la vivienda y la empresa. Es un requisito habitual cuando se solicita una hipoteca. Sin embargo, una valoración inmobiliaria orientativa — como la que hacemos en PropiHouse — no tiene coste.',
+        q: 'Cuánto cuesta hacer una tasación de un piso?',
+        a: 'Una tasación oficial realizada por una sociedad de tasación homologada suele costar entre 300 y 500 euros, dependiendo de la vivienda y la empresa. Es un requisito habitual cuando se solicita una hipoteca. Sin embargo, una valoración inmobiliaria orientativa — como la que hacemos en Propi House — no tiene coste.',
       },
       {
         q: 'Es lo mismo una tasación bancaria que una valoración inmobiliaria?',
@@ -268,7 +274,7 @@ const ARTICLES: Record<string, Article> = {
           Vender sin un plan es como salir a navegar sin rumbo. Muchos propietarios publican su vivienda sin haber pensado en el precio adecuado, la presentación, el tipo de comprador al que se dirigen ni los pasos legales y fiscales que implica la venta.
         </P>
         <P>
-          Una estrategia clara desde el principio permite evitar errores, ahorrar tiempo y conseguir un mejor resultado. Eso incluye entender el mercado, preparar la vivienda, definir un precio con criterio y saber como gestionar las visitas y las ofertas.
+          Una estrategia clara desde el principio permite evitar errores, ahorrar tiempo y conseguir un mejor resultado. Eso incluye entender el mercado, preparar la vivienda, definir un precio con criterio y saber cómo gestionar las visitas y las ofertas.
         </P>
         <Quote>
           Vender bien no es cuestión de suerte. Es cuestión de preparación, estrategia y conocimiento del mercado.
@@ -286,8 +292,8 @@ const ARTICLES: Record<string, Article> = {
         a: 'En L\'Hospitalet de Llobregat, una vivienda bien posicionada en precio y presentación puede venderse en pocas semanas. Pero si el precio está por encima del mercado o la estrategia no es la adecuada, puede tardar meses. El factor que más influye en el tiempo de venta es el precio de salida.',
       },
       {
-        q: 'Como se si el precio de mi piso es correcto?',
-        a: 'Un precio correcto se basa en ventas reales recientes en tu zona, no en precios de anuncios. Tambien tiene en cuenta el estado de la vivienda, la demanda del momento y el tipo de comprador. Si tras varias visitas no recibes ninguna oferta, es muy probable que el precio este por encima del mercado.',
+        q: 'Cómo sé si el precio de mi piso es correcto?',
+        a: 'Un precio correcto se basa en ventas reales recientes en tu zona, no en precios de anuncios. También tiene en cuenta el estado de la vivienda, la demanda del momento y el tipo de comprador. Si tras varias visitas no recibes ninguna oferta, es muy probable que el precio esté por encima del mercado.',
       },
     ],
     related: ['cuanto-vale-piso-hospitalet', 'cuanto-tarda-vender-piso', 'preparar-vivienda-vender'],
@@ -347,15 +353,15 @@ const ARTICLES: Record<string, Article> = {
     faqs: [
       {
         q: 'Es normal que un piso tarde meses en venderse?',
-        a: 'Puede pasar, pero no deberia ser lo habitual si la estrategia es correcta. Un tiempo excesivo en el mercado suele indicar que el precio de salida está por encima de lo que los compradores estan dispuestos a pagar, o que la presentación no es la adecuada.',
+        a: 'Puede pasar, pero no debería ser lo habitual si la estrategia es correcta. Un tiempo excesivo en el mercado suele indicar que el precio de salida está por encima de lo que los compradores están dispuestos a pagar, o que la presentación no es la adecuada.',
       },
       {
         q: 'Influye el barrio en el tiempo de venta?',
-        a: 'Si, mucho. Hay barrios en L\'Hospitalet con una demanda muy alta donde los pisos se venden en pocas semanas, y otros donde el proceso puede ser más lento. Conocer la dinámica de tu barrio es clave para fijar expectativas realistas.',
+        a: 'Sí, mucho. Hay barrios en L\'Hospitalet con una demanda muy alta donde los pisos se venden en pocas semanas, y otros donde el proceso puede ser más lento. Conocer la dinámica de tu barrio es clave para fijar expectativas realistas.',
       },
       {
         q: 'Una buena estrategia de venta puede reducir el tiempo?',
-        a: 'Sin duda. Un precio ajustado, una buena presentación, fotografias profesionales y una difusion adecuada son factores que aceleran la venta. Tambien es importante saber interpretar las visitas y ajustar si es necesario.',
+        a: 'Sin duda. Un precio ajustado, una buena presentación, fotografías profesionales y una difusión adecuada son factores que aceleran la venta. También es importante saber interpretar las visitas y ajustar si es necesario.',
       },
     ],
     related: ['errores-vender-vivienda', 'cuanto-vale-piso-hospitalet', 'buen-momento-vender'],
@@ -375,7 +381,7 @@ const ARTICLES: Record<string, Article> = {
 
         <H2>El ahorro inicial qué necesitas</H2>
         <P>
-          La mayoría de los bancos financian hasta un 80% del valor de tasación de la vivienda. Eso significa qué necesitas tener ahorrado al menos el 20% restante, más los gastos asociados a la compra. En la práctica, para una vivienda de 200.000 euros, necesitaras entre 40.000 y 50.000 euros de ahorro propio.
+          La mayoría de los bancos financian hasta un 80% del valor de tasación de la vivienda. Eso significa qué necesitas tener ahorrado al menos el 20% restánte, más los gastos asociados a la compra. En la práctica, para una vivienda de 200.000 euros, necesitaras entre 40.000 y 50.000 euros de ahorro propio.
         </P>
         <P>
           Este es el punto que más sorprende a muchos compradores: no basta con tener para la entrada, también hay que cubrir una serie de gastos obligatorios.
@@ -402,7 +408,7 @@ const ARTICLES: Record<string, Article> = {
           Antes de empezar a buscar vivienda, es fundamental saber cuánto puedes permitirte. Esto depende de varios factores:
         </P>
         <UL items={[
-          'Ingresos mensuales netos: los bancos aplican la regla general de que la cuota hipotecaria no deberia superar el 30-35% de tus ingresos.',
+          'Ingresos mensuales netos: los bancos aplican la regla general de que la cuota hipotecaria no debería superar el 30-35% de tus ingresos.',
           'Estabilidad laboral: un contrato indefinido, la antigüedad y el sector en el que trabajas influyen en lo que el banco está dispuesto a ofrecerte.',
           'Nivel de endeudamiento actual: si ya tienes prestamos, el banco los tendra en cuenta al calcular tu capacidad.',
           'Ahorro disponible: cuanto más ahorro aportes, mejores condiciones podrás negociar.',
@@ -414,7 +420,7 @@ const ARTICLES: Record<string, Article> = {
           En algunos casos, es posible obtener financiación superior al 80%. Depende del perfil del comprador, del tipo de vivienda y de la entidad bancaria. Pero no es lo habitual, y las condiciones suelen ser más exigentes.
         </P>
         <P>
-          Tambien existen ayudas públicas y programas específicos para determinados colectivos — como jóvenes menores de 35 años — que pueden facilitar el acceso a la vivienda con menos ahorro inicial.
+          También existen ayudas públicas y programas específicos para determinados colectivos — como jóvenes menores de 35 años — que pueden facilitar el acceso a la vivienda con menos ahorro inicial.
         </P>
 
         <H2>Empieza la búsqueda con claridad</H2>
@@ -422,22 +428,22 @@ const ARTICLES: Record<string, Article> = {
           El error más habitual es empezar a visitar viviendas sin saber realmente cuánto puedes gastar. Eso lleva a frustraciones, a enamorarse de viviendas inalcanzables o a tomar decisiones precipitadas.
         </P>
         <P>
-          Lo más inteligente es entender primero tu situación financiera: cuanto tienes ahorrado, cuánto puedes pagar al mes y que tipo de hipoteca puedes conseguir. A partir de ahi, la búsqueda se convierte en un proceso mucho más eficiente y realista.
+          Lo más inteligente es entender primero tu situación financiera: cuánto tienes ahorrado, cuánto puedes pagar al mes y qué tipo de hipoteca puedes conseguir. A partir de ahí, la búsqueda se convierte en un proceso mucho más eficiente y realista.
         </P>
         <ArticleLink to="/guia/errores-comprar-vivienda">Errores habituales al comprar una vivienda</ArticleLink>
       </>
     ),
     faqs: [
       {
-        q: 'Cuanto ahorro es recomendable para comprar una vivienda?',
+        q: '¿Cuánto ahorro es recomendable para comprar una vivienda?',
         a: 'Como regla general, se recomienda tener ahorrado al menos el 30% del precio de la vivienda: un 20% para la entrada y un 10% para gastos. Para una vivienda de 200.000 euros, eso supone unos 60.000 euros.',
       },
       {
         q: 'Es posible comprar con poco ahorro?',
-        a: 'En algunos casos, si. Hay entidades que financian más del 80%, especialmente para perfiles con ingresos estables y buen historial crediticio. Tambien hay programas de ayuda publica. Pero lo habitual es necesitar al menos el 20% de entrada más gastos.',
+        a: 'En algunos casos, si. Hay entidades que financian más del 80%, especialmente para perfiles con ingresos estables y buen historial crediticio. También hay programas de ayuda pública. Pero lo habitual es necesitar al menos el 20% de entrada más gastos.',
       },
       {
-        q: 'Es mejor saber cuánto me daran de hipoteca antes de buscar vivienda?',
+        q: '¿Es mejor saber cuánto me darán de hipoteca antes de buscar vivienda?',
         a: 'Absolutamente. Conocer tu capacidad de financiación antes de empezar a buscar te permite centrar la búsqueda en viviendas que realmente puedes comprar. Evita frustraciones y te da seguridad a la hora de hacer una oferta.',
       },
     ],
@@ -456,9 +462,9 @@ const ARTICLES: Record<string, Article> = {
           La forma en que un comprador percibe tu vivienda durante los primeros minutos de visita puede determinar si hace una oferta o no. Preparar tu piso antes de venderlo no significa reformarlo por completo, sino presentarlo de la mejor forma posible para que transmita su potencial.
         </P>
 
-        <H2>Entender como percibe tu vivienda el comprador</H2>
+        <H2>Entender cómo percibe tu vivienda el comprador</H2>
         <P>
-          Cuando un comprador visita una vivienda, no ve lo mismo que tu. Tu ves tu hogar, con recuerdos y costumbres. El comprador ve un espacio que tiene que imaginar como suyo. Todo lo que le dificulte esa proyeccion — desorden, personalizacion excesiva, falta de luz — juega en tu contra.
+          Cuando un comprador visita una vivienda, no ve lo mismo que tú. Tú ves tu hogar, con recuerdos y costumbres. El comprador ve un espacio que tiene que imaginar como suyo. Todo lo que le dificulte esa proyección — desorden, personalización excesiva, falta de luz — juega en tu contra.
         </P>
         <P>
           La clave es crear un entorno neutro, limpio y luminoso donde el comprador pueda verse viviendo.
@@ -496,7 +502,7 @@ const ARTICLES: Record<string, Article> = {
           La presentación de una vivienda no es un paso cosmético. Es parte de la estrategia de venta. Una vivienda bien preparada se vende más rápido, genera mejores ofertas y transmite profesionalidad.
         </P>
         <P>
-          En PropiHouse, antes de poner una vivienda a la venta, la analizamos junto al propietario para identificar qué mejoras conviene hacer, que puntos fuertes potenciar y como presentarla de la forma más atractiva posible.
+          En Propi House, antes de poner una vivienda a la venta, la analizamos junto al propietario para identificar qué mejoras conviene hacer, qué puntos fuertes potenciar y cómo presentarla de la forma más atractiva posible.
         </P>
         <ArticleLink to="/guia/errores-vender-vivienda">Errores habituales que conviene evitar al vender</ArticleLink>
       </>
@@ -508,11 +514,11 @@ const ARTICLES: Record<string, Article> = {
       },
       {
         q: 'Influye la presentación en el precio que puedo conseguir?',
-        a: 'Si, directamente. Una vivienda bien presentada genera una primera impresión más positiva, atrae a más compradores y suele recibir mejores ofertas. Los compradores estan dispuestos a pagar más por un piso que les transmite confianza y les permite proyectarse.',
+        a: 'Sí, directamente. Una vivienda bien presentada genera una primera impresión más positiva, atrae a más compradores y suele recibir mejores ofertas. Los compradores están dispuestos a pagar más por un piso que les transmite confianza y les permite proyectarse.',
       },
       {
         q: 'Cómo puedo saber si mi vivienda necesita algún cambio antes de venderla?',
-        a: 'Lo mejor es que alguien con experiencia la vea con ojos de comprador. Nosotros hacemos esa valoración como parte de nuestro servicio: analizamos la vivienda, identificamos que conviene mejorar y damos recomendaciones concretas y realistas.',
+        a: 'Lo mejor es que alguien con experiencia la vea con ojos de comprador. Nosotros hacemos esa valoración como parte de nuestro servicio: analizamos la vivienda, identificamos qué conviene mejorar y damos recomendaciones concretas y realistas.',
       },
     ],
     related: ['errores-vender-vivienda', 'cuanto-vale-piso-hospitalet', 'cuanto-tarda-vender-piso'],
@@ -571,22 +577,22 @@ const ARTICLES: Record<string, Article> = {
           Lo que tienen en común todas estás situaciones es que requieren información antes de decidir. Cuánto vale la vivienda? Que gastos e impuestos implica vender? Cuánto tiempo puede tardar? Qué opciones tengo realmente?
         </P>
         <P>
-          En PropiHouse, entendemos que detrás de cada vivienda hay una historia y unas circunstancias personales. Por eso, nuestro primer paso siempre es escuchar y entender tu situación antes de proponer nada.
+          En Propi House, entendemos que detrás de cada vivienda hay una historia y unas circunstancias personales. Por eso, nuestro primer paso siempre es escuchar y entender tu situación antes de proponer nada.
         </P>
       </>
     ),
     faqs: [
       {
-        q: 'Si heredo una vivienda con varios propietarios, qué opciones tengo?',
+        q: 'Si heredo una vivienda con varios propietarios, ¿qué opciones tengo?',
         a: 'Lo ideal es llegar a un acuerdo entre todos los herederos. Las opciones más habituales son vender y repartir el resultado, que uno de los herederos compre la parte de los demas, o mantener la vivienda en copropiedad y alquilarla. Si no hay acuerdo, existe la posibilidad legal de solicitar la division judicial, pero es un proceso lento y costoso.',
       },
       {
-        q: 'Puedo vender una vivienda heredada inmediatamente?',
+        q: '¿Puedo vender una vivienda heredada inmediatamente?',
         a: 'No inmediatamente. Primero hay que aceptar la herencia, liquidar el impuesto de sucesiones y registrar la vivienda a nombre de los herederos. Solo entonces se puede vender. El proceso puede tardar semanas o meses, dependiendo de la complejidad del caso.',
       },
       {
-        q: 'En caso de divorcio, quien decide qué hacer con la vivienda?',
-        a: 'Depende del acuerdo entre las partes. Si es un divorcio de mutuo acuerdo, se negocia como parte del convenio regulador. Si no hay acuerdo, sera el juez quien decida. En cualquier caso, contar con una valoración profesional de la vivienda facilita enormemente la negociación.',
+        q: 'En caso de divorcio, ¿quién decide qué hacer con la vivienda?',
+        a: 'Depende del acuerdo entre las partes. Si es un divorcio de mutuo acuerdo, se negocia como parte del convenio regulador. Si no hay acuerdo, será el juez quien decida. En cualquier caso, contar con una valoración profesional de la vivienda facilita enormemente la negociación.',
       },
       {
         q: 'Conviene vender la vivienda o mantenerla y alquilar?',
@@ -613,7 +619,7 @@ const ARTICLES: Record<string, Article> = {
           La principal ventaja de vender antes de comprar es que sabes exactamente con cuánto dinero cuentas. Conoces el resultado de la venta, puedes liquidar tu hipoteca si la tienes y partes de una posicion financiera clara.
         </P>
         <P>
-          El inconveniente es que, una vez vendida tu vivienda, necesitas encontrar una nueva en un plazo razonable. Eso puede generar presion, especialmente si el mercado está activo y hay poca oferta en la zona que te interesa.
+          El inconveniente es que, una vez vendida tu vivienda, necesitas encontrar una nueva en un plazo razonable. Eso puede generar presión, especialmente si el mercado está activo y hay poca oferta en la zona que te interesa.
         </P>
         <P>
           En algunos casos, es posible negociar con el comprador un plazo más amplio para la entrega de llaves, lo que te da un margen extra para encontrar tu nueva vivienda.
@@ -656,7 +662,7 @@ const ARTICLES: Record<string, Article> = {
           No hay una receta universal. La mejor opción depende de tu situación financiera, de la demanda en tu zona, del mercado en general y de tus prioridades personales. Lo importante es tomar la decisión con información real, no con suposiciones.
         </P>
         <P>
-          En PropiHouse, analizamos cada caso de forma individual. Estudiamos tu vivienda actual, tu capacidad financiera y el mercado para ayudarte a elegir el camino que mejor se adapta a tu situación.
+          En Propi House, analizamos cada caso de forma individual. Estudiamos tu vivienda actual, tu capacidad financiera y el mercado para ayudarte a elegir el camino que mejor se adapta a tu situación.
         </P>
       </>
     ),
@@ -666,12 +672,12 @@ const ARTICLES: Record<string, Article> = {
         a: 'Vender primero te da seguridad económica: sabes con cuánto dinero cuentas. Pero implica buscar una nueva vivienda con cierta urgencia. Es la opción más segura desde el punto de vista financiero, especialmente si no tienes capacidad para mantener dos viviendas a la vez.',
       },
       {
-        q: 'Puedo comprar una vivienda antes de haber vendido la mia?',
-        a: 'Si, pero necesitas tener capacidad financiera para asumir dos operaciones simultáneamente. Algunos bancos ofrecen hipotecas puente para estos casos. Es importante analizar bien los números antes de dar el paso.',
+        q: 'Puedo comprar una vivienda antes de haber vendido la mía?',
+        a: 'Sí, pero necesitas tener capacidad financiera para asumir dos operaciones simultáneamente. Algunos bancos ofrecen hipotecas puente para estos casos. Es importante analizar bien los números antes de dar el paso.',
       },
       {
         q: 'Se pueden coordinar la venta y la compra a la vez?',
-        a: 'Si, y es la opción más habitual. Con buena planificación, se pueden negociar plazos en ambas operaciones para que coincidan. Es lo que hacemos habitualmente con nuestros clientes, coordinando tiempos, contratos y financiación.',
+        a: 'Sí, y es la opción más habitual. Con buena planificación, se pueden negociar plazos en ambas operaciones para que coincidan. Es lo que hacemos habitualmente con nuestros clientes, coordinando tiempos, contratos y financiación.',
       },
     ],
     related: ['cuanto-vale-piso-hospitalet', 'herencia-divorcio-cambio-vida', 'cuanto-dinero-comprar-vivienda'],
@@ -734,7 +740,7 @@ const ARTICLES: Record<string, Article> = {
           Antes de decidir si es buen momento, necesitas saber cuánto vale tu vivienda en el mercado actual, cuánto tardaras en venderla, qué gastos e impuestos tendrás y qué opciones tienes según tu situación personal.
         </P>
         <P>
-          En PropiHouse te ayudamos a responder todas estás preguntas antes de dar ningún paso. Sin presion, sin compromiso. Porque entender tu situación es siempre el mejor primer paso.
+          En Propi House te ayudamos a responder todas estas preguntas antes de dar ningún paso. Sin presión, sin compromiso. Porque entender tu situación es siempre el mejor primer paso.
         </P>
         <ArticleLink to="/entender-mi-situacion">Entender mi situación</ArticleLink>
       </>
@@ -746,7 +752,7 @@ const ARTICLES: Record<string, Article> = {
       },
       {
         q: 'Influye mucho el barrio en la facilidad de venta?',
-        a: 'Si, enormemente. Dentro de L\'Hospitalet hay barrios con mucha demanda donde los pisos se venden en pocas semanas, y otros donde el proceso puede ser más lento. Conocer la dinámica de tu barrio es fundamental.',
+        a: 'Sí, enormemente. Dentro de L\'Hospitalet hay barrios con mucha demanda donde los pisos se venden en pocas semanas, y otros donde el proceso puede ser más lento. Conocer la dinámica de tu barrio es fundamental.',
       },
       {
         q: 'Es mejor esperar a que suban los precios para vender?',
@@ -793,9 +799,9 @@ const ARTICLES: Record<string, Article> = {
           Es importante valorar cada vivienda en su contexto: estado, ubicación, comúnidad, potencial de revalorizacion y coste total de la operación.
         </P>
 
-        <H2>4. Tomar decisiones con prisa o por presion</H2>
+        <H2>4. Tomar decisiones con prisa o por presión</H2>
         <P>
-          El mercado puede generar urgencia: "si no te decides hoy, la pierdes". Y aunque a veces eso es cierto, tomar una decisión de está magnitud bajo presion rara vez acaba bien. Es mejor perder una vivienda que comprar la equivocada.
+          El mercado puede generar urgencia: "si no te decides hoy, la pierdes". Y aunque a veces eso es cierto, tomar una decisión de esta magnitud bajo presión rara vez acaba bien. Es mejor perder una vivienda que comprar la equivocada.
         </P>
         <P>
           Ten claro lo que buscas, tu presupuesto y tus prioridades. Así, cuando aparezca la vivienda adecuada, podrás decidir con rapidez pero sin precipitarte.
@@ -822,7 +828,7 @@ const ARTICLES: Record<string, Article> = {
     ),
     faqs: [
       {
-        q: 'Cual es el error más habitual al comprar una vivienda?',
+        q: 'Cuál es el error más habitual al comprar una vivienda?',
         a: 'Empezar a buscar sin tener claro el presupuesto real ni las necesidades concretas. Eso lleva a visitar muchas viviendas sin avanzar y a tomar decisiones poco fundamentadas.',
       },
       {
@@ -830,20 +836,20 @@ const ARTICLES: Record<string, Article> = {
         a: 'Es recomendable visitar las suficientes para entender el mercado, pero no tantas como para perderte. Si has definido bien lo que buscas y tu presupuesto, unas pocas visitas bien seleccionadas suelen ser más útiles que decenas de visitas sin criterio.',
       },
       {
-        q: 'Como se si un precio es adecuado para una vivienda?',
+        q: 'Cómo sé si un precio es adecuado para una vivienda?',
         a: 'Comparando con ventas reales recientes de viviendas similares en la misma zona, teniendo en cuenta el estado, la ubicación y los gastos adicionales que puede implicar. Un asesor inmobiliario con experiencia en la zona puede ayudarte a valorarlo.',
       },
       {
         q: 'Es mejor decidir rápido para no perder una vivienda?',
-        a: 'Hay que saber distinguir entre rapidez y precipitación. Si tienes claro lo que buscas, tu presupuesto y tus prioridades, puedes decidir rápido con seguridad. Pero decidir por presion sin tener esa claridad suele llevar a arrepentimientos.',
+        a: 'Hay que saber distinguir entre rapidez y precipitación. Si tienes claro lo que buscas, tu presupuesto y tus prioridades, puedes decidir rápido con seguridad. Pero decidir por presión sin tener esa claridad suele llevar a arrepentimientos.',
       },
       {
-        q: 'Que deberia tener en cuenta antes de hacer una oferta?',
-        a: 'El precio respecto al mercado, el estado real de la vivienda, los gastos de compra, tu capacidad de financiación y los plazos de la operación. Tambien es importante entender la motivacion del vendedor, ya que puede influir en la negociación.',
+        q: 'Qué debería tener en cuenta antes de hacer una oferta?',
+        a: 'El precio respecto al mercado, el estado real de la vivienda, los gastos de compra, tu capacidad de financiación y los plazos de la operación. También es importante entender la motivación del vendedor, ya que puede influir en la negociación.',
       },
       {
         q: 'Es recomendable contar con asesoramiento profesional?',
-        a: 'Si, especialmente si es tu primera compra o si no conoces bien el mercado de la zona. Un buen asesor te ayuda a evitar errores, a negociar mejor y a gestionar todo el proceso con seguridad.',
+        a: 'Sí, especialmente si es tu primera compra o si no conoces bien el mercado de la zona. Un buen asesor te ayuda a evitar errores, a negociar mejor y a gestionar todo el proceso con seguridad.',
       },
     ],
     related: ['cuanto-dinero-comprar-vivienda', 'comprar-o-vender-primero', 'cuanto-vale-piso-hospitalet'],
@@ -858,7 +864,7 @@ const ARTICLES: Record<string, Article> = {
     body: () => (
       <>
         <P>
-          Vender un piso no es solo cobrar el precio acordado. Hay impuestos y costes que debes conocer antes de firmar, para que no te lleves sorpresas y puedas calcular con precision cuanto vas a recibir realmente.
+          Vender un piso no es solo cobrar el precio acordado. Hay impuestos y costes que debes conocer antes de firmar, para que no te lleves sorpresas y puedas calcular con precisión cuánto vas a recibir realmente.
         </P>
 
         <H2>No todo el precio de venta es beneficio</H2>
@@ -878,7 +884,7 @@ const ARTICLES: Record<string, Article> = {
           'Mas de 300.000 euros: 28%',
         ]} />
         <P>
-          La ganancia se calcula restando al precio de venta el precio de compra, más los gastos deducibles — como la comisión de la inmobiliaria, los gastos de notaría de la compra original, el coste de reformas justificadas y el importe del ITP o IVA pagado en su dia.
+          La ganancia se calcula restándo al precio de venta el precio de compra, más los gastos deducibles — como la comisión de la inmobiliaria, los gastos de notaría de la compra original, el coste de reformas justificadas y el importe del ITP o IVA pagado en su dia.
         </P>
 
         <H2>Plusvalia municipal</H2>
@@ -899,7 +905,7 @@ const ARTICLES: Record<string, Article> = {
           Cada operación es diferente, y el importe final de impuestos depende de varios factores:
         </P>
         <UL items={[
-          'El precio al que compraste y el precio al que vendes: cuanto mayor sea la diferencia, mayor sera la ganancia patrimonial.',
+          'El precio al que compraste y el precio al que vendes: cuanto mayor sea la diferencia, mayor será la ganancia patrimonial.',
           'Los años de propiedad: influyen en la plusvalía municipal y pueden afectar a posibles exenciones en el IRPF.',
           'Los gastos y reformas realizados: los gastos de la compra original, las reformas justificadas y las comisiones pagadas se pueden deducir de la ganancia patrimonial.',
           'La hipoteca pendiente: no es un impuesto, pero se descuenta del importe que recibes al vender.',
@@ -910,19 +916,19 @@ const ARTICLES: Record<string, Article> = {
           Si. Hay dos supuestos principales en los que puedes estar exento — total o parcialmente — del IRPF por la venta de tu vivienda:
         </P>
         <UL items={[
-          'Mayores de 65 anos: si vendes tu vivienda habitual y tienes 65 años o más, la ganancia patrimonial está exenta de IRPF.',
+          'Mayores de 65 años: si vendes tu vivienda habitual y tienes 65 años o más, la ganancia patrimonial está exenta de IRPF.',
           'Reinversión en vivienda habitual: si vendes tu vivienda habitual y destinas el importe obtenido a la compra de otra vivienda habitual en un plazo de dos años, puedes quedar exento de tributar por la ganancia. Se aplica proporcionalmente si reinviertes solo una parte.',
         ]} />
 
         <H2>El error más habitual: pensar que todo es beneficio</H2>
         <P>
-          Muchos propietarios calculan cuanto van a recibir restando solo la hipoteca pendiente. Pero se olvidan de los impuestos, las comisiones y los gastos de la operación. El resultado es que esperan recibir más de lo que realmente les queda.
+          Muchos propietarios calculan cuánto van a recibir restándo solo la hipoteca pendiente. Pero se olvidan de los impuestos, las comisiones y los gastos de la operación. El resultado es que esperan recibir más de lo que realmente les queda.
         </P>
         <P>
-          Antes de vender, es fundamental hacer números con todos los conceptos sobre la mesa: precio de venta, hipoteca, IRPF, plusvalía, gastos de notaría, comisiones y cualquier otro coste. Solo así sabrás con certeza cuanto vas a recibir.
+          Antes de vender, es fundamental hacer números con todos los conceptos sobre la mesa: precio de venta, hipoteca, IRPF, plusvalía, gastos de notaría, comisiones y cualquier otro coste. Solo así sabrás con certeza cuánto vas a recibir.
         </P>
         <P>
-          En PropiHouse, como parte del proceso de venta, te ayudamos a calcular estos conceptos para que tengas una imagen clara y realista antes de tomar cualquier decisión.
+          En Propi House, como parte del proceso de venta, te ayudamos a calcular estos conceptos para que tengas una imagen clara y realista antes de tomar cualquier decisión.
         </P>
         <ArticleLink to="/entender-mi-situacion">Entender mi situación y planificar la venta</ArticleLink>
       </>
@@ -930,10 +936,10 @@ const ARTICLES: Record<string, Article> = {
     faqs: [
       {
         q: 'Siempre se paga IRPF al vender un piso?',
-        a: 'No siempre. Si vendes por un precio igual o inferior al de compra — es decir, no hay ganancia patrimonial — no pagas IRPF. Tambien hay exenciones para mayores de 65 años que venden su vivienda habitual y para quienes reinvierten en vivienda habitual.',
+        a: 'No siempre. Si vendes por un precio igual o inferior al de compra — es decir, no hay ganancia patrimonial — no pagas IRPF. También hay exenciones para mayores de 65 años que venden su vivienda habitual y para quienes reinvierten en vivienda habitual.',
       },
       {
-        q: 'Que gastos puedo deducir del IRPF al vender?',
+        q: 'Qué gastos puedo deducir del IRPF al vender?',
         a: 'Puedes deducir los gastos de la compra original — notaría, registro, ITP o IVA — las reformas que hayas realizado y que puedas justificar con facturas, y la comisión de la inmobiliaria. Todo esto reduce la ganancia patrimonial y, por tanto, el importe del impuesto.',
       },
       {
@@ -941,8 +947,8 @@ const ARTICLES: Record<string, Article> = {
         a: 'No. Si el valor del suelo no ha aumentado desde que compraste — por ejemplo, si vendes por menos de lo que pagaste — no tienes que pagar plusvalía municipal. Desde la reforma de 2021, puedes elegir el método de cálculo que te resulte más favorable.',
       },
       {
-        q: 'Cuando se pagan estos impuestos?',
-        a: 'El IRPF se declara en la declaracion de la renta del ano siguiente a la venta. Es decir, si vendes en 2026, lo declaras en la renta de 2027. La plusvalía municipal debe liquidarse en los 30 dias habiles siguientes a la firma ante notario.',
+        q: 'Cuándo se pagan estos impuestos?',
+        a: 'El IRPF se declara en la declaración de la renta del ano siguiente a la venta. Es decir, si vendes en 2026, lo declaras en la renta de 2027. La plusvalía municipal debe liquidarse en los 30 dias habiles siguientes a la firma ante notario.',
       },
     ],
     related: ['cuanto-vale-piso-hospitalet', 'errores-vender-vivienda', 'buen-momento-vender'],
@@ -959,10 +965,10 @@ export default function ArticlePage() {
 
   useEffect(() => {
     if (!article) return
-    document.title = article.title + " — PropiHouse"
+    document.title = article.title + " — Propi House"
     const meta = document.querySelector('meta[name="description"]')
-    if (meta) meta.setAttribute('content', article.title + " — Guía inmobiliaria de PropiHouse en L'Hospitalet de Llobregat.")
-    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+    if (meta) meta.setAttribute('content', article.title + " — Guía inmobiliaria de Propi House en L'Hospitalet de Llobregat.")
+    return () => { document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat" }
   }, [article?.title])
 
   if (!article) {
@@ -1032,7 +1038,7 @@ export default function ArticlePage() {
                 {article.readingTime} de lectura
               </span>
               <span className="w-1 h-1 rounded-full bg-text-muted" />
-              <span>PropiHouse</span>
+              <span>Propi House</span>
             </div>
           </RevealSection>
         </div>

@@ -12,6 +12,7 @@ interface CardOption {
 
 const HOUSING_TYPES: CardOption[] = [
   { label: 'Piso', value: 'piso', icon: '▦' },
+  { label: 'Planta baja', value: 'planta-baja', icon: '▬' },
   { label: 'Casa', value: 'casa', icon: '⌂' },
   { label: 'Ático', value: 'atico', icon: '△' },
   { label: 'Dúplex', value: 'duplex', icon: '▥' },
@@ -193,7 +194,7 @@ function ResultScreen({
     new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)
 
   const handleShareWhatsApp = () => {
-    const text = `He valorado mi vivienda en L'Hospitalet con PropiHouse: entre ${formatEur(lowValue)} y ${formatEur(highValue)}`
+    const text = `He valorado mi vivienda en L'Hospitalet con Propi House: entre ${formatEur(lowValue)} y ${formatEur(highValue)}`
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
   }
 
@@ -241,26 +242,40 @@ function ResultScreen({
         </div>
 
         {/* Explanation */}
-        <div className="max-w-lg mx-auto text-center mb-12">
-          <p className="text-[#1A1A1A]/50 text-[15px] leading-relaxed font-light font-[Lato]">
-            Esta estimación se basa en datos generales del mercado en L'Hospitalet de Llobregat. El valor final depende
-            de factores como la presentación de la vivienda, el tipo de comprador, la estrategia de venta y el momento
-            concreto del mercado.
+        <div className="max-w-xl mx-auto mb-12">
+          <p className="text-[#1A1A1A]/55 text-[15px] leading-relaxed font-light font-[Lato] mb-5">
+            Este resultado es una buena referencia para empezar a entender el valor de tu vivienda.
+            Sin embargo, el resultado final depende de cómo se plantee la vivienda en el mercado:
           </p>
+          <ul className="space-y-2 pl-1">
+            {[
+              'cómo se presenta la vivienda',
+              'el tipo de comprador',
+              'la estrategia de salida al mercado',
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-3 text-[#1A1A1A]/55 text-[15px] font-light font-[Lato]">
+                <span className="mt-[9px] flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#868C4D]/70" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        {/* CTA */}
-        <div className="rounded-2xl border border-[#1A1A1A]/[0.06] bg-white/50 p-8 md:p-10 text-center mb-10">
-          <h3 className="font-[Playfair_Display] text-xl md:text-2xl font-light text-[#1A1A1A] tracking-tight mb-2">
-            Quieres afinar este valor?
+        {/* CTA — emphasized "afinar" block */}
+        <div className="rounded-3xl border-2 border-[#2A79A9]/15 bg-gradient-to-br from-[#2A79A9]/[0.04] via-white/60 to-[#868C4D]/[0.04] p-9 md:p-12 text-center mb-10 shadow-[0_4px_30px_rgba(42,121,169,0.06)]">
+          <p className="text-[#868C4D] text-xs font-semibold tracking-[0.2em] uppercase mb-4 font-[Lato]">
+            ¿Te ha sorprendido el resultado?
+          </p>
+          <h3 className="font-[Playfair_Display] text-3xl md:text-4xl font-normal text-[#1A1A1A] tracking-tight leading-tight mb-3">
+            ¿Quieres afinar el valor?
           </h3>
-          <p className="text-[#1A1A1A]/45 text-[15px] font-light mb-6 font-[Lato]">
+          <p className="text-[#1A1A1A]/55 text-base md:text-[17px] font-light mb-7 font-[Lato] max-w-md mx-auto leading-relaxed">
             Podemos analizar tu vivienda en detalle y darte una valoración precisa.
           </p>
           <button
             type="button"
             onClick={onRefine}
-            className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-7 py-4 rounded-xl text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato] cursor-pointer"
+            className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-8 py-4 rounded-2xl text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato] cursor-pointer hover:shadow-lg hover:shadow-[#2A79A9]/25"
           >
             Analizar mi vivienda
             <svg
@@ -468,7 +483,7 @@ function PageShell({ children, headerRight }: { children: React.ReactNode; heade
           to="/"
           className="font-[Playfair_Display] text-lg tracking-tight text-[#1A1A1A] hover:opacity-70 transition-opacity"
         >
-          PropiHouse
+          Propi House
         </Link>
         {headerRight}
       </header>
@@ -565,10 +580,10 @@ function CountSelector({
    ──────────────────────────────────────────── */
 export default function ValoradorPage() {
   useEffect(() => {
-    document.title = "Valorador de vivienda en L'Hospitalet de Llobregat — PropiHouse"
+    document.title = "Valorador de vivienda en L'Hospitalet de Llobregat — Propi House"
     const meta = document.querySelector('meta[name="description"]')
     if (meta) meta.setAttribute('content', "Calcula el valor orientativo de tu vivienda en L'Hospitalet de Llobregat. Herramienta gratuita sin necesidad de registro.")
-    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+    return () => { document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat" }
   }, [])
 
   const [step, setStep] = useState(1)
@@ -677,7 +692,7 @@ export default function ValoradorPage() {
             to="/cuanto-vale-mi-vivienda"
             className="text-sm text-[#1A1A1A]/40 hover:text-[#1A1A1A]/60 transition-colors font-[Lato]"
           >
-            Mas sobre valoración
+            Más sobre valoración
           </Link>
         }
       >
@@ -698,13 +713,13 @@ export default function ValoradorPage() {
   /* ─── Refinement form ─── */
   if (phase === 'refine') {
     const refineStepTitles: Record<number, string> = {
-      1: 'Donde se encuentra exactamente la vivienda?',
-      2: 'Cuentaños un poco más sobre la vivienda',
-      3: 'Como es la luz natural en la vivienda?',
-      4: 'En que planta se encuentra?',
-      5: 'En que momento estás con tu vivienda?',
-      6: 'Cuando te gustaria tomar una decisión?',
-      7: 'Donde te podemos enviar el analisis?',
+      1: '¿Dónde se encuentra exactamente la vivienda?',
+      2: 'Cuéntanos un poco más sobre la vivienda',
+      3: '¿Cómo es la luz natural en la vivienda?',
+      4: '¿En qué planta se encuentra?',
+      5: '¿En qué momento estás con tu vivienda?',
+      6: '¿Cuándo te gustaría tomar una decisión?',
+      7: '¿Dónde te podemos enviar el análisis?',
     }
 
     return (
@@ -724,7 +739,7 @@ export default function ValoradorPage() {
             to="/"
             className="font-[Playfair_Display] text-lg tracking-tight text-[#1A1A1A] hover:opacity-70 transition-opacity"
           >
-            PropiHouse
+            Propi House
           </Link>
           <span className="hidden sm:block text-xs text-[#1A1A1A]/30 tracking-widest uppercase font-[Lato]">
             Analisis detallado
@@ -765,7 +780,7 @@ export default function ValoradorPage() {
                 {/* Optional catastral */}
                 <div className="rounded-xl border border-[#1A1A1A]/[0.06] bg-white/60 p-5">
                   <p className="text-sm text-[#1A1A1A]/40 font-[Lato] mb-3">
-                    Quieres ayudarnos a afinar más el analisis?
+                    ¿Quieres ayudarnos a afinar más el análisis?
                   </p>
                   <label className="block text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-2">
                     Referencia catastral
@@ -778,7 +793,7 @@ export default function ValoradorPage() {
                     className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-3.5 text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
                   />
                   <p className="mt-2 text-xs text-[#1A1A1A]/30 font-[Lato]">
-                    Solo lo usamos para hacer un analisis más preciso
+                    Solo lo usamos para hacer un análisis más preciso
                   </p>
                 </div>
 
@@ -786,7 +801,7 @@ export default function ValoradorPage() {
                   type="button"
                   onClick={refineGoForward}
                   disabled={!refDireccion.trim()}
-                  className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                  className="w-full rounded-2xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
                 >
                   Continuar
                 </button>
@@ -813,7 +828,7 @@ export default function ValoradorPage() {
                   type="button"
                   onClick={refineGoForward}
                   disabled={!refHabitaciones || !refBanos}
-                  className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                  className="w-full rounded-2xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
                 >
                   Continuar
                 </button>
@@ -909,24 +924,25 @@ export default function ValoradorPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-2">Email (opcional)</label>
+                  <label className="block text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-2">Email</label>
                   <input
                     type="email"
                     value={refEmail}
                     onChange={(e) => setRefEmail(e.target.value)}
                     placeholder="tu@email.com"
+                    required
                     className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
                   />
                 </div>
 
                 <p className="text-sm text-[#1A1A1A]/35 font-[Lato] leading-relaxed">
-                  Te enviaremos el analisis y, si quieres, te ayudaremos a interpretarlo.
+                  Te enviaremos el análisis y, si quieres, te ayudaremos a interpretarlo.
                 </p>
 
                 {/* Photo upload section */}
                 <div className="rounded-xl border border-[#1A1A1A]/[0.06] bg-white/60 p-5">
                   <p className="text-sm text-[#1A1A1A]/40 font-[Lato] mb-3">
-                    Quieres que el analisis sea más preciso? Puedes anadir algunas fotos de la vivienda.
+                    ¿Quieres que el análisis sea más preciso? Puedes añadir algunas fotos de la vivienda.
                   </p>
                   <input
                     ref={fileInputRef}
@@ -958,10 +974,10 @@ export default function ValoradorPage() {
                 <button
                   type="button"
                   onClick={handleRefineSubmit}
-                  disabled={!refNombre.trim() || !refTeléfono.trim()}
-                  className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                  disabled={!refNombre.trim() || !refTeléfono.trim() || !refEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(refEmail.trim())}
+                  className="w-full rounded-2xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
                 >
-                  Recibir mi analisis
+                  Recibir mi análisis
                 </button>
               </div>
             </StepWrapper>
@@ -1016,7 +1032,7 @@ export default function ValoradorPage() {
           to="/"
           className="font-[Playfair_Display] text-lg tracking-tight text-[#1A1A1A] hover:opacity-70 transition-opacity"
         >
-          PropiHouse
+          Propi House
         </Link>
         <span className="hidden sm:block text-xs text-[#1A1A1A]/30 tracking-widest uppercase font-[Lato]">
           Valorador gratuito
@@ -1049,9 +1065,9 @@ export default function ValoradorPage() {
         {step > 1 && (
           <div className="mt-10 mb-8 text-center max-w-xl mx-auto">
             <h2 className="font-[Playfair_Display] text-xl md:text-2xl font-light text-[#1A1A1A] tracking-tight">
-              {step === 2 && 'Donde se encuentra la vivienda?'}
-              {step === 3 && 'Cuantos metros tiene la vivienda?'}
-              {step === 4 && 'Como describirias el estado de la vivienda?'}
+              {step === 2 && '¿Dónde se encuentra la vivienda?'}
+              {step === 3 && '¿Cuántos metros tiene la vivienda?'}
+              {step === 4 && '¿Cómo describirías el estado de la vivienda?'}
               {step === 5 && 'Tiene alguno de estos elementos?'}
             </h2>
             {step === 3 && (
@@ -1065,7 +1081,7 @@ export default function ValoradorPage() {
           {/* STEP 1 - Housing type */}
           <StepWrapper active={step === 1} direction={direction}>
             <p className="text-xs tracking-widest uppercase text-[#1A1A1A]/35 mb-4 font-medium font-[Lato] text-center">
-              Qué tipo de vivienda quieres valorar?
+              ¿Qué tipo de vivienda quieres valorar?
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {HOUSING_TYPES.map((opt) => (
@@ -1114,7 +1130,7 @@ export default function ValoradorPage() {
                 type="button"
                 onClick={goForward}
                 disabled={!ubicación.trim()}
-                className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                className="w-full rounded-2xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
               >
                 Continuar
               </button>
@@ -1137,7 +1153,7 @@ export default function ValoradorPage() {
                 <input
                   type="range"
                   min={20}
-                  max={300}
+                  max={500}
                   step={5}
                   value={metros}
                   onChange={(e) => setMetros(Number(e.target.value))}
@@ -1147,7 +1163,7 @@ export default function ValoradorPage() {
                 />
                 <div className="flex justify-between mt-2 text-xs text-[#1A1A1A]/25 font-[Lato]">
                   <span>20 m2</span>
-                  <span>300 m2</span>
+                  <span>500 m2</span>
                 </div>
               </div>
 
@@ -1168,7 +1184,7 @@ export default function ValoradorPage() {
               <button
                 type="button"
                 onClick={goForward}
-                className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] cursor-pointer font-[Lato]"
+                className="w-full rounded-2xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] cursor-pointer font-[Lato]"
               >
                 Continuar
               </button>
@@ -1240,7 +1256,7 @@ export default function ValoradorPage() {
                 type="button"
                 onClick={handleFinish}
                 disabled={extras.length === 0}
-                className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                className="w-full rounded-2xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
               >
                 Ver resultado
               </button>

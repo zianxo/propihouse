@@ -28,7 +28,7 @@ const ARTICLES: {
     slug: 'errores-vender-vivienda',
     category: 'Entender los errores',
     description:
-      'Los errores más comúnes que cometen los propietarios al vender y como puedes evitarlos para conseguir un mejor resultado.',
+      'Los errores más comunes que cometen los propietarios al vender y cómo puedes evitarlos para conseguir un mejor resultado.',
   },
   {
     title: 'Cómo preparar una vivienda antes de venderla',
@@ -63,7 +63,7 @@ const ARTICLES: {
     slug: 'herencia-divorcio-cambio-vida',
     category: 'Situaciones personales',
     description:
-      'Como gestionar una vivienda cuando la situación personal cambia y qué opciones tienes según tu caso concreto.',
+      'Cómo gestionar una vivienda cuando la situación personal cambia y qué opciones tienes según tu caso concreto.',
   },
   {
     title: 'Errores habituales al comprar una vivienda',
@@ -176,10 +176,10 @@ function ArticleCard({
 
 export default function GuiaPage() {
   useEffect(() => {
-    document.title = "Guía inmobiliaria — PropiHouse"
+    document.title = "Guía inmobiliaria — Propi House"
     const meta = document.querySelector('meta[name="description"]')
     if (meta) meta.setAttribute('content', 'Artículos prácticos sobre comprar, vender y alquilar vivienda en L\'Hospitalet de Llobregat.')
-    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+    return () => { document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat" }
   }, [])
 
   return (

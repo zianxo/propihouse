@@ -82,10 +82,10 @@ const ARTICLES = [
    ──────────────────────────────────────────── */
 export default function CuantoValePage() {
   useEffect(() => {
-    document.title = "Cuánto vale mi vivienda en L'Hospitalet — PropiHouse"
+    document.title = "Cuánto vale mi vivienda en L'Hospitalet — Propi House"
     const meta = document.querySelector('meta[name="description"]')
     if (meta) meta.setAttribute('content', 'Descubre el valor orientativo de tu vivienda en L\'Hospitalet de Llobregat con nuestro valorador gratuito.')
-    return () => { document.title = "PropiHouse — Inmobiliaria en L'Hospitalet de Llobregat" }
+    return () => { document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat" }
   }, [])
 
   return (
@@ -257,7 +257,7 @@ export default function CuantoValePage() {
           <RevealSection>
             <div className="mb-14">
               <h2 className="font-[Playfair_Display] text-3xl md:text-4xl font-light text-white tracking-tight leading-[1.15] mb-4">
-                Qué hacemos en PropiHouse después de conocer el valor?
+                Qué hacemos en Propi House después de conocer el valor?
               </h2>
               <p className="text-white/70 text-lg font-light max-w-2xl font-[Lato]">
                 Un número no es suficiente. Esto es lo que hacemos para que tomes la mejor decisión posible.
@@ -405,7 +405,7 @@ export default function CuantoValePage() {
             </div>
 
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">
-              Antes de tomar una decisión, conviene entender bien la situación
+              Antes de tomar una decisión, conviene entender bien la{' '}situación
             </h2>
             <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
               Te ayudamos a ver tu caso con perspectiva. Sin prisa, sin compromiso.

@@ -2,9 +2,9 @@ import { useEffect } from 'react'
 
 export default function PrivacidadPage() {
   useEffect(() => {
-    document.title = "Política de Privacidad — PropiHouse"
+    document.title = "Política de Privacidad — Propi House"
     const meta = document.querySelector('meta[name="description"]')
-    if (meta) meta.setAttribute('content', 'Política de privacidad de PropiHouse. Información sobre el tratamiento de datos personales según el RGPD y la LOPD-GDD.')
+    if (meta) meta.setAttribute('content', 'Política de privacidad de Propi House. Información sobre el tratamiento de datos personales según el RGPD y la LOPD-GDD.')
   }, [])
 
   return (
@@ -19,7 +19,7 @@ export default function PrivacidadPage() {
               En cumplimiento del Reglamento General de Protección de Datos (RGPD) y la Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales (LOPD-GDD), le informamos de que el responsable del tratamiento de sus datos personales es:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-text-light">
-              <li><strong>Titular:</strong> Pau Manovel (PropiHouse)</li>
+              <li><strong>Titular:</strong> Gabinete Punto L&apos;Hospitalet SL (Propi House)</li>
               <li><strong>Dirección:</strong> Carrer d'Enric Prat de la Riba, 187, 08901 L'Hospitalet de Llobregat, Barcelona</li>
               <li><strong>Correo electrónico:</strong> hola@propihouse.es</li>
               <li><strong>Teléfono:</strong> 637 86 36 78</li>
@@ -45,7 +45,7 @@ export default function PrivacidadPage() {
             </p>
             <ul className="list-disc pl-6 space-y-2 text-text-light">
               <li>Gestionar y responder a sus consultas, solicitudes de información o peticiones de contacto.</li>
-              <li>Enviarle información relacionada con los servicios inmobiliarios de PropiHouse que haya solicitado.</li>
+              <li>Enviarle información relacionada con los servicios inmobiliarios de Propi House que haya solicitado.</li>
               <li>Mantener la comunicación necesaria derivada de la relación comercial o precontractual.</li>
             </ul>
 
@@ -97,7 +97,7 @@ export default function PrivacidadPage() {
 
             <h2 className="font-serif text-xl font-medium text-dark mt-10 mb-4">9. Seguridad de los datos</h2>
             <p className="text-text-light text-base leading-[1.8]">
-              PropiHouse adopta las medidas técnicas y organizativas necesarias para garantizar la seguridad de sus datos personales y evitar su alteración, pérdida, tratamiento o acceso no autorizado, conforme al estado de la tecnología y la naturaleza de los datos almacenados.
+              Propi House adopta las medidas técnicas y organizativas necesarias para garantizar la seguridad de sus datos personales y evitar su alteración, pérdida, tratamiento o acceso no autorizado, conforme al estado de la tecnología y la naturaleza de los datos almacenados.
             </p>
 
             <p className="text-text-light text-sm mt-12 text-text-light/60">

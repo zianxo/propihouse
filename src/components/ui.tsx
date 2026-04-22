@@ -1,5 +1,139 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+
+/* ═══════════════════════════════════════════════════════════════
+   Shared scroll-linked method timeline
+   Used across Comprar / Vender / Alquilar / Financiar / ComoTrabajamos
+   so the step-by-step sections all look and animate identically.
+   ═══════════════════════════════════════════════════════════════ */
+
+export interface MethodStep {
+  num: string | number
+  title: string
+  desc: string
+}
+
+export function MethodTimeline({
+  steps,
+  color = 'blue',
+}: {
+  steps: MethodStep[]
+  color?: 'blue' | 'olive'
+}) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const dotRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [progress, setProgress] = useState(0)
+  const [reached, setReached] = useState<boolean[]>(() => steps.map(() => false))
+  const rafRef = useRef<number>(0)
+
+  useEffect(() => {
+    const update = () => {
+      const container = containerRef.current
+      if (!container) return
+      const rect = container.getBoundingClientRect()
+      const triggerY = window.innerHeight * 0.62
+      const raw = (triggerY - rect.top) / (rect.bottom - rect.top)
+      setProgress(Math.max(0, Math.min(1, raw)))
+      const next = dotRefs.current.map((dot) => {
+        if (!dot) return false
+        const r = dot.getBoundingClientRect()
+        return r.top + r.height / 2 <= triggerY
+      })
+      setReached((prev) =>
+        prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next
+      )
+    }
+    const onScroll = () => {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(update)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+    update()
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      cancelAnimationFrame(rafRef.current)
+    }
+  }, [])
+
+  const isBlue = color === 'blue'
+  const fillGradient = isBlue
+    ? 'from-[#2A79A9] via-[#2A79A9]/85 to-[#2A79A9]/40'
+    : 'from-[#868C4D] via-[#868C4D]/85 to-[#868C4D]/40'
+  const glowColor = isBlue ? 'rgba(42,121,169,0.32)' : 'rgba(134,140,77,0.3)'
+  const activeBg = isBlue ? 'bg-[#2A79A9]' : 'bg-[#868C4D]'
+  const activeBorder = isBlue ? 'border-[#2A79A9]' : 'border-[#868C4D]'
+  const activeGlow = isBlue
+    ? '0 0 0 6px rgba(42,121,169,0.12), 0 4px 14px rgba(42,121,169,0.22)'
+    : '0 0 0 6px rgba(134,140,77,0.12), 0 4px 14px rgba(134,140,77,0.22)'
+  const inactiveBorder = isBlue ? 'border-[#2A79A9]/30' : 'border-[#868C4D]/40'
+  const inactiveText = isBlue ? 'text-[#2A79A9]' : 'text-[#868C4D]'
+
+  return (
+    <div ref={containerRef} className="relative mt-16 md:mt-20">
+      {/* Gray base line */}
+      <div className="absolute left-[21px] md:left-[21px] top-0 bottom-0 w-[2px] bg-[#1A1A1A]/[0.08] rounded-full" />
+
+      {/* Animated filled line */}
+      <div
+        className={`absolute left-[21px] md:left-[21px] top-0 w-[2px] rounded-full bg-gradient-to-b ${fillGradient}`}
+        style={{
+          height: `${progress * 100}%`,
+          transition: 'height 120ms linear',
+          boxShadow: `0 0 12px ${glowColor}`,
+        }}
+      />
+
+      <div className="space-y-12 md:space-y-14">
+        {steps.map((item, i) => {
+          const active = reached[i]
+          return (
+            <div key={String(item.num)} className="relative flex gap-6 md:gap-8">
+              {/* Dot — Comprar-style, slightly larger number */}
+              <div className="relative z-10 flex-shrink-0">
+                <div
+                  ref={(el) => { dotRefs.current[i] = el }}
+                  className={`w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
+                    active
+                      ? `${activeBg} ${activeBorder} scale-110`
+                      : `bg-[#FDFBF5] ${inactiveBorder}`
+                  }`}
+                  style={active ? { boxShadow: activeGlow } : undefined}
+                >
+                  <span
+                    className={`font-[Playfair_Display] text-base md:text-lg font-bold transition-colors duration-500 ${
+                      active ? 'text-white' : inactiveText
+                    }`}
+                  >
+                    {item.num}
+                  </span>
+                </div>
+              </div>
+
+              {/* Content — hidden until reached, domino reveal */}
+              <div
+                className="pt-1 pb-2 transition-all duration-[700ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+                style={{
+                  opacity: active ? 1 : 0,
+                  transform: active ? 'translateY(0)' : 'translateY(12px)',
+                  transitionDelay: active ? `${i * 80}ms` : '0ms',
+                }}
+              >
+                <h3 className="font-[Playfair_Display] text-xl md:text-2xl text-[#1A1A1A] mb-3">
+                  {item.title}
+                </h3>
+                <p className="text-base leading-[1.75] text-[#1A1A1A]/65 max-w-lg">
+                  {item.desc}
+                </p>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
 
 /* ─── Scroll reveal hook ─── */
 function useReveal() {
@@ -52,8 +186,8 @@ export function SectionHeading({
   light = false,
 }: {
   eyebrow?: string
-  title: string
-  subtitle?: string
+  title: ReactNode
+  subtitle?: ReactNode
   center?: boolean
   light?: boolean
 }) {
