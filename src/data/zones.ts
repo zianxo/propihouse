@@ -178,9 +178,6 @@ const ZONE_META: ZoneMeta[] = [
 
 export const BASE_PRICE_M2: number = zonesData.basePriceM2
 export const LAST_REVIEWED: string = zonesData.lastReviewed
-/** 'seed' for the hand-written initial values, 'fotocasa' once the cron
- *  has run at least once. Shown subtly in the footer caption. */
-export const ZONES_SOURCE: string = zonesData.source ?? 'seed'
 
 const multipliers: Record<string, number> = zonesData.multipliers as Record<
   string,
@@ -240,6 +237,5 @@ const SPANISH_MONTHS = [
 export function lastReviewedLabel(): string {
   const [y, m] = LAST_REVIEWED.split('-').map(Number)
   const month = SPANISH_MONTHS[(m ?? 1) - 1] ?? ''
-  const suffix = ZONES_SOURCE === 'fotocasa' ? ' · datos Fotocasa' : ''
-  return `Baremos actualizados en ${month} de ${y}${suffix}`
+  return `Baremos actualizados en ${month} de ${y}`
 }
