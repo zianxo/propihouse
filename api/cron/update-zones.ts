@@ -33,8 +33,8 @@
  */
 
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { ZONE_METADATA, type ZoneMeta } from '../../src/data/zones'
-import zonesData from '../../src/data/zones.data.json'
+import { ZONE_METADATA, type ZoneMeta } from '../../src/data/zones.js'
+import zonesData from '../../src/data/zones.data.json' with { type: 'json' }
 
 /** Vercel Hobby default is 10s. 30s is plenty for 13 concurrent fetches
  *  + GitHub API round-trip; still well under the Hobby 60s ceiling. */

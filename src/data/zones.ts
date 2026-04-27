@@ -24,7 +24,7 @@
  *  codes.
  */
 
-import zonesData from './zones.data.json'
+import zonesData from './zones.data.json' with { type: 'json' }
 
 export interface ZoneMeta {
   slug: string
