@@ -3,14 +3,13 @@
  *  L'Hospitalet de Llobregat — zone baremos for the Valorador
  * ═══════════════════════════════════════════════════════════════════════
  *
- *  STATIC (this file): barrio list, slugs, aliases, Fotocasa URLs.
- *  Rarely changes. Edit only when a new barrio is added or an alias
- *  should be tweaked.
+ *  STATIC (this file): barrio list, slugs, aliases, upstream price-index
+ *  slugs. Rarely changes.
  *
  *  DYNAMIC (zones.data.json): base price, multipliers, last-reviewed.
  *  Updated automatically by the `api/cron/update-zones` Vercel cron,
- *  which scrapes Fotocasa's barrio price-index pages weekly and
- *  commits a fresh JSON. That commit triggers an auto-redeploy.
+ *  which scrapes the upstream price-index pages weekly and commits a
+ *  fresh JSON. That commit triggers an auto-redeploy.
  *
  *  Formula the Valorador applies:
  *     pricePerM²  =  basePriceM²  ×  zone.mult  ×  conditionMult  ×  (1 + extras)
@@ -22,22 +21,39 @@
  *  The matcher below is case-insensitive, diacritic-insensitive, and
  *  uses longest-alias-first so explicit barrio names beat bare postal
  *  codes.
+ *
+ *  ── Public vs internal split ──
+ *  `Zone` (exported, consumed by the React app) carries only the
+ *  fields the UI / matcher need: slug, displayName, district, aliases,
+ *  mult.
+ *  `ZoneMeta` (exported for the server-side cron) additionally carries
+ *  the upstream `priceIndexSlug` for each barrio. We deliberately
+ *  PROJECT only the public fields when building ZONES, so any
+ *  upstream-source identifier never leaks into the React bundle that
+ *  ships to browsers.
  */
 
 import zonesData from './zones.data.json' with { type: 'json' }
 
+/** Public shape — what the React app consumes. */
+export interface Zone {
+  slug: string
+  displayName: string
+  district: string
+  aliases: string[]
+  mult: number
+}
+
+/** Server-side shape — used by the cron, never imported by the client. */
 export interface ZoneMeta {
   slug: string
   displayName: string
   district: string
   aliases: string[]
-  /** Fotocasa barrio slug — null if this barrio doesn't have a dedicated
-   *  Fotocasa page (the cron will skip it and keep the previous mult). */
-  fotocasaSlug: string | null
-}
-
-export interface Zone extends ZoneMeta {
-  mult: number
+  /** Upstream barrio slug used by the price-index scraper. `null` when
+   *  no dedicated upstream page exists (cron skips and keeps the
+   *  previous mult). */
+  priceIndexSlug: string | null
 }
 
 /* ─── Static metadata ────────────────────────────────────────────────── */
@@ -48,7 +64,7 @@ const ZONE_META: ZoneMeta[] = [
     displayName: 'Centre',
     district: 'Distrito I',
     aliases: ['centre', 'centro', '08901'],
-    fotocasaSlug: 'centre',
+    priceIndexSlug: 'centre',
   },
   {
     slug: 'sant-josep',
@@ -65,14 +81,14 @@ const ZONE_META: ZoneMeta[] = [
       "l'illa",
       '08908',
     ],
-    fotocasaSlug: 'sant-josep',
+    priceIndexSlug: 'sant-josep',
   },
   {
     slug: 'sanfeliu',
     displayName: 'Sanfeliu',
     district: 'Distrito I',
     aliases: ['sanfeliu', 'san feliu', 'sant feliu'],
-    fotocasaSlug: 'sanfeliu',
+    priceIndexSlug: 'sanfeliu',
   },
 
   /* ─── Distrito II — Collblanc-La Torrassa ────────────────────────── */
@@ -81,14 +97,14 @@ const ZONE_META: ZoneMeta[] = [
     displayName: 'Collblanc',
     district: 'Distrito II',
     aliases: ['collblanc', 'coll blanc', 'coll-blanc'],
-    fotocasaSlug: 'collblanc',
+    priceIndexSlug: 'collblanc',
   },
   {
     slug: 'la-torrassa',
     displayName: 'La Torrassa',
     district: 'Distrito II',
     aliases: ['torrassa', 'la torrassa', '08903'],
-    fotocasaSlug: 'torrassa',
+    priceIndexSlug: 'torrassa',
   },
 
   /* ─── Distrito III — Santa Eulàlia-Granvia Sud ──────────────────── */
@@ -104,7 +120,7 @@ const ZONE_META: ZoneMeta[] = [
       'santa eulalia de provençana',
       '08902',
     ],
-    fotocasaSlug: 'santa-eulalia',
+    priceIndexSlug: 'santa-eulalia',
   },
   {
     slug: 'granvia-sud',
@@ -117,10 +133,10 @@ const ZONE_META: ZoneMeta[] = [
       "gran via l'hospitalet",
       'granvia l hospitalet',
     ],
-    // Fotocasa groups this with Bellvitge / El Gornal under "Granvia LH".
-    // No standalone per-barrio page exists, so we leave the multiplier
-    // manual here and the cron skips this slug.
-    fotocasaSlug: null,
+    // Upstream groups this with Bellvitge / El Gornal under a combined
+    // district label. No standalone per-barrio page exists, so the
+    // multiplier stays manual and the cron skips this slug.
+    priceIndexSlug: null,
   },
 
   /* ─── Distrito IV — La Florida-Les Planes ───────────────────────── */
@@ -129,14 +145,14 @@ const ZONE_META: ZoneMeta[] = [
     displayName: 'La Florida',
     district: 'Distrito IV',
     aliases: ['florida', 'la florida'],
-    fotocasaSlug: 'la-florida',
+    priceIndexSlug: 'la-florida',
   },
   {
     slug: 'les-planes',
     displayName: 'Les Planes',
     district: 'Distrito IV',
     aliases: ['planes', 'les planes', 'las planas', '08905'],
-    fotocasaSlug: 'les-planes',
+    priceIndexSlug: 'les-planes',
   },
 
   /* ─── Distrito V — Pubilla Cases-Can Serra ──────────────────────── */
@@ -145,14 +161,14 @@ const ZONE_META: ZoneMeta[] = [
     displayName: 'Pubilla Cases',
     district: 'Distrito V',
     aliases: ['pubilla cases', 'pubilla', '08906'],
-    fotocasaSlug: 'pubilla-cases',
+    priceIndexSlug: 'pubilla-cases',
   },
   {
     slug: 'can-serra',
     displayName: 'Can Serra',
     district: 'Distrito V',
     aliases: ['can serra', 'ca serra'],
-    fotocasaSlug: 'can-serra',
+    priceIndexSlug: 'can-serra',
   },
 
   /* ─── Distrito VI — Bellvitge-El Gornal ─────────────────────────── */
@@ -161,16 +177,16 @@ const ZONE_META: ZoneMeta[] = [
     displayName: 'Bellvitge',
     district: 'Distrito VI',
     aliases: ['bellvitge', 'bellvítge', '08907'],
-    fotocasaSlug: 'bellvitge',
+    priceIndexSlug: 'bellvitge',
   },
   {
     slug: 'el-gornal',
     displayName: 'El Gornal',
     district: 'Distrito VI',
     aliases: ['gornal', 'el gornal'],
-    // Fotocasa has no standalone page — only the grouped district.
+    // Upstream has no standalone page — only the grouped district.
     // Kept manual; cron skips.
-    fotocasaSlug: null,
+    priceIndexSlug: null,
   },
 ]
 
@@ -184,13 +200,18 @@ const multipliers: Record<string, number> = zonesData.multipliers as Record<
   number
 >
 
+/* Explicit field projection — strips `priceIndexSlug` so the client
+ * bundle never contains the upstream identifier. */
 export const ZONES: Zone[] = ZONE_META.map((z) => ({
-  ...z,
+  slug: z.slug,
+  displayName: z.displayName,
+  district: z.district,
+  aliases: z.aliases,
   mult: multipliers[z.slug] ?? 1,
 }))
 
-/** Exposed for the cron so it can iterate and build update payloads
- *  without re-importing the module itself. */
+/** Exposed for the server-side cron only. Never import this from
+ *  client code or the upstream slug ships to browsers. */
 export const ZONE_METADATA: ZoneMeta[] = ZONE_META
 
 /* ─── Matching ──────────────────────────────────────────────────────── */

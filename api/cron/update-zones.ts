@@ -4,7 +4,7 @@
  * ═══════════════════════════════════════════════════════════════════════
  *
  *  Runs weekly (see vercel.json). For each barrio that has a
- *  `fotocasaSlug` in src/data/zones.ts, fetch Fotocasa's price-index
+ *  `priceIndexSlug` in src/data/zones.ts, fetch Fotocasa's price-index
  *  page, extract €/m², recompute multipliers, and commit the new
  *  src/data/zones.data.json to git via the GitHub REST API. The commit
  *  triggers a Vercel redeploy so the new numbers ship without any
@@ -24,7 +24,7 @@
  *      commit a gutted dataset)
  *    - each multiplier change is clamped to ±15% vs the previous run
  *    - if Fotocasa returns no change at all, the cron is a no-op
- *    - barrios without a fotocasaSlug keep their previous multiplier
+ *    - barrios without a priceIndexSlug keep their previous multiplier
  *
  *  Adding Idealista later: write a `scrapeIdealista(slug)` function
  *  that returns `{ pricePerM2: number } | null` and push its result
@@ -143,8 +143,8 @@ async function scrapeFotocasa(slug: string): Promise<Observation | null> {
 async function scrapeBarrio(meta: ZoneMeta): Promise<BarrioResult> {
   const observations: Observation[] = []
 
-  if (meta.fotocasaSlug) {
-    const obs = await scrapeFotocasa(meta.fotocasaSlug)
+  if (meta.priceIndexSlug) {
+    const obs = await scrapeFotocasa(meta.priceIndexSlug)
     if (obs) observations.push(obs)
   }
 
@@ -333,7 +333,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const mm = String(now.getUTCMonth() + 1).padStart(2, '0')
   const newJson = {
     lastReviewed: `${yyyy}-${mm}`,
-    source: 'fotocasa',
     basePriceM2: Math.round(newBase),
     multipliers: newMults,
   }
