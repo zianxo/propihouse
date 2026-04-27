@@ -1,0 +1,20 @@
+{
+  "lastReviewed": "2026-04",
+  "source": "fotocasa",
+  "basePriceM2": 3170,
+  "multipliers": {
+    "centre": 1.189,
+    "sant-josep": 0.992,
+    "sanfeliu": 1.005,
+    "collblanc": 1.000,
+    "la-torrassa": 1.000,
+    "santa-eulalia": 1.230,
+    "granvia-sud": 0.95,
+    "la-florida": 0.944,
+    "les-planes": 0.767,
+    "pubilla-cases": 0.976,
+    "can-serra": 1.172,
+    "bellvitge": 0.919,
+    "el-gornal": 0.72
+  }
+}

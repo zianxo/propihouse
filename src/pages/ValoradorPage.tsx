@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
+import {
+  BASE_PRICE_M2,
+  lastReviewedLabel,
+  matchZone,
+  zoneLabel,
+} from '../data/zones'
 
 /* ────────────────────────────────────────────
    Types & data
@@ -52,7 +58,6 @@ const EXTRA_BONUS: Record<string, number> = {
   ninguno: 0,
 }
 
-const BASE_PRICE_M2 = 2800 // EUR/m2 base for L'Hospitalet
 
 /* ────────────────────────────────────────────
    Progress bar
@@ -166,11 +171,13 @@ function ResultScreen({
   metros,
   condition,
   extras,
+  ubicacion,
   onRefine,
 }: {
   metros: number
   condition: string
   extras: string[]
+  ubicacion: string
   onRefine: () => void
 }) {
   const [visible, setVisible] = useState(false)
@@ -181,11 +188,13 @@ function ResultScreen({
   }, [])
 
   /* Calculate price */
+  const zone = matchZone(ubicacion)
+  const zoneMult = zone?.mult ?? 1
   const condMult = CONDITION_MULTIPLIER[condition] ?? 1
   const extraBonus = extras
     .filter((e) => e !== 'ninguno')
     .reduce((sum, e) => sum + (EXTRA_BONUS[e] ?? 0), 0)
-  const pricePerM2 = BASE_PRICE_M2 * condMult * (1 + extraBonus)
+  const pricePerM2 = BASE_PRICE_M2 * zoneMult * condMult * (1 + extraBonus)
   const midValue = Math.round(metros * pricePerM2)
   const lowValue = Math.round(midValue * 0.9)
   const highValue = Math.round(midValue * 1.1)
@@ -220,12 +229,21 @@ function ResultScreen({
         </div>
 
         {/* Title */}
-        <h2 className="font-[Playfair_Display] text-2xl md:text-3xl font-light text-[#1A1A1A] tracking-tight text-center mb-10">
+        <h2 className="font-[Playfair_Display] text-2xl md:text-3xl font-light text-[#1A1A1A] tracking-tight text-center mb-3">
           Valor estimado de tu vivienda
         </h2>
 
+        {/* Zone indicator */}
+        <p className="text-center text-[13px] text-[#1A1A1A]/50 font-[Lato] mb-10">
+          <svg className="inline-block w-3.5 h-3.5 mr-1.5 -mt-0.5 text-[#868C4D]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          {zoneLabel(zone)}
+        </p>
+
         {/* Big price */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-6">
           <div className="inline-block rounded-3xl bg-white border-2 border-[#1A1A1A]/[0.06] shadow-[0_4px_40px_rgba(0,0,0,0.04)] px-10 md:px-16 py-10">
             <p className="text-sm text-[#1A1A1A]/35 mb-2 tracking-widest uppercase font-[Lato]">
               Entre
@@ -240,6 +258,11 @@ function ResultScreen({
             </p>
           </div>
         </div>
+
+        {/* Baremos freshness caption */}
+        <p className="text-center text-[11px] text-[#1A1A1A]/30 tracking-wide font-[Lato] mb-12">
+          {lastReviewedLabel()}
+        </p>
 
         {/* Explanation */}
         <div className="max-w-xl mx-auto mb-12">
@@ -696,7 +719,7 @@ export default function ValoradorPage() {
           </Link>
         }
       >
-        <ResultScreen metros={metros} condition={estado} extras={extras} onRefine={() => setPhase('refine')} />
+        <ResultScreen metros={metros} condition={estado} extras={extras} ubicacion={ubicación} onRefine={() => setPhase('refine')} />
       </PageShell>
     )
   }
