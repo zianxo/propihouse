@@ -1,11 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import {
-  BASE_PRICE_M2,
-  lastReviewedLabel,
-  matchZone,
-  zoneLabel,
-} from '../data/zones'
+import { lastReviewedLabel, zoneLabel } from '../data/zones'
+import { computeValuation, type Estado } from '../lib/valorador'
 
 /* ────────────────────────────────────────────
    Types & data
@@ -42,22 +38,9 @@ const EXTRAS_OPTIONS = [
 const TOTAL_STEPS = 5
 const REFINE_TOTAL_STEPS = 7
 
-/* Price multipliers */
-const CONDITION_MULTIPLIER: Record<string, number> = {
-  reformar: 0.8,
-  'buen-estado': 1.0,
-  reformada: 1.15,
-  'obra-nueva': 1.3,
-}
-
-const EXTRA_BONUS: Record<string, number> = {
-  ascensor: 0.03,
-  parking: 0.05,
-  terraza: 0.04,
-  balcon: 0.02,
-  ninguno: 0,
-}
-
+/* All pricing math (condition / extra / size / etc. coefficients) lives
+ * in src/lib/valorador.ts. This page only collects user input and hands
+ * it to computeValuation(). */
 
 /* ────────────────────────────────────────────
    Progress bar
@@ -187,17 +170,18 @@ function ResultScreen({
     return () => cancelAnimationFrame(t)
   }, [])
 
-  /* Calculate price */
-  const zone = matchZone(ubicacion)
-  const zoneMult = zone?.mult ?? 1
-  const condMult = CONDITION_MULTIPLIER[condition] ?? 1
-  const extraBonus = extras
-    .filter((e) => e !== 'ninguno')
-    .reduce((sum, e) => sum + (EXTRA_BONUS[e] ?? 0), 0)
-  const pricePerM2 = BASE_PRICE_M2 * zoneMult * condMult * (1 + extraBonus)
-  const midValue = Math.round(metros * pricePerM2)
-  const lowValue = Math.round(midValue * 0.9)
-  const highValue = Math.round(midValue * 1.1)
+  /* Calculate price via the V1 engine. The current 5-step form only
+   * provides ubicacion, metros, estado, and extras — every other coef
+   * defaults to 1.0 inside computeValuation, so this swap doesn't shift
+   * prices for live users. Pass B will surface planta/baños/orientación
+   * etc. and the engine starts using them automatically. */
+  const valuation = computeValuation({
+    ubicacion,
+    metros,
+    estado: condition as Estado,
+    extras,
+  })
+  const { zone, pricePerM2, lowValue, highValue } = valuation
 
   const formatEur = (n: number) =>
     new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)

@@ -1,6 +1,7 @@
 {
   "lastReviewed": "2026-04",
   "basePriceM2": 3160,
+  "comercial": 1.00,
   "multipliers": {
     "centre": 1.194,
     "sant-josep": 0.995,

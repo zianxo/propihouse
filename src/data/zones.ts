@@ -194,6 +194,11 @@ const ZONE_META: ZoneMeta[] = [
 
 export const BASE_PRICE_M2: number = zonesData.basePriceM2
 export const LAST_REVIEWED: string = zonesData.lastReviewed
+/** Pau's "agency feel" lever — bumps every valuation up or down without
+ *  touching individual coefficients. Default 1.00. Lives in the JSON so
+ *  it's editable without a code change. */
+export const COEF_COMERCIAL: number =
+  ((zonesData as { comercial?: number }).comercial as number | undefined) ?? 1
 
 const multipliers: Record<string, number> = zonesData.multipliers as Record<
   string,
