@@ -248,6 +248,123 @@ function ResultScreen({
     window.setTimeout(() => setLinkCopied(false), 2200)
   }
 
+  /* ── Download informe (PDF) ───────────────────────────────────
+   * Same A4 template as the financiar simulation, sharing the helpers
+   * in src/lib/pdf.ts. jsPDF + the helpers are dynamically imported
+   * so this only ships when the user clicks the button. */
+  const handleDownloadPDF = async () => {
+    const [{ default: jsPDF }, pdf] = await Promise.all([
+      import('jspdf'),
+      import('../lib/pdf'),
+    ])
+    const logoDataUrl = await pdf.loadLogoDataUrl()
+
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' })
+    const pageW = doc.internal.pageSize.getWidth()
+    const margin = pdf.PAGE_MARGIN_MM
+    const contentW = pageW - margin * 2
+
+    pdf.drawHeader(doc, logoDataUrl)
+
+    /* Title */
+    let y = margin + 28
+    doc.setFont('times', 'normal')
+    doc.setFontSize(20)
+    doc.setTextColor(...pdf.PDF_COLORS.dark)
+    doc.text('Valoración orientativa de vivienda', margin, y)
+    y += 5
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.setTextColor(...pdf.PDF_COLORS.muted)
+    doc.text('Una referencia basada en el mercado actual de L’Hospitalet de Llobregat.', margin, y)
+
+    /* Datos section */
+    y += 14
+    pdf.drawSectionTitle(doc, 'Datos de la vivienda', y)
+    y += 6
+    pdf.drawDivider(doc, y)
+    y += 5
+    if (tipo) { pdf.drawRow(doc, 'Tipo', tipoLabel, y); y += 6 }
+    if (ubicacion?.trim()) { pdf.drawRow(doc, 'Ubicación', ubicacion.trim(), y); y += 6 }
+    pdf.drawRow(doc, 'Superficie', `${metros} m²`, y); y += 6
+    if (condition) { pdf.drawRow(doc, 'Estado', estadoLabel, y); y += 6 }
+    if (plantaAscensorLabel) { pdf.drawRow(doc, 'Planta', plantaAscensorLabel, y); y += 6 }
+    if (extrasLabel !== '—') { pdf.drawRow(doc, 'Extras', extrasLabel, y); y += 6 }
+
+    /* Resultado hero card */
+    y += 8
+    pdf.drawSectionTitle(doc, 'Resultado', y, 'blue')
+    y += 8
+    doc.setFillColor(...pdf.PDF_COLORS.warmCream)
+    doc.roundedRect(margin, y - 2, contentW, 26, 2, 2, 'F')
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(8.5)
+    doc.setTextColor(...pdf.PDF_COLORS.blue)
+    doc.text('VALOR ESTIMADO', margin + 4, y + 4)
+    doc.setFont('times', 'normal')
+    doc.setFontSize(22)
+    doc.setTextColor(...pdf.PDF_COLORS.dark)
+    doc.text(
+      `${formatEur(lowValue)}  –  ${formatEur(highValue)}`,
+      margin + 4,
+      y + 14,
+    )
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9)
+    doc.setTextColor(...pdf.PDF_COLORS.muted)
+    doc.text(
+      `~${formatEur(Math.round(pricePerM2))}/m² · ${metros} m²`,
+      margin + 4,
+      y + 21,
+    )
+    doc.text(lastReviewedLabel(), pageW - margin - 4, y + 21, { align: 'right' })
+
+    /* Detail rows */
+    y += 34
+    pdf.drawRow(doc, 'Zona', zoneLabel(zone), y); y += 6
+    pdf.drawRow(
+      doc,
+      'Confianza',
+      `${confidenceLabel.charAt(0).toUpperCase() + confidenceLabel.slice(1)} (${confidenceScore}/100)`,
+      y,
+      { muted: true },
+    )
+
+    /* Special-case banner — same olive-amber framing as on the page,
+     * inline so the recipient sees the warning with the price. */
+    if (specialCase) {
+      y += 12
+      const reasonText =
+        specialReason === 'metros_muy_bajos'
+          ? 'Las viviendas de menos de 25 m² suelen valorarse caso a caso.'
+          : specialReason === 'metros_muy_altos'
+          ? 'Las viviendas de más de 250 m² requieren un análisis más detallado.'
+          : specialReason === 'atico_singular'
+          ? 'Los áticos grandes o con terraza tienen un valor muy variable según la finca.'
+          : 'Recomendamos confirmar este resultado con un análisis personalizado.'
+      doc.setFillColor(255, 247, 224)
+      doc.setDrawColor(201, 162, 39)
+      doc.setLineWidth(0.3)
+      doc.roundedRect(margin, y - 2, contentW, 18, 2, 2, 'FD')
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(8.5)
+      doc.setTextColor(138, 109, 23)
+      doc.text('VALORACIÓN MANUAL RECOMENDADA', margin + 4, y + 4)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(9)
+      doc.setTextColor(...pdf.PDF_COLORS.dark)
+      doc.text(reasonText, margin + 4, y + 11, { maxWidth: contentW - 8 })
+      y += 18
+    }
+
+    pdf.drawFooter(
+      doc,
+      'Esta valoración es orientativa. El precio final depende de la presentación de la vivienda, el comprador y la estrategia de salida al mercado.',
+    )
+
+    doc.save(`propihouse-valoracion-${Date.now()}.pdf`)
+  }
+
   /* ── Pretty-printers for the params summary ─────────────── */
   const tipoLabel = (() => {
     switch (tipo) {
@@ -452,8 +569,9 @@ function ResultScreen({
           </button>
         </div>
 
-        {/* Share */}
-        <div className="flex items-center justify-center gap-4">
+        {/* Share + Download row. Three secondary actions in one line on
+         * desktop, wrapping to two rows on narrow viewports. */}
+        <div className="flex items-center justify-center flex-wrap gap-x-4 gap-y-2">
           <button
             type="button"
             onClick={handleShareWhatsApp}
@@ -464,7 +582,7 @@ function ResultScreen({
             </svg>
             Compartir por WhatsApp
           </button>
-          <span className="text-[#1A1A1A]/10">|</span>
+          <span className="text-[#1A1A1A]/10 hidden sm:inline">|</span>
           <button
             type="button"
             onClick={handleCopyLink}
@@ -483,6 +601,27 @@ function ResultScreen({
               <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
             </svg>
             {linkCopied ? 'Enlace copiado' : 'Copiar enlace'}
+          </button>
+          <span className="text-[#1A1A1A]/10 hidden sm:inline">|</span>
+          <button
+            type="button"
+            onClick={handleDownloadPDF}
+            className="inline-flex items-center gap-2 text-sm text-[#1A1A1A]/40 hover:text-[#1A1A1A]/70 transition-colors cursor-pointer font-[Lato]"
+          >
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Descargar informe
           </button>
         </div>
       </div>

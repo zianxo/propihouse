@@ -219,181 +219,96 @@ function MortgageCalculator() {
 
   const handleDownloadPDF = async () => {
     /* Lazy-load jsPDF — keeps the financiar bundle small for users who
-     * never click Guardar PDF (it's ~300 KB gzipped on its own). */
-    const { default: jsPDF } = await import('jspdf')
-
-    /* Try to load the brand logo as a data URL so jsPDF can embed it.
-     * If the request fails we just skip the logo — the rest of the
-     * report still renders. */
-    const loadLogo = async (): Promise<string | null> => {
-      try {
-        const res = await fetch('/logos/logo.png')
-        if (!res.ok) return null
-        const blob = await res.blob()
-        return await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader()
-          reader.onload = () => resolve(reader.result as string)
-          reader.onerror = reject
-          reader.readAsDataURL(blob)
-        })
-      } catch {
-        return null
-      }
-    }
-
-    const logoDataUrl = await loadLogo()
+     * never click Guardar PDF (it's ~130 KB gzipped on its own). */
+    const [{ default: jsPDF }, pdf] = await Promise.all([
+      import('jspdf'),
+      import('../lib/pdf'),
+    ])
+    const logoDataUrl = await pdf.loadLogoDataUrl()
 
     const doc = new jsPDF({ unit: 'mm', format: 'a4' })
     const pageW = doc.internal.pageSize.getWidth()
-    const margin = 18
+    const margin = pdf.PAGE_MARGIN_MM
     const contentW = pageW - margin * 2
 
-    const COLOR_DARK: [number, number, number] = [26, 26, 26]
-    const COLOR_BLUE: [number, number, number] = [42, 121, 169]
-    const COLOR_OLIVE: [number, number, number] = [134, 140, 77]
-    const COLOR_MUTED: [number, number, number] = [115, 115, 100]
-
-    /* ── Header ─────────────────────────────────────────────── */
-    if (logoDataUrl) {
-      // Logo, scaled to a 18 mm height, preserving aspect via jsPDF's
-      // auto-detection (passing 0 for width).
-      doc.addImage(logoDataUrl, 'PNG', margin, margin - 2, 0, 18, undefined, 'FAST')
-    } else {
-      doc.setFont('helvetica', 'bold')
-      doc.setFontSize(13)
-      doc.setTextColor(...COLOR_DARK)
-      doc.text('PROPI HOUSE', margin, margin + 4)
-    }
-
-    // Date right-aligned
-    const fechaStr = new Date().toLocaleDateString('es-ES', {
-      day: '2-digit', month: 'long', year: 'numeric',
-    })
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(9)
-    doc.setTextColor(...COLOR_MUTED)
-    doc.text(fechaStr, pageW - margin, margin + 4, { align: 'right' })
-
-    // Divider under header
-    doc.setDrawColor(220, 215, 195)
-    doc.setLineWidth(0.3)
-    doc.line(margin, margin + 16, pageW - margin, margin + 16)
+    pdf.drawHeader(doc, logoDataUrl)
 
     /* ── Title ──────────────────────────────────────────────── */
     let y = margin + 28
     doc.setFont('times', 'normal')
     doc.setFontSize(20)
-    doc.setTextColor(...COLOR_DARK)
+    doc.setTextColor(...pdf.PDF_COLORS.dark)
     doc.text('Simulación de hipoteca', margin, y)
     y += 5
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(10)
-    doc.setTextColor(...COLOR_MUTED)
+    doc.setTextColor(...pdf.PDF_COLORS.muted)
     doc.text('Tu capacidad de compra, en una página.', margin, y)
-
-    /* ── Section helper ─────────────────────────────────────── */
-    const sectionTitle = (text: string, atY: number, accent: 'blue' | 'olive' = 'olive') => {
-      const accentColor = accent === 'blue' ? COLOR_BLUE : COLOR_OLIVE
-      doc.setFillColor(...accentColor)
-      doc.rect(margin, atY - 3, 1.2, 4, 'F')
-      doc.setFont('helvetica', 'bold')
-      doc.setFontSize(8.5)
-      doc.setTextColor(...accentColor)
-      doc.text(text.toUpperCase(), margin + 4, atY)
-    }
-    const row = (label: string, value: string, atY: number, opts?: { bold?: boolean; muted?: boolean }) => {
-      doc.setFont('helvetica', opts?.bold ? 'bold' : 'normal')
-      doc.setFontSize(opts?.muted ? 9 : 10)
-      doc.setTextColor(...(opts?.muted ? COLOR_MUTED : COLOR_DARK))
-      doc.text(label, margin + 2, atY)
-      doc.setFont('helvetica', opts?.bold ? 'bold' : 'normal')
-      doc.text(value, pageW - margin - 2, atY, { align: 'right' })
-    }
-    const divider = (atY: number) => {
-      doc.setDrawColor(235, 230, 215)
-      doc.setLineWidth(0.2)
-      doc.line(margin, atY, pageW - margin, atY)
-    }
 
     /* ── Inputs section ────────────────────────────────────── */
     y += 14
-    sectionTitle('Tus datos', y)
+    pdf.drawSectionTitle(doc, 'Tus datos', y)
     y += 6
-    divider(y)
+    pdf.drawDivider(doc, y)
     y += 5
-    row('Precio de la vivienda', fmtEUR.format(precio), y); y += 6
-    row('Ahorros disponibles', fmtEUR.format(ahorros), y); y += 6
-    row(`ITP (Impuesto de transmisiones)`, fmtPct2(gastosPct), y); y += 6
-    row('Tipo de interés anual', fmtPct2(interes), y); y += 6
-    row('Plazo', fmtYears(plazo), y); y += 6
-    row('Ingresos netos mensuales', `${fmtEUR.format(ingresos)} /mes`, y)
+    pdf.drawRow(doc, 'Precio de la vivienda', fmtEUR.format(precio), y); y += 6
+    pdf.drawRow(doc, 'Ahorros disponibles', fmtEUR.format(ahorros), y); y += 6
+    pdf.drawRow(doc, 'ITP (Impuesto de transmisiones)', fmtPct2(gastosPct), y); y += 6
+    pdf.drawRow(doc, 'Tipo de interés anual', fmtPct2(interes), y); y += 6
+    pdf.drawRow(doc, 'Plazo', fmtYears(plazo), y); y += 6
+    pdf.drawRow(doc, 'Ingresos netos mensuales', `${fmtEUR.format(ingresos)} /mes`, y)
 
     /* ── Hero result: Cuota mensual ────────────────────────── */
     y += 14
-    sectionTitle('Resultado', y, 'blue')
+    pdf.drawSectionTitle(doc, 'Resultado', y, 'blue')
     y += 8
-    doc.setFillColor(247, 243, 232) // cream-light
+    doc.setFillColor(...pdf.PDF_COLORS.warmCream)
     doc.roundedRect(margin, y - 2, contentW, 22, 2, 2, 'F')
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(8.5)
-    doc.setTextColor(...COLOR_BLUE)
+    doc.setTextColor(...pdf.PDF_COLORS.blue)
     doc.text('CUOTA MENSUAL', margin + 4, y + 4)
     doc.setFont('times', 'normal')
     doc.setFontSize(26)
-    doc.setTextColor(...COLOR_DARK)
+    doc.setTextColor(...pdf.PDF_COLORS.dark)
     const cuotaStr = noFinancing ? '— sin financiación —' : fmtEUR.format(Math.round(monthlyPayment))
     doc.text(cuotaStr, margin + 4, y + 14)
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(9)
-    doc.setTextColor(...COLOR_MUTED)
+    doc.setTextColor(...pdf.PDF_COLORS.muted)
     if (!noFinancing) {
       doc.text(`durante ${plazo} años`, pageW - margin - 4, y + 14, { align: 'right' })
     }
 
     /* ── Detail rows ───────────────────────────────────────── */
     y += 30
-    row('Capital a financiar', fmtEUR.format(capital), y, { bold: true }); y += 6
-    row('Total a pagar', fmtEUR.format(Math.round(totalCost)), y); y += 6
-    row('Total intereses', fmtEUR.format(Math.round(totalInterest)), y); y += 6
-    row('Financiación / total', `${pctFinanciacion.toFixed(1)}%`, y, { muted: true }); y += 6
-    row('Endeudamiento', `${debtRatio.toFixed(1)}% · ${debtLabel}`, y, { muted: true })
+    pdf.drawRow(doc, 'Capital a financiar', fmtEUR.format(capital), y, { bold: true }); y += 6
+    pdf.drawRow(doc, 'Total a pagar', fmtEUR.format(Math.round(totalCost)), y); y += 6
+    pdf.drawRow(doc, 'Total intereses', fmtEUR.format(Math.round(totalInterest)), y); y += 6
+    pdf.drawRow(doc, 'Financiación / total', `${pctFinanciacion.toFixed(1)}%`, y, { muted: true }); y += 6
+    pdf.drawRow(doc, 'Endeudamiento', `${debtRatio.toFixed(1)}% · ${debtLabel}`, y, { muted: true })
 
     /* ── Gastos de compra ──────────────────────────────────── */
     y += 14
-    sectionTitle('Gastos de compra', y)
+    pdf.drawSectionTitle(doc, 'Gastos de compra', y)
     y += 6
-    divider(y)
+    pdf.drawDivider(doc, y)
     y += 5
-    row(`ITP (${fmtPct2(gastosPct)})`, fmtEUR.format(itp), y); y += 6
-    row('Gastos de escritura', fmtEUR.format(GASTOS_ESCRITURA_FIJO), y); y += 1
+    pdf.drawRow(doc, `ITP (${fmtPct2(gastosPct)})`, fmtEUR.format(itp), y); y += 6
+    pdf.drawRow(doc, 'Gastos de escritura', fmtEUR.format(GASTOS_ESCRITURA_FIJO), y); y += 1
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(8.5)
-    doc.setTextColor(...COLOR_MUTED)
+    doc.setTextColor(...pdf.PDF_COLORS.muted)
     doc.text('notaría · registro · gestoría', margin + 2, y + 4)
     y += 8
-    divider(y)
+    pdf.drawDivider(doc, y)
     y += 5
-    row('Total gastos', fmtEUR.format(gastosCompra), y, { bold: true })
+    pdf.drawRow(doc, 'Total gastos', fmtEUR.format(gastosCompra), y, { bold: true })
 
-    /* ── Footer ────────────────────────────────────────────── */
-    const footerY = doc.internal.pageSize.getHeight() - margin
-    doc.setDrawColor(220, 215, 195)
-    doc.setLineWidth(0.3)
-    doc.line(margin, footerY - 10, pageW - margin, footerY - 10)
-    doc.setFont('helvetica', 'italic')
-    doc.setFontSize(8)
-    doc.setTextColor(...COLOR_MUTED)
-    doc.text(
+    pdf.drawFooter(
+      doc,
       'Esta simulación es orientativa. Las condiciones reales dependen de cada entidad bancaria y de tu perfil financiero.',
-      margin, footerY - 5, { maxWidth: contentW },
     )
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(8.5)
-    doc.setTextColor(...COLOR_DARK)
-    doc.text('propihouse.es', margin, footerY)
-    doc.setFont('helvetica', 'normal')
-    doc.setTextColor(...COLOR_MUTED)
-    doc.text('Pau Manovel · 637 86 36 78 · hola@propihouse.es', pageW - margin, footerY, { align: 'right' })
 
     doc.save(`propihouse-simulacion-hipoteca-${Date.now()}.pdf`)
   }
