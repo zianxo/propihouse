@@ -5,17 +5,17 @@ import { MethodTimeline, RevealSection, SectionHeading } from '../components/ui'
 /* ─── Three Pillars ─── */
 const PILLARS = [
   {
-    num: '01',
+    num: '1',
     title: 'Entender antes de actuar',
     body: 'Porque cada decisión parte de una situación concreta, no de una fórmula estándar.',
   },
   {
-    num: '02',
+    num: '2',
     title: 'Dar contexto, no solo respuestas',
     body: 'Para que entiendas por qué se toma cada decisión, no solo que hacer.',
   },
   {
-    num: '03',
+    num: '3',
     title: 'Acompañar sin sustituir',
     body: 'Para que tengas apoyo en todo momento, pero sin perder el control de la decisión.',
   },
@@ -24,32 +24,32 @@ const PILLARS = [
 /* ─── Method Steps ─── */
 const STEPS = [
   {
-    num: '01',
+    num: '1',
     title: 'Primero entendemos la situación',
     desc: 'Antes de hablar de precios o portales, analizamos el contexto. Cada vivienda tiene una historia detrás, y cada propietario una situación diferente.',
   },
   {
-    num: '02',
+    num: '2',
     title: 'Analizamos el mercado con perspectiva',
     desc: "Estudiamos el mercado de L'Hospitalet, las propiedades comparables, los tipos de compradores y las tendencias que afectan a tu zona.",
   },
   {
-    num: '03',
+    num: '3',
     title: 'Preparamos la vivienda para el mercado',
     desc: 'Identificamos el valor real de tu vivienda, qué aspectos potenciar y qué ajustes pueden ayudar a presentarla de la mejor forma posible.',
   },
   {
-    num: '04',
+    num: '4',
     title: 'Cuidamos al comprador',
     desc: 'Un comprador informado toma mejores decisiones. En cada visita explicamos la propiedad, la documentación y el contexto de la operación.',
   },
   {
-    num: '05',
+    num: '5',
     title: 'Te mantenemos informado durante todo el proceso',
     desc: 'Comunicación constante: visitas realizadas, opiniones de compradores, ajustes de estrategia. Sin silencios ni sorpresas.',
   },
   {
-    num: '06',
+    num: '6',
     title: 'Acompañamos la negociación y el cierre',
     desc: 'Análisis de ofertas, negociación de condiciones, depósito y arras, coordinación de documentación hasta la firma ante notario.',
   },
@@ -57,11 +57,11 @@ const STEPS = [
 
 /* ─── What We Don't Do ─── */
 const DONT_DO = [
-  'No forzamos decisiones para cerrar operaciones',
-  'No hacemos visitas sin una base clara',
-  'No prometemos resultados que el mercado no puede sostener',
-  'No trabajamos con información poco clara',
-  'No tratamos todas las situaciones de la misma manera',
+  'No forzamos decisiones para cerrar operaciones.',
+  'No hacemos visitas sin una base clara.',
+  'No prometemos resultados que el mercado no puede sostener.',
+  'No trabajamos con información poco clara.',
+  'No tratamos todas las situaciones de la misma manera.',
 ]
 
 /* ─── Scroll-animated strikethrough list ─── */
@@ -127,19 +127,22 @@ function DontDoList({ items }: { items: string[] }) {
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </div>
-            {/* Text with animated strike */}
-            <span className="relative flex-1 text-white/85 text-sm md:text-base leading-relaxed">
-              <span className={`transition-colors duration-500 ${on ? 'text-white/55' : 'text-white/90'}`}>
+            {/* Text with animated strike — line tracks the text width
+             * (background-image trick), so it stops at the end of the
+             * phrase rather than spanning the whole row. */}
+            <span className="flex-1 text-white/85 text-sm md:text-base leading-relaxed">
+              <span
+                className={`transition-colors duration-500 ${on ? 'text-white/55' : 'text-white/90'}`}
+                style={{
+                  backgroundImage: 'linear-gradient(rgba(232,136,136,0.85), rgba(232,136,136,0.85))',
+                  backgroundSize: `${on ? 100 : 0}% 2px`,
+                  backgroundPosition: '0 55%',
+                  backgroundRepeat: 'no-repeat',
+                  transition: `background-size 700ms cubic-bezier(0.16,1,0.3,1) ${i * 140}ms, color 500ms`,
+                }}
+              >
                 {item}
               </span>
-              <span
-                aria-hidden
-                className="absolute left-0 right-0 top-1/2 h-px bg-[#E88]/70 origin-left"
-                style={{
-                  transform: `translateY(-50%) scaleX(${on ? 1 : 0})`,
-                  transition: `transform 700ms cubic-bezier(0.16,1,0.3,1) ${i * 140}ms`,
-                }}
-              />
             </span>
           </div>
         )
@@ -373,7 +376,7 @@ export default function ComoTrabajamosPage() {
                 Consiste en analizar cada situación y ayudar a tomar decisiones con sentido desde el principio.
               </p>
               <p>
-                Empezamos por entender el contexto. El objetivo que se quiere conseguir. La situación personal. Las necesidades reales.
+                Empezamos por entender el contexto, el objetivo que se quiere conseguir, la situación personal y las necesidades reales.
               </p>
             </div>
           </RevealSection>
@@ -480,9 +483,14 @@ export default function ComoTrabajamosPage() {
           </RevealSection>
 
           <RevealSection>
-            <p className="text-center text-cream text-2xl md:text-3xl lg:text-[2rem] font-serif italic mt-16 leading-snug max-w-2xl mx-auto">
-              Porque no se trata de hacer más. Se trata de hacer lo que tiene sentido.
-            </p>
+            <div className="text-center mt-16 max-w-2xl mx-auto leading-snug">
+              <p className="text-cream text-2xl md:text-3xl lg:text-[2rem] font-serif italic">
+                Porque no se trata de hacer más.
+              </p>
+              <p className="mt-3 text-cream/85 text-xl md:text-2xl lg:text-[1.65rem] font-serif italic">
+                Se trata de hacer lo que tiene sentido.
+              </p>
+            </div>
           </RevealSection>
         </div>
       </section>
@@ -582,10 +590,10 @@ export default function ComoTrabajamosPage() {
             </div>
 
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">
-              Antes de tomar una decisión, conviene entender bien la{' '}situación
+              Cada vivienda es única, cada{' '}momento también
             </h2>
             <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-              Sin compromiso. Analizamos tu caso y vemos qué tiene sentido para ti.
+              Antes de tomar una decisión, conviene entender bien la situación.
             </p>
 
             {/* Two buttons */}

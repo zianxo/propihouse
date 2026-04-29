@@ -1082,7 +1082,7 @@ export default function ArticlePage() {
       <section className="py-16 md:py-20">
         <div className="max-w-3xl mx-auto px-6">
           <RevealSection>
-            <div className="bg-cream/60 border border-cream-dark/20 rounded-2xl p-8 md:p-12 text-center relative overflow-hidden">
+            <div className="bg-cream/60 border border-cream-dark/20 rounded-xl p-8 md:p-12 text-center relative overflow-hidden">
               <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute -top-16 -right-16 w-64 h-64 bg-olive/10 rounded-full blur-3xl" />
                 <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-blue/5 rounded-full blur-3xl" />

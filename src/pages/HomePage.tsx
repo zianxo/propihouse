@@ -413,7 +413,7 @@ export default function HomePage() {
                 <Link
                   key={service.title}
                   to={service.link}
-                  className="group relative bg-cream/50 hover:bg-cream rounded-2xl p-7 transition-all duration-500 hover:-translate-y-1 hover:shadow-card flex flex-col gap-5 border border-cream-dark/0 hover:border-cream-dark/20"
+                  className="group relative bg-cream/50 hover:bg-cream rounded-xl p-7 transition-all duration-500 hover:-translate-y-1 hover:shadow-card flex flex-col gap-5 border border-cream-dark/0 hover:border-cream-dark/20"
                 >
                   <div className="w-14 h-14 rounded-xl bg-olive/10 flex items-center justify-center text-olive-dark group-hover:bg-olive group-hover:text-white transition-all duration-400">
                     {service.icon}
@@ -469,10 +469,10 @@ export default function HomePage() {
               {/* Offset depth frame */}
               <div
                 aria-hidden
-                className="absolute -top-3 -right-3 w-full h-full rounded-3xl bg-olive/[0.18]"
+                className="absolute -top-3 -right-3 w-full h-full rounded-xl bg-olive/[0.18]"
               />
 
-              <div className="relative bg-white rounded-3xl border border-cream-dark/15 shadow-[0_20px_60px_-20px_rgba(26,26,26,0.18)] p-6 sm:p-8 md:p-10">
+              <div className="relative bg-white rounded-xl border border-cream-dark/15 shadow-[0_20px_60px_-20px_rgba(26,26,26,0.18)] p-6 sm:p-8 md:p-10">
                 <EntenderSituacionForm embedded />
               </div>
             </div>
@@ -498,15 +498,15 @@ export default function HomePage() {
                   {/* Offset frame for depth */}
                   <div
                     aria-hidden
-                    className="absolute -top-3 -left-3 w-full h-full rounded-2xl bg-olive/[0.18]"
+                    className="absolute -top-3 -left-3 w-full h-full rounded-xl bg-olive/[0.18]"
                   />
 
-                  <div className="relative bg-white rounded-2xl border border-cream-dark/20 shadow-[0_20px_60px_-20px_rgba(26,26,26,0.18)] p-8 md:p-9">
+                  <div className="relative bg-white rounded-xl border border-cream-dark/20 shadow-[0_20px_60px_-20px_rgba(26,26,26,0.18)] p-8 md:p-9">
                     {/* Top accent bar */}
                     <div className="absolute top-0 left-8 right-8 h-[3px] rounded-b-full bg-gradient-to-r from-olive/60 via-blue/40 to-transparent" />
 
                     {/* Monogram */}
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-olive/[0.15] to-blue/[0.08] border border-olive/20 flex items-center justify-center mb-6">
+                    <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-olive/[0.15] to-blue/[0.08] border border-olive/20 flex items-center justify-center mb-6">
                       <span className="font-serif text-3xl text-olive-dark font-medium tracking-tight">PM</span>
                     </div>
 

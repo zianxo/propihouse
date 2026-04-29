@@ -26,13 +26,15 @@ export default function Header() {
   useEffect(() => {
     const onScroll = () => {
       // Homepage: 400vh hero, stay transparent through it.
-      // Cómo trabajamos: ~half-viewport dark hero.
+      // Cómo trabajamos: dark hero ends quite early, drop the threshold so
+      // the nav switches to its solid state before the white blocks below
+      // make the white nav links unreadable (mobile is the worst case).
       // Other pages: trip almost immediately.
       const threshold =
         pathname === '/'
           ? window.innerHeight * 3 - 80
           : pathname === '/como-trabajamos'
-          ? window.innerHeight * 0.5
+          ? window.innerHeight * 0.25
           : 40
       setScrolled(window.scrollY > threshold)
     }
@@ -51,7 +53,9 @@ export default function Header() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
           ? 'bg-white/95 backdrop-blur-md shadow-soft py-1.5'
-          : 'bg-transparent py-2'
+          : isOverDarkHero
+          ? 'bg-gradient-to-b from-black/30 via-black/10 to-transparent backdrop-blur-[2px] py-2'
+          : 'bg-warm-white/80 backdrop-blur-sm py-2'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">

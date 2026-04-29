@@ -70,7 +70,7 @@ function StrikeGrid({ steps }: { steps: { n: string; label: string }[] }) {
           <div className="relative bg-white/70 border border-[#1A1A1A]/[0.08] rounded-lg p-5 md:p-6 backdrop-blur-sm min-h-[120px] flex flex-col justify-center items-center text-center">
             <span
               aria-hidden
-              className="absolute left-[8%] right-[8%] top-1/2 h-px bg-[#1A1A1A]/35 origin-left"
+              className="absolute left-[8%] right-[8%] top-1/2 h-0.5 bg-[#1A1A1A]/45 origin-left"
               style={{
                 transform: `translateY(-50%) rotate(-8deg) scaleX(${active[i] ? 1 : 0})`,
                 transition: `transform 700ms cubic-bezier(0.16,1,0.3,1) ${i * 120}ms`,
@@ -181,10 +181,10 @@ export default function VenderPage() {
 
             <StrikeGrid
               steps={[
-                { n: '01', label: 'No entender la vivienda' },
-                { n: '02', label: 'Prometer muchas visitas' },
-                { n: '03', label: 'Esperar que llamen' },
-                { n: '04', label: 'No conocer al comprador' },
+                { n: '1', label: 'No entender la vivienda' },
+                { n: '2', label: 'Prometer muchas visitas' },
+                { n: '3', label: 'Esperar que llamen' },
+                { n: '4', label: 'No conocer al comprador' },
               ]}
             />
           </RevealSection>
@@ -301,10 +301,10 @@ export default function VenderPage() {
                 {/* Offset frame for depth */}
                 <div
                   aria-hidden
-                  className="absolute -top-3 -right-3 w-full h-full rounded-2xl bg-[#868C4D]/[0.18]"
+                  className="absolute -top-3 -right-3 w-full h-full rounded-xl bg-[#868C4D]/[0.18]"
                 />
 
-                <div className="relative bg-white rounded-2xl border border-[#1A1A1A]/[0.08] shadow-[0_20px_60px_-20px_rgba(26,26,26,0.18)] p-7 md:p-8">
+                <div className="relative bg-white rounded-xl border border-[#1A1A1A]/[0.08] shadow-[0_20px_60px_-20px_rgba(26,26,26,0.18)] p-7 md:p-8">
                   {/* Window dots */}
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex gap-1.5">
@@ -465,22 +465,22 @@ export default function VenderPage() {
             color="olive"
             steps={[
               {
-                num: '01',
+                num: '1',
                 title: 'Entender la situaci\u00f3n',
                 desc: 'Antes de hablar de precios, analizamos el contexto del propietario, su momento personal y el objetivo real de la operaci\u00f3n. No todas las decisiones pasan por vender inmediatamente. A veces lo importante es entender qu\u00e9 opciones existen y cu\u00e1l tiene m\u00e1s sentido.',
               },
               {
-                num: '02',
+                num: '2',
                 title: 'Analizar la vivienda y el mercado',
                 desc: "Estudiamos el valor real del inmueble, la demanda en L'Hospitalet de Llobregat y c\u00f3mo encaja la vivienda dentro del mercado actual. Tambi\u00e9n analizamos c\u00f3mo se percibe la vivienda y qu\u00e9 aspectos pueden trabajarse para que el comprador entienda mejor su potencial.",
               },
               {
-                num: '03',
+                num: '3',
                 title: 'Dise\u00f1ar la estrategia de venta',
                 desc: 'Definimos el posicionamiento, el precio y el tipo de comprador que puede encajar. Cuando tiene sentido, planteamos mejoras en la vivienda \u2014desde peque\u00f1os ajustes hasta una adecuaci\u00f3n m\u00e1s completa\u2014 para aumentar su atractivo y facilitar la decisi\u00f3n del comprador. No se trata de ocultar lo que no gusta, sino de entenderlo y saber c\u00f3mo trabajarlo.',
               },
               {
-                num: '04',
+                num: '4',
                 title: 'Acompa\u00f1ar todo el proceso',
                 desc: 'Acompa\u00f1amos al propietario durante todo el proceso con comunicaci\u00f3n constante y criterio en cada decisi\u00f3n. Analizamos cada visita, interpretamos la informaci\u00f3n del mercado y ajustamos la estrategia cuando es necesario. Porque vender una vivienda no es solo recibir ofertas, es saber leer lo que est\u00e1 pasando para tomar mejores decisiones.',
               },

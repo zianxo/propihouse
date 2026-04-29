@@ -18,13 +18,13 @@ export default function NotFoundPage() {
       <div className="mt-8 flex flex-col gap-4 sm:flex-row">
         <Link
           to="/"
-          className="inline-flex items-center justify-center rounded-full bg-blue px-8 py-3 text-sm font-semibold text-white transition hover:bg-blue/90"
+          className="inline-flex items-center justify-center rounded-xl bg-blue px-8 py-3 text-sm font-semibold text-white transition hover:bg-blue/90"
         >
           Volver al inicio
         </Link>
         <Link
           to="/guia"
-          className="inline-flex items-center justify-center rounded-full border border-blue px-8 py-3 text-sm font-semibold text-blue transition hover:bg-blue/5"
+          className="inline-flex items-center justify-center rounded-xl border border-blue px-8 py-3 text-sm font-semibold text-blue transition hover:bg-blue/5"
         >
           Ver guía inmobiliaria
         </Link>

@@ -5,22 +5,22 @@ import { MethodTimeline, RevealSection, SectionHeading } from '../components/ui'
 /* ─── Method Steps ─── */
 const METHOD_STEPS = [
   {
-    num: '01',
+    num: '1',
     title: 'Entender tu situación',
     desc: 'Analizamos tu contexto financiero, tus ingresos, tus compromisos y tu capacidad de ahorro. No para juzgar, sino para tener un punto de partida real.',
   },
   {
-    num: '02',
+    num: '2',
     title: 'Definir tu capacidad real',
     desc: 'Calculamos cuánto puedes destinar a una cuota sin comprometer tu estabilidad. No es lo mismo lo que un banco te prestaría que lo que realmente puedes pagar con tranquilidad.',
   },
   {
-    num: '03',
+    num: '3',
     title: 'Analizar las opciones disponibles',
     desc: 'Revisamos tipos de hipoteca, condiciones, plazos y entidades. No buscamos la mejor oferta del mercado, buscamos la que mejor encaja contigo.',
   },
   {
-    num: '04',
+    num: '4',
     title: 'Acompañar la decisión',
     desc: 'Una vez tienes claridad, te acompañamos en el proceso. Pero la decisión es tuya, siempre.',
   },
@@ -69,17 +69,17 @@ const HIDDEN_COSTS = [
 /* ─── Order Aspects ─── */
 const ORDER_ASPECTS = [
   {
-    num: '01',
+    num: '1',
     title: 'Cuánto puedes pagar realmente',
     desc: 'No cuánto te prestaría un banco, sino cuánto puedes asumir sin que tu día a día se resienta.',
   },
   {
-    num: '02',
+    num: '2',
     title: 'Tu nivel de endeudamiento',
     desc: 'Hay limites legales y hay limites personales. Ambos importan.',
   },
   {
-    num: '03',
+    num: '3',
     title: 'Qué tipo de decisión es está para ti',
     desc: 'Comprar una primera vivienda no es lo mismo que invertir. Cada escenario tiene sus propias condiciones.',
   },
@@ -155,15 +155,31 @@ function SliderInput({
 }
 
 /* ─── Mortgage Calculator Section ─── */
+
+/* Buying-cost percentages, all shown as ITP-rate options.
+ * 10% is the standard ITP in Catalunya for second-hand.
+ * 7.5% and 5% reflect bonificaciones (joven, vivienda habitual, etc.).
+ * Gastos de escritura are a fixed ~2500€ for notaría / registro / gestoría. */
+const GASTOS_PCT_OPTIONS = [10, 7.5, 5] as const
+const GASTOS_ESCRITURA_FIJO = 2500
+
 function MortgageCalculator() {
   const [precio, setPrecio] = useState(200000)
   const [ahorros, setAhorros] = useState(40000)
+  const [gastosPct, setGastosPct] = useState<10 | 7.5 | 5>(10)
   const [interes, setInteres] = useState(3)
   const [plazo, setPlazo] = useState(25)
   const [ingresos, setIngresos] = useState(2500)
 
-  const capital = Math.max(0, precio - ahorros)
-  const noFinancing = ahorros >= precio
+  /* Gastos de compra:
+   *   ITP variable (10/7.5/5% según bonificaciones)
+   *   + gastos escritura fijos (notaría, registro, gestoría)
+   * Pau quiere que el capital a financiar incluya estos gastos. */
+  const itp = precio * (gastosPct / 100)
+  const gastosCompra = itp + GASTOS_ESCRITURA_FIJO
+  const totalNecesario = precio + gastosCompra
+  const capital = Math.max(0, totalNecesario - ahorros)
+  const noFinancing = ahorros >= totalNecesario
   const totalMonths = plazo * 12
   const monthlyRate = interes / 100 / 12
 
@@ -182,7 +198,6 @@ function MortgageCalculator() {
   }
 
   const debtRatio = ingresos > 0 ? (monthlyPayment / ingresos) * 100 : 0
-  const gastosCompra = precio * 0.1
 
   const debtColor =
     debtRatio <= 30 ? 'bg-emerald-100 text-emerald-700' :
@@ -200,7 +215,7 @@ function MortgageCalculator() {
   }
   const fmtYears = (v: number) => `${v} años`
 
-  const pctFinanciacion = precio > 0 ? Math.min(100, (capital / precio) * 100) : 0
+  const pctFinanciacion = totalNecesario > 0 ? Math.min(100, (capital / totalNecesario) * 100) : 0
 
   const handlePrint = () => {
     document.body.classList.add('calc-printing')
@@ -218,12 +233,14 @@ function MortgageCalculator() {
       `Plazo: ${plazo} años`,
       `Ingresos netos: ${fmtEUR.format(ingresos)}/mes`,
       '',
+      `Gastos de compra: ${fmtEUR.format(gastosCompra)}`,
+      `  - ITP (${fmtPct2(gastosPct)}): ${fmtEUR.format(itp)}`,
+      `  - Gastos de escritura: ${fmtEUR.format(GASTOS_ESCRITURA_FIJO)}`,
       `Capital a financiar: ${fmtEUR.format(capital)}`,
       `Cuota mensual: ${fmtEUR.format(Math.round(monthlyPayment))}`,
       `Total a pagar: ${fmtEUR.format(Math.round(totalCost))}`,
       `Total intereses: ${fmtEUR.format(Math.round(totalInterest))}`,
-      `Gastos de compra (~10%): ${fmtEUR.format(gastosCompra)}`,
-      `Financiación / precio: ${pctFinanciacion.toFixed(1)}%`,
+      `Financiación / total: ${pctFinanciacion.toFixed(1)}%`,
       `Endeudamiento: ${debtRatio.toFixed(1)}% (${debtLabel})`,
       '',
       'Generado en https://www.propihouse.es/financiar',
@@ -253,7 +270,7 @@ function MortgageCalculator() {
         <RevealSection delay={150}>
           <div className="calc-print-area grid lg:grid-cols-[1fr,1fr] gap-8 lg:gap-12 items-start">
             {/* ── Left: Inputs ── */}
-            <div className="space-y-7 bg-white rounded-2xl p-7 md:p-9 shadow-soft border border-cream-dark/15">
+            <div className="space-y-7 bg-white rounded-xl p-7 md:p-9 shadow-soft border border-cream-dark/15">
               <SliderInput
                 id="calc-precio"
                 label="Precio de la vivienda"
@@ -274,6 +291,36 @@ function MortgageCalculator() {
                 format={fmtEUR.format}
                 onChange={setAhorros}
               />
+
+              {/* Gastos de compra — selectable ITP percentage. 10% is the
+               * default ITP in Catalunya for second-hand; 7.5% / 5% reflect
+               * common bonificaciones (joven, vivienda habitual). */}
+              <div>
+                <div className="flex items-baseline justify-between mb-2">
+                  <span className="text-sm font-bold text-dark">Impuesto de transmisión (ITP)</span>
+                  <span className="font-serif text-lg text-blue font-medium tabular-nums">{fmtPct2(gastosPct)}</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {GASTOS_PCT_OPTIONS.map((opt) => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => setGastosPct(opt)}
+                      className={`py-2.5 rounded-lg border text-sm font-bold transition-all duration-200 cursor-pointer ${
+                        gastosPct === opt
+                          ? 'bg-blue text-white border-blue shadow-sm'
+                          : 'bg-warm-white text-dark/60 border-cream-dark/40 hover:border-blue/40 hover:text-blue'
+                      }`}
+                    >
+                      {fmtPct2(opt)}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-2 text-xs text-text-muted leading-relaxed">
+                  10% es el ITP estándar en Catalunya para segunda mano. 7,5% y 5% aplican con bonificaciones (joven, vivienda habitual).
+                </p>
+              </div>
+
               <SliderInput
                 id="calc-interes"
                 label="Tipo de interés anual"
@@ -320,9 +367,9 @@ function MortgageCalculator() {
             {/* ── Right: Results ── */}
             <div className="relative">
               {/* Offset frame decoration */}
-              <div className="hidden lg:block absolute -top-3 -right-3 w-full h-full rounded-2xl border-2 border-blue/15" />
+              <div className="hidden lg:block absolute -top-3 -right-3 w-full h-full rounded-xl border-2 border-blue/15" />
 
-              <div className="relative bg-white rounded-2xl p-7 md:p-9 shadow-card border border-cream-dark/10">
+              <div className="relative bg-white rounded-xl p-7 md:p-9 shadow-card border border-cream-dark/10">
                 {noFinancing ? (
                   <div className="text-center py-10">
                     <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-5">
@@ -331,10 +378,22 @@ function MortgageCalculator() {
                       </svg>
                     </div>
                     <h3 className="font-serif text-2xl text-dark mb-2">No necesitas financiación</h3>
-                    <p className="text-text-light text-base">Tus ahorros cubren el precio de la vivienda. Aun así, recuerda los gastos asociados a la compra.</p>
-                    <div className="mt-6 bg-cream/50 rounded-xl p-5">
-                      <span className="text-sm text-text-muted block mb-1">Gastos estimados de compra (~10%)</span>
-                      <span className="font-serif text-xl text-dark font-medium">{fmtEUR.format(gastosCompra)}</span>
+                    <p className="text-text-light text-base">Tus ahorros cubren el precio y los gastos de compra.</p>
+                    <div className="mt-6 bg-cream/50 rounded-xl p-5 text-left">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-sm text-text-muted">Gastos de compra</span>
+                        <span className="font-serif text-xl text-dark font-medium">{fmtEUR.format(gastosCompra)}</span>
+                      </div>
+                      <div className="space-y-1.5 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="text-text-muted">ITP ({fmtPct2(gastosPct)})</span>
+                          <span className="text-dark/80 font-medium tabular-nums">{fmtEUR.format(itp)}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-text-muted">Gastos de escritura</span>
+                          <span className="text-dark/80 font-medium tabular-nums">{fmtEUR.format(GASTOS_ESCRITURA_FIJO)}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -364,12 +423,29 @@ function MortgageCalculator() {
                         <span className="text-xs text-text-muted block mb-1">Total intereses</span>
                         <span className="font-serif text-lg text-dark font-medium">{fmtEUR.format(Math.round(totalInterest))}</span>
                       </div>
-                      <div className="bg-cream/40 rounded-xl p-4">
-                        <span className="text-xs text-text-muted block mb-1">Gastos de compra (~10%)</span>
-                        <span className="font-serif text-lg text-dark font-medium">{fmtEUR.format(gastosCompra)}</span>
+
+                      {/* Gastos de compra breakdown — ITP (variable, modificable
+                       * via los botones de la izquierda) + gastos de escritura
+                       * fijos (notaría, registro, gestoría). */}
+                      <div className="bg-cream/40 rounded-xl p-4 col-span-2">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs text-text-muted">Gastos de compra</span>
+                          <span className="font-serif text-lg text-dark font-medium">{fmtEUR.format(gastosCompra)}</span>
+                        </div>
+                        <div className="space-y-1.5 text-xs">
+                          <div className="flex items-center justify-between">
+                            <span className="text-text-muted">ITP ({fmtPct2(gastosPct)})</span>
+                            <span className="text-dark/80 font-medium tabular-nums">{fmtEUR.format(itp)}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-text-muted">Gastos de escritura<span className="text-text-muted/70"> · notaría, registro, gestoría</span></span>
+                            <span className="text-dark/80 font-medium tabular-nums">{fmtEUR.format(GASTOS_ESCRITURA_FIJO)}</span>
+                          </div>
+                        </div>
                       </div>
+
                       <div className="bg-cream/40 rounded-xl p-4">
-                        <span className="text-xs text-text-muted block mb-1">Financiación / precio</span>
+                        <span className="text-xs text-text-muted block mb-1">Financiación / total</span>
                         <span className="font-serif text-lg text-dark font-medium">{pctFinanciacion.toFixed(1)}%</span>
                         <div className="mt-1.5 relative h-1 bg-cream-dark/40 rounded-full overflow-hidden">
                           <div
@@ -378,7 +454,7 @@ function MortgageCalculator() {
                           />
                         </div>
                       </div>
-                      <div className="bg-cream/40 rounded-xl p-4 col-span-2">
+                      <div className="bg-cream/40 rounded-xl p-4">
                         <div className="flex items-center justify-between">
                           <span className="text-xs text-text-muted">Endeudamiento</span>
                           <span className={`inline-block text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full ${debtColor}`}>
@@ -640,7 +716,7 @@ export default function FinanciarPage() {
         <div className="max-w-4xl mx-auto px-6">
           <RevealSection>
             <SectionHeading
-              title="Entender la financiación cambia completamente la forma de comprar"
+              title="Entender la financiación te ayuda a comprar mejor"
               center={false}
             />
             <div className="mt-6 space-y-5 max-w-2xl">
@@ -650,7 +726,7 @@ export default function FinanciarPage() {
             </div>
 
             {/* Bold statement */}
-            <div className="mt-10 bg-white rounded-2xl p-8 md:p-10 shadow-card border-l-4 border-blue relative overflow-hidden">
+            <div className="mt-10 bg-white rounded-xl p-8 md:p-10 shadow-card border-l-4 border-blue relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 opacity-[0.04]">
                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-blue">
                   <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
@@ -687,21 +763,19 @@ export default function FinanciarPage() {
       <section className="py-24 md:py-32 bg-cream/40">
         <div className="max-w-5xl mx-auto px-6">
           <RevealSection>
-            <div className="flex items-end justify-between gap-6 mb-12 md:mb-14 flex-wrap">
-              <div className="max-w-2xl">
-                <span className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-5">
-                  Guía
-                </span>
-                <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-dark leading-tight tracking-tight">
-                  Entender la financiación también es parte de la decisión
-                </h2>
-                <p className="text-text-light text-base md:text-lg leading-relaxed mt-5 max-w-xl">
-                  Hemos escrito una serie de artículos para compradores que quieren tener claridad antes de dar el paso.
-                </p>
-              </div>
+            <div className="mb-12 md:mb-14 max-w-2xl">
+              <span className="inline-block text-olive text-xs font-bold tracking-[0.2em] uppercase mb-5">
+                Guía
+              </span>
+              <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-dark leading-tight tracking-tight">
+                Entender la financiación también es parte de la decisión
+              </h2>
+              <p className="text-text-light text-base md:text-lg leading-relaxed mt-5 max-w-xl">
+                Te compartimos una serie de artículos para compradores que quieren tener claridad antes de dar el paso.
+              </p>
               <Link
                 to="/guia"
-                className="group inline-flex items-center gap-2 text-sm font-bold text-blue hover:text-blue-dark transition-colors whitespace-nowrap pb-2"
+                className="group inline-flex items-center gap-2 text-sm font-bold text-blue hover:text-blue-dark transition-colors mt-6"
               >
                 Ver guía inmobiliaria
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-1">
@@ -772,10 +846,10 @@ export default function FinanciarPage() {
             </div>
 
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">
-              Antes de avanzar, conviene entender bien tu situación
+              Solo una conversación para entender tu momento
             </h2>
             <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-              Sin compromiso. Analizamos tu caso y vemos qué tiene sentido para ti.
+              Diseñamos contigo el plan que tiene sentido para tu vivienda.
             </p>
 
             {/* Two buttons */}
