@@ -188,13 +188,3 @@
   }
 }
 
-/* ─── Calculator print layout ─── */
-@media print {
-  @page { margin: 18mm; }
-  body.calc-printing * { visibility: hidden; }
-  body.calc-printing .calc-print-area,
-  body.calc-printing .calc-print-area * { visibility: visible; }
-  body.calc-printing .calc-print-area { position: absolute; left: 0; top: 0; width: 100%; }
-  body.calc-printing .no-print,
-  body.calc-printing .calc-print-area .no-print { display: none !important; }
-}

@@ -212,13 +212,39 @@ function ResultScreen({
   const formatEur = (n: number) =>
     new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)
 
+  /* Build the shareable URL once so WhatsApp + Copy use the same link.
+   * Falls back to the plain /valorador URL if the hosting environment
+   * isn't a browser (SSR-safe). */
+  const buildShareUrl = () => {
+    if (typeof window === 'undefined') return 'https://propihouse.es/valorador'
+    const qs = encodeShareablePayload({
+      tipo,
+      ubicacion,
+      metros,
+      estado: condition,
+      planta,
+      ascensor,
+      extras,
+    })
+    const base = `${window.location.origin}/valorador`
+    return qs ? `${base}?${qs}` : base
+  }
+
   const handleShareWhatsApp = () => {
-    const text = `He valorado mi vivienda en L'Hospitalet con Propi House: entre ${formatEur(lowValue)} y ${formatEur(highValue)}`
+    const url = buildShareUrl()
+    const text =
+      `Acabo de calcular el valor orientativo de mi vivienda en L'Hospitalet con Propi House.\n` +
+      `Sale entre ${formatEur(lowValue)} y ${formatEur(highValue)}.\n\n` +
+      `Si quieres ver cuánto vale la tuya, te dejo el enlace:\n${url}`
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
   }
 
+  const [linkCopied, setLinkCopied] = useState(false)
   const handleCopyLink = () => {
-    navigator.clipboard?.writeText(window.location.href)
+    const url = buildShareUrl()
+    navigator.clipboard?.writeText(url)
+    setLinkCopied(true)
+    window.setTimeout(() => setLinkCopied(false), 2200)
   }
 
   return (
@@ -380,7 +406,7 @@ function ResultScreen({
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
               <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
             </svg>
-            Copiar enlace
+            {linkCopied ? 'Enlace copiado' : 'Copiar enlace'}
           </button>
         </div>
       </div>
@@ -633,6 +659,61 @@ function CountSelector({
 }
 
 /* ────────────────────────────────────────────
+   Shareable-URL encoding
+   ────────────────────────────────────────────
+   Encode the form inputs into URL params so the WhatsApp / Copy link
+   actually reproduces the result for the recipient. Compact keys keep
+   the URL short enough to paste comfortably.
+
+      t = tipo (piso | planta-baja | casa | atico | duplex)
+      u = ubicacion (free text)
+      m = metros (number)
+      e = estado (reformar | buen-estado | reformada | obra-nueva)
+      p = planta (0..4 or empty)
+      a = ascensor (1 | 0 or empty)
+      x = extras CSV
+*/
+interface ShareablePayload {
+  tipo: string
+  ubicacion: string
+  metros: number
+  estado: string
+  planta: number | null
+  ascensor: boolean | null
+  extras: string[]
+}
+
+function encodeShareablePayload(p: ShareablePayload): string {
+  const params = new URLSearchParams()
+  if (p.tipo) params.set('t', p.tipo)
+  if (p.ubicacion) params.set('u', p.ubicacion)
+  if (p.metros) params.set('m', String(p.metros))
+  if (p.estado) params.set('e', p.estado)
+  if (p.planta !== null) params.set('p', String(p.planta))
+  if (p.ascensor !== null) params.set('a', p.ascensor ? '1' : '0')
+  if (p.extras.length) params.set('x', p.extras.join(','))
+  return params.toString()
+}
+
+function decodeShareablePayload(search: string): Partial<ShareablePayload> | null {
+  const params = new URLSearchParams(search)
+  if (!params.has('m') || !params.has('e')) return null // need at least metros+estado
+  const m = Number(params.get('m'))
+  if (!Number.isFinite(m) || m <= 0) return null
+  const pStr = params.get('p')
+  const aStr = params.get('a')
+  return {
+    tipo: params.get('t') ?? '',
+    ubicacion: params.get('u') ?? '',
+    metros: m,
+    estado: params.get('e') ?? '',
+    planta: pStr === null ? null : Number(pStr),
+    ascensor: aStr === null ? null : aStr === '1',
+    extras: (params.get('x') ?? '').split(',').filter(Boolean),
+  }
+}
+
+/* ────────────────────────────────────────────
    Main component
    ──────────────────────────────────────────── */
 export default function ValoradorPage() {
@@ -655,6 +736,23 @@ export default function ValoradorPage() {
   const [planta, setPlanta] = useState<number | null>(null)
   const [ascensor, setAscensor] = useState<boolean | null>(null)
   const [extras, setExtras] = useState<string[]>([])
+
+  /* Hydrate from a shareable URL (?m=...&e=...). When the recipient
+   * lands on the link we skip straight to the result so they see the
+   * same valuation the sender saw. */
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const decoded = decodeShareablePayload(window.location.search)
+    if (!decoded) return
+    if (decoded.tipo) setTipoVivienda(decoded.tipo)
+    if (decoded.ubicacion) setUbicacion(decoded.ubicacion)
+    if (decoded.metros) setMetros(decoded.metros)
+    if (decoded.estado) setEstado(decoded.estado)
+    if (decoded.planta !== undefined && decoded.planta !== null) setPlanta(decoded.planta)
+    if (decoded.ascensor !== undefined && decoded.ascensor !== null) setAscensor(decoded.ascensor)
+    if (decoded.extras?.length) setExtras(decoded.extras)
+    setPhase('result')
+  }, [])
 
   /* Refinement form data */
   const [refineStep, setRefineStep] = useState(1)
