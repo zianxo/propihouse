@@ -49,51 +49,42 @@ export default function ComprarPage() {
       {/* ╔══════════════════════════════════════════════════════╗
           ║  BLOCK 1 — INTRO HERO                               ║
           ╚══════════════════════════════════════════════════════╝ */}
-      <section className="relative overflow-hidden">
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#868C4D]/[0.07] via-[#868C4D]/[0.03] to-transparent pointer-events-none" />
+      <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-cream via-warm-white to-cream-light" />
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, var(--color-olive) 0.5px, transparent 0)',
+          backgroundSize: '24px 24px',
+        }} />
 
-        {/* Subtle grain texture */}
-        <div
-          className="absolute inset-0 opacity-[0.035] pointer-events-none mix-blend-multiply"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            backgroundSize: '128px 128px',
-          }}
-        />
-
-        <div className="relative max-w-3xl mx-auto px-6 pt-32 pb-24 md:pt-44 md:pb-32">
+        <div className="max-w-4xl mx-auto px-6 relative z-10">
           <RevealSection>
-            <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#2A79A9] mb-8">
+            <span className="inline-block text-[#B8A88A] text-xs font-bold tracking-[0.2em] uppercase mb-5">
               Comprar vivienda
             </span>
-          </RevealSection>
-
-          <RevealSection delay={80}>
-            <h1 className="font-[Playfair_Display] text-[clamp(2rem,5.5vw,3.5rem)] font-normal leading-[1.12] tracking-[-0.015em] text-[#1A1A1A] mb-8">
+            <h1 className="font-[Playfair_Display] text-[clamp(2rem,5.5vw,3.5rem)] font-normal leading-[1.12] tracking-[-0.015em] text-dark mb-8 max-w-3xl">
               Comprar una vivienda en L'Hospitalet empieza por entender tu situaci&oacute;n
             </h1>
+            <div className="max-w-2xl">
+              <p className="text-text-light text-lg leading-relaxed">
+                Comprar una vivienda en L'Hospitalet de Llobregat no siempre empieza buscando pisos.
+                Muchas personas llegan a este momento porque est&aacute;n viviendo un cambio importante:
+                independizarse, formar una familia, cambiar de vivienda o simplemente encontrar un
+                lugar que encaje mejor con su situaci&oacute;n actual.
+              </p>
+            </div>
           </RevealSection>
 
-          <RevealSection delay={160}>
-            <p className="text-lg md:text-xl leading-[1.75] text-[#1A1A1A]/65 max-w-2xl">
-              Comprar una vivienda en L'Hospitalet de Llobregat no siempre empieza buscando pisos.
-              Muchas personas llegan a este momento porque est&aacute;n viviendo un cambio importante:
-              independizarse, formar una familia, cambiar de vivienda o simplemente encontrar un lugar
-              que encaje mejor con su situaci&oacute;n actual.
-            </p>
-          </RevealSection>
-
-          {/* Three key questions — staggered bottom-up reveal */}
-          <div className="mt-16 grid gap-6 sm:grid-cols-3">
+          {/* Three key questions — kept inside the hero but as a tighter
+           * editorial sub-block aligned with the unified vertical rhythm. */}
+          <div className="mt-12 grid gap-6 sm:grid-cols-3 max-w-3xl">
             {[
                 'Qu\u00e9 tipo de vivienda encaja contigo',
                 'Qu\u00e9 presupuesto tiene sentido',
                 'Qu\u00e9 decisiones son realmente importantes',
             ].map((q, i) => (
-              <RevealSection key={i} delay={260 + i * 140}>
-                <div className="relative pl-5 border-l-2 border-[#868C4D]/30">
-                  <p className="font-[Playfair_Display] text-base md:text-lg text-[#1A1A1A]/80 leading-snug">
+              <RevealSection key={i} delay={120 + i * 110}>
+                <div className="relative pl-5 border-l-2 border-olive/30">
+                  <p className="font-[Playfair_Display] text-base md:text-lg text-dark/80 leading-snug">
                     {q}
                   </p>
                 </div>
@@ -101,8 +92,8 @@ export default function ComprarPage() {
             ))}
           </div>
 
-          <RevealSection delay={340} className="mt-14">
-            <p className="text-base leading-[1.8] text-[#1A1A1A]/55 max-w-2xl italic">
+          <RevealSection delay={460} className="mt-10">
+            <p className="text-base leading-relaxed text-text-light max-w-2xl italic">
               Porque comprar una vivienda no consiste solo en visitar pisos.
               Consiste en entender bien tu situaci&oacute;n y tomar decisiones con criterio desde el principio.
             </p>

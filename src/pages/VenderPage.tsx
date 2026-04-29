@@ -109,42 +109,31 @@ export default function VenderPage() {
       {/* ╔══════════════════════════════════════════════════════╗
           ║  INTRO HERO                                         ║
           ╚══════════════════════════════════════════════════════╝ */}
-      <section className="relative overflow-hidden">
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#868C4D]/[0.07] via-[#868C4D]/[0.03] to-transparent pointer-events-none" />
+      <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-cream via-warm-white to-cream-light" />
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, var(--color-olive) 0.5px, transparent 0)',
+          backgroundSize: '24px 24px',
+        }} />
 
-        {/* Subtle grain texture */}
-        <div
-          className="absolute inset-0 opacity-[0.035] pointer-events-none mix-blend-multiply"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            backgroundSize: '128px 128px',
-          }}
-        />
-
-        <div className="relative max-w-3xl mx-auto px-6 pt-32 pb-24 md:pt-44 md:pb-32">
+        <div className="max-w-4xl mx-auto px-6 relative z-10">
           <RevealSection>
-            <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#868C4D] mb-8">
+            <span className="inline-block text-[#B8A88A] text-xs font-bold tracking-[0.2em] uppercase mb-5">
               Vender vivienda
             </span>
-          </RevealSection>
-
-          <RevealSection delay={80}>
-            <h1 className="font-[Playfair_Display] text-[clamp(2rem,5.5vw,3.5rem)] font-normal leading-[1.12] tracking-[-0.015em] text-[#1A1A1A] mb-8">
+            <h1 className="font-[Playfair_Display] text-[clamp(2rem,5.5vw,3.5rem)] font-normal leading-[1.12] tracking-[-0.015em] text-dark mb-8 max-w-3xl">
               Vender una vivienda no siempre empieza queriendo vender
             </h1>
-          </RevealSection>
-
-          <RevealSection delay={160}>
-            <div className="space-y-5 text-lg md:text-xl leading-[1.75] text-[#1A1A1A]/65 max-w-2xl">
-              <p>
-                A veces se trata de un cambio de vivienda. Otras, de una herencia que hay que gestionar.
-                En algunos casos, es una separaci&oacute;n o un cambio de ciudad. Y a veces, simplemente,
-                ha llegado el momento.
+            <div className="max-w-2xl space-y-5">
+              <p className="text-text-light text-lg leading-relaxed">
+                A veces se trata de un cambio de vivienda. Otras, de una herencia que hay que
+                gestionar. En algunos casos, es una separaci&oacute;n o un cambio de ciudad. Y a
+                veces, simplemente, ha llegado el momento.
               </p>
-              <p>
-                Sea cual sea la raz&oacute;n, vender una vivienda en L'Hospitalet de Llobregat es una
-                decisi&oacute;n importante. Y tomarla bien empieza mucho antes de publicar un anuncio.
+              <p className="text-text-light text-lg leading-relaxed">
+                Sea cual sea la raz&oacute;n, vender una vivienda en L'Hospitalet de Llobregat es
+                una decisi&oacute;n importante. Y tomarla bien empieza mucho antes de publicar un
+                anuncio.
               </p>
             </div>
           </RevealSection>
