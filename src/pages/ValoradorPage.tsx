@@ -233,9 +233,8 @@ function ResultScreen({
   const handleShareWhatsApp = () => {
     const url = buildShareUrl()
     const text =
-      `Acabo de calcular el valor orientativo de mi vivienda en L'Hospitalet con Propi House.\n` +
-      `Sale entre ${formatEur(lowValue)} y ${formatEur(highValue)}.\n\n` +
-      `Si quieres ver cuánto vale la tuya, te dejo el enlace:\n${url}`
+      `Valoración orientativa de vivienda en L'Hospitalet de Llobregat: ${formatEur(lowValue)} – ${formatEur(highValue)}.\n\n` +
+      `Calcula la tuya en Propi House:\n${url}`
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
   }
 
