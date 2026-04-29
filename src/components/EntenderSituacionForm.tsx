@@ -388,7 +388,7 @@ export function EntenderSituacionForm({
               type="button"
               onClick={goForward}
               disabled={!tipoVivienda || !ubicación.trim()}
-              className="w-full mt-2 rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+              className="w-full mt-2 rounded-lg bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
             >
               Continuar
             </button>
@@ -442,7 +442,7 @@ export function EntenderSituacionForm({
             <button
               type="submit"
               disabled={!nombre.trim() || !teléfono.trim()}
-              className="w-full mt-4 rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+              className="w-full mt-4 rounded-lg bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
             >
               Quiero entender mi caso
             </button>
