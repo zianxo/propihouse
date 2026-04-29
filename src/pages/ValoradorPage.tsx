@@ -167,6 +167,7 @@ function ResultScreen({
   planta,
   ascensor,
   onRefine,
+  onEdit,
 }: {
   metros: number
   condition: string
@@ -176,6 +177,7 @@ function ResultScreen({
   planta: number | null
   ascensor: boolean | null
   onRefine: () => void
+  onEdit: () => void
 }) {
   const [visible, setVisible] = useState(false)
 
@@ -246,13 +248,63 @@ function ResultScreen({
     window.setTimeout(() => setLinkCopied(false), 2200)
   }
 
+  /* ── Pretty-printers for the params summary ─────────────── */
+  const tipoLabel = (() => {
+    switch (tipo) {
+      case 'piso': return 'Piso'
+      case 'planta-baja': return 'Planta baja'
+      case 'casa': return 'Casa'
+      case 'atico': return 'Ático'
+      case 'duplex': return 'Dúplex'
+      default: return '—'
+    }
+  })()
+  const estadoLabel = (() => {
+    switch (condition) {
+      case 'reformar': return 'A reformar'
+      case 'buen-estado': return 'Buen estado'
+      case 'reformada': return 'Reformada'
+      case 'obra-nueva': return 'Obra nueva'
+      default: return '—'
+    }
+  })()
+  const plantaAscensorLabel = (() => {
+    if (planta === null) return null
+    const piso = planta === 0 ? 'Planta baja' : planta >= 4 ? '4ª planta o más' : `${planta}ª planta`
+    if (ascensor === null || planta === 0) return piso
+    return `${piso} · ${ascensor ? 'con ascensor' : 'sin ascensor'}`
+  })()
+  const extrasLabel = (() => {
+    const visible = extras.filter((e) => e !== 'ninguno')
+    if (!visible.length) return '—'
+    const map: Record<string, string> = {
+      parking: 'Parking',
+      terraza: 'Terraza',
+      balcon: 'Balcón',
+      trastero: 'Trastero',
+      ascensor: 'Ascensor',
+    }
+    return visible.map((e) => map[e] ?? e).join(' · ')
+  })()
+
+  /* Each row in the "Datos" card. Empty-value rows are skipped so the
+   * card stays compact when fields weren't asked. */
+  const dataRows: Array<{ label: string; value: string | null }> = [
+    { label: 'Tipo', value: tipo ? tipoLabel : null },
+    { label: 'Ubicación', value: ubicacion?.trim() || null },
+    { label: 'Superficie', value: `${metros} m²` },
+    { label: 'Estado', value: condition ? estadoLabel : null },
+    { label: 'Planta', value: plantaAscensorLabel },
+    { label: 'Extras', value: extrasLabel === '—' ? null : extrasLabel },
+  ].filter((r) => r.value !== null && r.value !== '')
+
   return (
     <div
       className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
         visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
     >
-      <div className="max-w-2xl mx-auto px-6 py-12 md:py-20">
+      <div className="max-w-5xl mx-auto px-6 py-12 md:py-20">
         {/* Title */}
         <h2 className="font-[Playfair_Display] text-2xl md:text-3xl font-light text-[#1A1A1A] tracking-tight text-center mb-3">
           Valor estimado de tu vivienda
@@ -285,27 +337,52 @@ function ResultScreen({
           </span>
         </div>
 
-        {/* Big price */}
-        <div className="text-center mb-6">
-          <div className="inline-block rounded-xl bg-white border-2 border-[#1A1A1A]/[0.06] shadow-[0_4px_40px_rgba(0,0,0,0.04)] px-10 md:px-16 py-10">
-            <p className="text-sm text-[#1A1A1A]/35 mb-2 tracking-widest uppercase font-[Lato]">
+        {/* ─── 2-column block: Datos (left) + Resultado (right) ──
+         * On mobile they stack; on lg+ they sit side-by-side at equal
+         * height so the user can read inputs and price together. */}
+        <div className="grid lg:grid-cols-2 gap-5 md:gap-6 mb-8 items-stretch">
+          {/* LEFT — Datos card */}
+          <div className="rounded-xl bg-white border border-[#1A1A1A]/[0.06] shadow-[0_4px_24px_rgba(0,0,0,0.03)] p-7 md:p-8 flex flex-col">
+            <div className="flex items-center justify-between mb-5">
+              <p className="text-[11px] tracking-widest uppercase text-[#868C4D] font-semibold font-[Lato]">
+                Datos de la vivienda
+              </p>
+              <button
+                type="button"
+                onClick={onEdit}
+                className="text-xs text-[#2A79A9]/80 hover:text-[#2A79A9] underline-offset-2 hover:underline transition-colors cursor-pointer font-[Lato]"
+              >
+                Modificar
+              </button>
+            </div>
+            <dl className="space-y-3.5 flex-1">
+              {dataRows.map((row) => (
+                <div key={row.label} className="flex items-start justify-between gap-4 border-b border-[#1A1A1A]/[0.04] pb-3 last:border-0 last:pb-0">
+                  <dt className="text-[13px] text-[#1A1A1A]/45 font-[Lato]">{row.label}</dt>
+                  <dd className="text-[14px] text-[#1A1A1A]/85 font-medium font-[Lato] text-right">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          {/* RIGHT — Price card */}
+          <div className="rounded-xl bg-white border-2 border-[#1A1A1A]/[0.06] shadow-[0_4px_40px_rgba(0,0,0,0.04)] p-7 md:p-10 flex flex-col items-center justify-center text-center">
+            <p className="text-xs text-[#1A1A1A]/35 mb-2 tracking-widest uppercase font-[Lato]">
               Entre
             </p>
-            <p className="font-[Playfair_Display] text-4xl md:text-5xl lg:text-[3.5rem] font-light text-[#1A1A1A] tracking-tight leading-none">
+            <p className="font-[Playfair_Display] text-3xl md:text-4xl lg:text-[2.6rem] font-light text-[#1A1A1A] tracking-tight leading-none">
               {formatEur(lowValue)}
-              <span className="text-[#1A1A1A]/20 mx-3">-</span>
+              <span className="text-[#1A1A1A]/20 mx-2">–</span>
               {formatEur(highValue)}
             </p>
-            <p className="mt-4 text-sm text-[#1A1A1A]/30 font-[Lato]">
-              ~{formatEur(Math.round(pricePerM2))}/m2 &middot; {metros} m2
+            <p className="mt-4 text-sm text-[#1A1A1A]/35 font-[Lato]">
+              ~{formatEur(Math.round(pricePerM2))}/m² &middot; {metros} m²
+            </p>
+            <p className="mt-3 text-[11px] text-[#1A1A1A]/30 tracking-wide font-[Lato]">
+              {lastReviewedLabel()}
             </p>
           </div>
         </div>
-
-        {/* Baremos freshness caption */}
-        <p className="text-center text-[11px] text-[#1A1A1A]/30 tracking-wide font-[Lato] mb-8">
-          {lastReviewedLabel()}
-        </p>
 
         {/* Special-case banner — only shown when the engine flags the input
          * as outside its safe range (very small / very large m², singular ático). */}
@@ -324,7 +401,7 @@ function ResultScreen({
         )}
 
         {/* Explanation */}
-        <div className="max-w-xl mx-auto mb-12">
+        <div className="max-w-xl mx-auto mb-12 mt-12">
           <p className="text-[#1A1A1A]/55 text-[15px] leading-relaxed font-light font-[Lato] mb-5">
             Este resultado es una buena referencia para empezar a entender el valor de tu vivienda.
             Sin embargo, el resultado final depende de cómo se plantee la vivienda en el mercado:
@@ -874,6 +951,14 @@ export default function ValoradorPage() {
           planta={planta}
           ascensor={ascensor}
           onRefine={() => setPhase('refine')}
+          onEdit={() => {
+            // Send the user back to the form with their state intact so
+            // they can adjust an input and recompute. Phase + step are
+            // the only things that need resetting.
+            setPhase('form')
+            setStep(1)
+            setDirection('back')
+          }}
         />
       </PageShell>
     )
