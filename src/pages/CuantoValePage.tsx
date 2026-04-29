@@ -100,37 +100,35 @@ export default function CuantoValePage() {
       />
 
       {/* ─── BLOCK 1: HERO ─── */}
-      <section className="relative z-10 pt-32 pb-20 md:pt-40 md:pb-28 px-6">
-        {/* Decorative accent */}
-        <div className="absolute top-20 right-0 w-[400px] h-[400px] rounded-full bg-[#2A79A9]/[0.03] blur-[100px] pointer-events-none" />
+      {/* Same shell as Alquilar / Financiar / Comprar / Vender so the
+       * whole service-page family feels like one design. */}
+      <section className="relative z-10 pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-cream via-warm-white to-cream-light" />
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, var(--color-olive) 0.5px, transparent 0)',
+          backgroundSize: '24px 24px',
+        }} />
 
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto px-6 relative z-10">
           <RevealSection>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#1A1A1A]/[0.08] bg-white/60 mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#2A79A9]" />
-              <span className="text-[11px] tracking-widest uppercase text-[#1A1A1A]/55 font-medium font-[Lato]">
-                Valoración inmobiliaria
-              </span>
+            <span className="inline-block text-[#B8A88A] text-xs font-bold tracking-[0.2em] uppercase mb-5">
+              Valoración inmobiliaria
+            </span>
+            <h1 className="font-[Playfair_Display] text-[clamp(2rem,5.5vw,3.5rem)] font-normal leading-[1.12] tracking-[-0.015em] text-dark mb-8 max-w-3xl">
+              Cuánto vale realmente tu vivienda en L'Hospitalet de Llobregat?
+            </h1>
+            <div className="max-w-2xl">
+              <p className="text-text-light text-lg leading-relaxed">
+                Conoce una referencia real del valor de tu vivienda y entiende cómo encaja en el mercado actual antes de tomar una decisión.
+              </p>
             </div>
           </RevealSection>
 
-          <RevealSection delay={100}>
-            <h1 className="font-[Playfair_Display] text-4xl md:text-5xl lg:text-[3.5rem] font-light text-[#1A1A1A] tracking-tight leading-[1.1] mb-6">
-              Cuánto vale realmente tu vivienda en L'Hospitalet de Llobregat?
-            </h1>
-          </RevealSection>
-
-          <RevealSection delay={200}>
-            <p className="text-lg md:text-xl text-[#1A1A1A]/55 font-light leading-relaxed max-w-2xl mb-10 font-[Lato]">
-              Conoce una referencia real del valor de tu vivienda y entiende cómo encaja en el mercado actual antes de tomar una decisión.
-            </p>
-          </RevealSection>
-
-          <RevealSection delay={300}>
+          <RevealSection delay={150} className="mt-10">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <Link
                 to="/valorador"
-                className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-7 py-4 rounded-xl text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato]"
+                className="inline-flex items-center gap-2.5 bg-blue hover:bg-blue-dark text-white text-sm font-bold px-7 py-3.5 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue/20 group"
               >
                 Calcular el valor de mi vivienda
                 <svg
@@ -146,7 +144,7 @@ export default function CuantoValePage() {
                   <polyline points="12 5 19 12 12 19" />
                 </svg>
               </Link>
-              <span className="text-sm text-[#1A1A1A]/35 font-[Lato]">
+              <span className="text-sm text-text-muted">
                 Resultado inmediato. No necesitas dejar tus datos.
               </span>
             </div>
@@ -198,7 +196,7 @@ export default function CuantoValePage() {
             </p>
             <Link
               to="/valorador"
-              className="relative inline-flex items-center gap-3 bg-white text-[#2A79A9] px-7 py-4 rounded-xl text-base font-medium tracking-wide hover:bg-[#EFE8CD] transition-all duration-300 group font-[Lato]"
+              className="relative inline-flex items-center gap-3 bg-white text-[#2A79A9] px-7 py-4 rounded-lg text-base font-medium tracking-wide hover:bg-[#EFE8CD] transition-all duration-300 group font-[Lato]"
             >
               Calcular el valor de mi vivienda
               <svg
@@ -292,7 +290,7 @@ export default function CuantoValePage() {
             </p>
             <Link
               to="/entender-mi-situacion"
-              className="inline-flex items-center gap-3 bg-[#1A1A1A] text-[#EFE8CD] px-7 py-4 rounded-xl text-base font-medium tracking-wide hover:bg-[#2A2A2A] transition-all duration-300 group font-[Lato]"
+              className="inline-flex items-center gap-3 bg-[#1A1A1A] text-[#EFE8CD] px-7 py-4 rounded-lg text-base font-medium tracking-wide hover:bg-[#2A2A2A] transition-all duration-300 group font-[Lato]"
             >
               Ver mi situación
               <svg

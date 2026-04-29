@@ -434,7 +434,7 @@ function ResultScreen({
           <button
             type="button"
             onClick={onRefine}
-            className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-8 py-4 rounded-xl text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato] cursor-pointer hover:shadow-lg hover:shadow-[#2A79A9]/25"
+            className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-8 py-4 rounded-lg text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato] cursor-pointer hover:shadow-lg hover:shadow-[#2A79A9]/25"
           >
             Analizar mi vivienda
             <svg
@@ -545,7 +545,7 @@ function RefineSuccessScreen() {
         <div className="text-center mb-16">
           <Link
             to="/guia"
-            className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-7 py-4 rounded-xl text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato]"
+            className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-7 py-4 rounded-lg text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato]"
           >
             Volver a la guía inmobiliaria
             <svg
@@ -1064,7 +1064,7 @@ export default function ValoradorPage() {
                   type="button"
                   onClick={refineGoForward}
                   disabled={!refDireccion.trim()}
-                  className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                  className="w-full rounded-lg bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
                 >
                   Continuar
                 </button>
@@ -1091,7 +1091,7 @@ export default function ValoradorPage() {
                   type="button"
                   onClick={refineGoForward}
                   disabled={!refHabitaciones || !refBanos}
-                  className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                  className="w-full rounded-lg bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
                 >
                   Continuar
                 </button>
@@ -1238,7 +1238,7 @@ export default function ValoradorPage() {
                   type="button"
                   onClick={handleRefineSubmit}
                   disabled={!refNombre.trim() || !refTeléfono.trim() || !refEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(refEmail.trim())}
-                  className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                  className="w-full rounded-lg bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
                 >
                   Recibir mi análisis
                 </button>
@@ -1391,7 +1391,7 @@ export default function ValoradorPage() {
                 type="button"
                 onClick={goForward}
                 disabled={!ubicación.trim()}
-                className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                className="w-full rounded-lg bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
               >
                 Continuar
               </button>
@@ -1445,7 +1445,7 @@ export default function ValoradorPage() {
               <button
                 type="button"
                 onClick={goForward}
-                className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] cursor-pointer font-[Lato]"
+                className="w-full rounded-lg bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] cursor-pointer font-[Lato]"
               >
                 Continuar
               </button>
@@ -1546,7 +1546,7 @@ export default function ValoradorPage() {
                 type="button"
                 onClick={goForward}
                 disabled={planta === null || (planta > 0 && ascensor === null)}
-                className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                className="w-full rounded-lg bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
               >
                 Continuar
               </button>
@@ -1584,7 +1584,7 @@ export default function ValoradorPage() {
                 type="button"
                 onClick={handleFinish}
                 disabled={extras.length === 0}
-                className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                className="w-full rounded-lg bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
               >
                 Ver resultado
               </button>
