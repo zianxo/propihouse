@@ -178,9 +178,12 @@ export default function AlquilarPage() {
             <h1 className="font-[Playfair_Display] text-[clamp(2rem,5.5vw,3.5rem)] font-normal leading-[1.12] tracking-[-0.015em] text-dark mb-8 max-w-3xl">
               Alquilar una vivienda en L'Hospitalet de Llobregat no siempre es una decisión sencilla
             </h1>
-            <div className="max-w-2xl">
+            <div className="max-w-2xl space-y-5">
               <p className="text-text-light text-lg leading-relaxed">
-                Muchas personas tienen una propiedad que podrían alquilar, pero no lo hacen, o lo hacen con dudas: dudas sobre el precio, sobre quién entra en tu vivienda, sobre qué pasa si algo sale mal. Preguntas normales que, sin una respuesta clara, acaban frenando una decisión que podría tener mucho sentido.
+                Muchas personas tienen una propiedad que podrían alquilar, pero no lo hacen, o lo hacen con dudas.
+              </p>
+              <p className="text-text-light text-lg leading-relaxed">
+                Dudas sobre el precio, sobre quién entra en tu vivienda, sobre qué pasa si algo sale mal. Preguntas normales que, sin una respuesta clara, acaban frenando una decisión que podría tener mucho sentido.
               </p>
             </div>
           </RevealSection>
