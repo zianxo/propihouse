@@ -771,22 +771,54 @@ function encodeShareablePayload(p: ShareablePayload): string {
   return params.toString()
 }
 
+/* Defensive decoder. The valorador is fully client-side (no backend
+ * boundary, no XSS surface — React auto-escapes everything we render),
+ * but a tampered URL with unknown enum values would leak NaN into the
+ * price display, and unbounded metros would compute fake billion-euro
+ * valuations. So we whitelist categorical values and clamp numerics
+ * to the same ranges the form itself accepts. */
+const VALID_TIPO = ['piso', 'planta-baja', 'casa', 'atico', 'duplex'] as const
+const VALID_ESTADO = ['reformar', 'buen-estado', 'reformada', 'obra-nueva'] as const
+const VALID_EXTRAS = ['parking', 'terraza', 'balcon', 'trastero', 'ascensor', 'ninguno'] as const
+
 function decodeShareablePayload(search: string): Partial<ShareablePayload> | null {
   const params = new URLSearchParams(search)
   if (!params.has('m') || !params.has('e')) return null // need at least metros+estado
+
   const m = Number(params.get('m'))
   if (!Number.isFinite(m) || m <= 0) return null
+
+  const estadoRaw = params.get('e') ?? ''
+  if (!(VALID_ESTADO as readonly string[]).includes(estadoRaw)) return null
+
+  const tipoRaw = params.get('t') ?? ''
+  const tipo = (VALID_TIPO as readonly string[]).includes(tipoRaw) ? tipoRaw : ''
+
+  // Clamp to the same range the form's slider + number-input accept
+  // (10–1000 m²). Round so a hand-crafted "?m=80.5" still works.
+  const metros = Math.max(10, Math.min(1000, Math.round(m)))
+
   const pStr = params.get('p')
-  const aStr = params.get('a')
-  return {
-    tipo: params.get('t') ?? '',
-    ubicacion: params.get('u') ?? '',
-    metros: m,
-    estado: params.get('e') ?? '',
-    planta: pStr === null ? null : Number(pStr),
-    ascensor: aStr === null ? null : aStr === '1',
-    extras: (params.get('x') ?? '').split(',').filter(Boolean),
+  let planta: number | null = null
+  if (pStr !== null) {
+    const p = Number(pStr)
+    if (Number.isFinite(p)) planta = Math.max(0, Math.min(20, Math.round(p)))
   }
+
+  const aStr = params.get('a')
+  const ascensor = aStr === '1' ? true : aStr === '0' ? false : null
+
+  const extras = (params.get('x') ?? '')
+    .split(',')
+    .filter(Boolean)
+    .filter((e) => (VALID_EXTRAS as readonly string[]).includes(e))
+
+  // Truncate the free-text ubicacion so a malicious 100 KB URL can't
+  // wreck the result-card layout. matchZone() only needs the first
+  // few words to identify the barrio.
+  const ubicacion = (params.get('u') ?? '').slice(0, 120)
+
+  return { tipo, ubicacion, metros, estado: estadoRaw, planta, ascensor, extras }
 }
 
 /* ────────────────────────────────────────────
