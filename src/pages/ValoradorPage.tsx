@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { lastReviewedLabel, zoneLabel } from '../data/zones'
-import { computeValuation, type Estado } from '../lib/valorador'
+import { computeValuation, type Estado, type Tipo } from '../lib/valorador'
 
 /* ────────────────────────────────────────────
    Types & data
@@ -28,14 +28,22 @@ const CONDITION_OPTIONS: CardOption[] = [
 ]
 
 const EXTRAS_OPTIONS = [
-  { label: 'Ascensor', value: 'ascensor' },
   { label: 'Parking', value: 'parking' },
   { label: 'Terraza', value: 'terraza' },
   { label: 'Balcón', value: 'balcon' },
+  { label: 'Trastero', value: 'trastero' },
   { label: 'Ninguno', value: 'ninguno' },
 ]
 
-const TOTAL_STEPS = 5
+const PLANTA_OPTIONS: Array<{ label: string; value: number }> = [
+  { label: 'Planta baja', value: 0 },
+  { label: '1', value: 1 },
+  { label: '2', value: 2 },
+  { label: '3', value: 3 },
+  { label: '4+', value: 4 },
+]
+
+const TOTAL_STEPS = 6
 const REFINE_TOTAL_STEPS = 7
 
 /* All pricing math (condition / extra / size / etc. coefficients) lives
@@ -155,12 +163,18 @@ function ResultScreen({
   condition,
   extras,
   ubicacion,
+  tipo,
+  planta,
+  ascensor,
   onRefine,
 }: {
   metros: number
   condition: string
   extras: string[]
   ubicacion: string
+  tipo: string
+  planta: number | null
+  ascensor: boolean | null
   onRefine: () => void
 }) {
   const [visible, setVisible] = useState(false)
@@ -170,18 +184,30 @@ function ResultScreen({
     return () => cancelAnimationFrame(t)
   }, [])
 
-  /* Calculate price via the V1 engine. The current 5-step form only
-   * provides ubicacion, metros, estado, and extras — every other coef
-   * defaults to 1.0 inside computeValuation, so this swap doesn't shift
-   * prices for live users. Pass B will surface planta/baños/orientación
-   * etc. and the engine starts using them automatically. */
+  /* Calculate price via the V1 engine. The form now collects tipo, planta
+   * and ascensor on top of ubicacion/metros/estado/extras. trastero is
+   * captured via the extras list (toggled separately for engine) so the
+   * +1% kicks in there too. */
   const valuation = computeValuation({
     ubicacion,
     metros,
     estado: condition as Estado,
-    extras,
+    extras: extras.filter((e) => e !== 'trastero'),
+    tipo: (tipo || undefined) as Tipo | undefined,
+    planta: planta ?? undefined,
+    ascensor: ascensor ?? undefined,
+    trastero: extras.includes('trastero') || undefined,
   })
-  const { zone, pricePerM2, lowValue, highValue } = valuation
+  const {
+    zone,
+    pricePerM2,
+    lowValue,
+    highValue,
+    confidenceLabel,
+    confidenceScore,
+    specialCase,
+    specialReason,
+  } = valuation
 
   const formatEur = (n: number) =>
     new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)
@@ -202,33 +228,41 @@ function ResultScreen({
       }`}
     >
       <div className="max-w-2xl mx-auto px-6 py-12 md:py-20">
-        {/* Label */}
-        <div className="text-center mb-4">
-          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#868C4D]/20 bg-[#868C4D]/[0.06]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#868C4D]" />
-            <span className="text-[11px] tracking-widest uppercase text-[#868C4D] font-medium font-[Lato]">
-              Resultado
-            </span>
-          </span>
-        </div>
-
         {/* Title */}
         <h2 className="font-[Playfair_Display] text-2xl md:text-3xl font-light text-[#1A1A1A] tracking-tight text-center mb-3">
           Valor estimado de tu vivienda
         </h2>
 
-        {/* Zone indicator */}
-        <p className="text-center text-[13px] text-[#1A1A1A]/50 font-[Lato] mb-10">
-          <svg className="inline-block w-3.5 h-3.5 mr-1.5 -mt-0.5 text-[#868C4D]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
-          {zoneLabel(zone)}
-        </p>
+        {/* Zone + confidence (centered together) */}
+        <div className="flex items-center justify-center flex-wrap gap-x-3 gap-y-2 text-[13px] text-[#1A1A1A]/50 font-[Lato] mb-10">
+          <span className="inline-flex items-center">
+            <svg className="w-3.5 h-3.5 mr-1.5 text-[#868C4D]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            {zoneLabel(zone)}
+          </span>
+          <span className="text-[#1A1A1A]/15">|</span>
+          <span
+            className="inline-flex items-center gap-1.5"
+            title={`Confianza ${confidenceScore}/100`}
+          >
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                confidenceLabel === 'alta'
+                  ? 'bg-[#868C4D]'
+                  : confidenceLabel === 'media'
+                  ? 'bg-[#C9A227]'
+                  : 'bg-[#1A1A1A]/30'
+              }`}
+            />
+            Confianza {confidenceLabel}
+          </span>
+        </div>
 
         {/* Big price */}
         <div className="text-center mb-6">
-          <div className="inline-block rounded-3xl bg-white border-2 border-[#1A1A1A]/[0.06] shadow-[0_4px_40px_rgba(0,0,0,0.04)] px-10 md:px-16 py-10">
+          <div className="inline-block rounded-xl bg-white border-2 border-[#1A1A1A]/[0.06] shadow-[0_4px_40px_rgba(0,0,0,0.04)] px-10 md:px-16 py-10">
             <p className="text-sm text-[#1A1A1A]/35 mb-2 tracking-widest uppercase font-[Lato]">
               Entre
             </p>
@@ -244,9 +278,25 @@ function ResultScreen({
         </div>
 
         {/* Baremos freshness caption */}
-        <p className="text-center text-[11px] text-[#1A1A1A]/30 tracking-wide font-[Lato] mb-12">
+        <p className="text-center text-[11px] text-[#1A1A1A]/30 tracking-wide font-[Lato] mb-8">
           {lastReviewedLabel()}
         </p>
+
+        {/* Special-case banner — only shown when the engine flags the input
+         * as outside its safe range (very small / very large m², singular ático). */}
+        {specialCase && (
+          <div className="mb-12 rounded-xl border border-[#C9A227]/30 bg-[#FFF7E0]/60 px-6 py-5 text-center">
+            <p className="text-[13px] tracking-widest uppercase text-[#8A6D17] font-medium font-[Lato] mb-1">
+              Valoración manual recomendada
+            </p>
+            <p className="text-[14px] text-[#1A1A1A]/65 font-[Lato] leading-relaxed">
+              {specialReason === 'metros_muy_bajos' && 'Las viviendas de menos de 25 m² suelen valorarse caso a caso.'}
+              {specialReason === 'metros_muy_altos' && 'Las viviendas de más de 250 m² requieren un análisis más detallado.'}
+              {specialReason === 'atico_singular' && 'Los áticos grandes o con terraza tienen un valor muy variable según la finca.'}
+              {' '}Te recomendamos pedir un análisis personalizado.
+            </p>
+          </div>
+        )}
 
         {/* Explanation */}
         <div className="max-w-xl mx-auto mb-12">
@@ -269,7 +319,7 @@ function ResultScreen({
         </div>
 
         {/* CTA — emphasized "afinar" block */}
-        <div className="rounded-3xl border-2 border-[#2A79A9]/15 bg-gradient-to-br from-[#2A79A9]/[0.04] via-white/60 to-[#868C4D]/[0.04] p-9 md:p-12 text-center mb-10 shadow-[0_4px_30px_rgba(42,121,169,0.06)]">
+        <div className="rounded-xl border-2 border-[#2A79A9]/15 bg-gradient-to-br from-[#2A79A9]/[0.04] via-white/60 to-[#868C4D]/[0.04] p-9 md:p-12 text-center mb-10 shadow-[0_4px_30px_rgba(42,121,169,0.06)]">
           <p className="text-[#868C4D] text-xs font-semibold tracking-[0.2em] uppercase mb-4 font-[Lato]">
             ¿Te ha sorprendido el resultado?
           </p>
@@ -282,7 +332,7 @@ function ResultScreen({
           <button
             type="button"
             onClick={onRefine}
-            className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-8 py-4 rounded-2xl text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato] cursor-pointer hover:shadow-lg hover:shadow-[#2A79A9]/25"
+            className="inline-flex items-center gap-3 bg-[#2A79A9] text-white px-8 py-4 rounded-xl text-base font-medium tracking-wide hover:bg-[#236891] transition-all duration-300 group font-[Lato] cursor-pointer hover:shadow-lg hover:shadow-[#2A79A9]/25"
           >
             Analizar mi vivienda
             <svg
@@ -412,7 +462,7 @@ function RefineSuccessScreen() {
         </div>
 
         {/* Retention block */}
-        <div className="rounded-2xl border border-[#1A1A1A]/[0.06] bg-white/50 p-8 md:p-10">
+        <div className="rounded-xl border border-[#1A1A1A]/[0.06] bg-white/50 p-8 md:p-10">
           <p className="text-[#1A1A1A]/50 text-[15px] leading-relaxed font-light font-[Lato] mb-6">
             Mientras tanto, si quieres entender mejor cómo funciona el mercado en L'Hospitalet de Llobregat, puedes consultar algunos de nuestros artículos:
           </p>
@@ -515,7 +565,7 @@ function OptionCard({
     <button
       type="button"
       onClick={onClick}
-      className={`w-full flex items-center gap-4 rounded-2xl border-2 py-5 px-6 transition-all duration-300 cursor-pointer text-left
+      className={`w-full flex items-center gap-4 rounded-xl border-2 py-5 px-6 transition-all duration-300 cursor-pointer text-left
         ${
           selected
             ? 'border-[#2A79A9] bg-[#2A79A9]/[0.06] shadow-[0_0_0_1px_rgba(42,121,169,0.15)]'
@@ -602,6 +652,8 @@ export default function ValoradorPage() {
   const [ubicación, setUbicacion] = useState('')
   const [metros, setMetros] = useState(80)
   const [estado, setEstado] = useState('')
+  const [planta, setPlanta] = useState<number | null>(null)
+  const [ascensor, setAscensor] = useState<boolean | null>(null)
   const [extras, setExtras] = useState<string[]>([])
 
   /* Refinement form data */
@@ -621,15 +673,28 @@ export default function ValoradorPage() {
   const [refPhotos, setRefPhotos] = useState<File[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  /* Step 5 (planta + ascensor) doesn't apply to single-family houses or
+   * ground floors. We auto-skip it and use the natural defaults so the
+   * engine's coef_ascensor_planta stays at 1.0. */
+  const skipPlantaStep = tipoVivienda === 'casa' || tipoVivienda === 'planta-baja'
+
   const goForward = useCallback(() => {
     setDirection('forward')
-    setStep((s) => Math.min(s + 1, TOTAL_STEPS))
-  }, [])
+    setStep((s) => {
+      let next = s + 1
+      if (next === 5 && skipPlantaStep) next = 6
+      return Math.min(next, TOTAL_STEPS)
+    })
+  }, [skipPlantaStep])
 
   const goBack = useCallback(() => {
     setDirection('back')
-    setStep((s) => Math.max(s - 1, 1))
-  }, [])
+    setStep((s) => {
+      let prev = s - 1
+      if (prev === 5 && skipPlantaStep) prev = 4
+      return Math.max(prev, 1)
+    })
+  }, [skipPlantaStep])
 
   const selectAndAdvance = (setter: (v: string) => void, value: string) => {
     setter(value)
@@ -703,7 +768,16 @@ export default function ValoradorPage() {
           </Link>
         }
       >
-        <ResultScreen metros={metros} condition={estado} extras={extras} ubicacion={ubicación} onRefine={() => setPhase('refine')} />
+        <ResultScreen
+          metros={metros}
+          condition={estado}
+          extras={extras}
+          ubicacion={ubicación}
+          tipo={tipoVivienda}
+          planta={planta}
+          ascensor={ascensor}
+          onRefine={() => setPhase('refine')}
+        />
       </PageShell>
     )
   }
@@ -808,7 +882,7 @@ export default function ValoradorPage() {
                   type="button"
                   onClick={refineGoForward}
                   disabled={!refDireccion.trim()}
-                  className="w-full rounded-2xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                  className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
                 >
                   Continuar
                 </button>
@@ -835,7 +909,7 @@ export default function ValoradorPage() {
                   type="button"
                   onClick={refineGoForward}
                   disabled={!refHabitaciones || !refBanos}
-                  className="w-full rounded-2xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                  className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
                 >
                   Continuar
                 </button>
@@ -982,7 +1056,7 @@ export default function ValoradorPage() {
                   type="button"
                   onClick={handleRefineSubmit}
                   disabled={!refNombre.trim() || !refTeléfono.trim() || !refEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(refEmail.trim())}
-                  className="w-full rounded-2xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                  className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
                 >
                   Recibir mi análisis
                 </button>
@@ -1041,9 +1115,6 @@ export default function ValoradorPage() {
         >
           Propi House
         </Link>
-        <span className="hidden sm:block text-xs text-[#1A1A1A]/30 tracking-widest uppercase font-[Lato]">
-          Valorador gratuito
-        </span>
       </header>
 
       {/* Content */}
@@ -1075,7 +1146,8 @@ export default function ValoradorPage() {
               {step === 2 && '¿Dónde se encuentra la vivienda?'}
               {step === 3 && '¿Cuántos metros tiene la vivienda?'}
               {step === 4 && '¿Cómo describirías el estado de la vivienda?'}
-              {step === 5 && 'Tiene alguno de estos elementos?'}
+              {step === 5 && '¿En qué planta se encuentra?'}
+              {step === 6 && '¿Tiene alguno de estos elementos?'}
             </h2>
             {step === 3 && (
               <p className="mt-2 text-[#1A1A1A]/35 text-sm font-[Lato]">Superficie aproximada</p>
@@ -1096,7 +1168,7 @@ export default function ValoradorPage() {
                   key={opt.value}
                   type="button"
                   onClick={() => selectAndAdvance(setTipoVivienda, opt.value)}
-                  className={`flex flex-col items-center justify-center gap-3 rounded-2xl border-2 py-7 px-4 transition-all duration-300 cursor-pointer
+                  className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 py-7 px-4 transition-all duration-300 cursor-pointer
                     ${
                       tipoVivienda === opt.value
                         ? 'border-[#2A79A9] bg-[#2A79A9]/[0.06] shadow-[0_0_0_1px_rgba(42,121,169,0.15)]'
@@ -1137,7 +1209,7 @@ export default function ValoradorPage() {
                 type="button"
                 onClick={goForward}
                 disabled={!ubicación.trim()}
-                className="w-full rounded-2xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
               >
                 Continuar
               </button>
@@ -1191,7 +1263,7 @@ export default function ValoradorPage() {
               <button
                 type="button"
                 onClick={goForward}
-                className="w-full rounded-2xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] cursor-pointer font-[Lato]"
+                className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] cursor-pointer font-[Lato]"
               >
                 Continuar
               </button>
@@ -1206,7 +1278,7 @@ export default function ValoradorPage() {
                   key={opt.value}
                   type="button"
                   onClick={() => selectAndAdvance(setEstado, opt.value)}
-                  className={`flex flex-col items-center justify-center gap-3 rounded-2xl border-2 py-7 px-4 transition-all duration-300 cursor-pointer
+                  className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 py-7 px-4 transition-all duration-300 cursor-pointer
                     ${
                       estado === opt.value
                         ? 'border-[#2A79A9] bg-[#2A79A9]/[0.06] shadow-[0_0_0_1px_rgba(42,121,169,0.15)]'
@@ -1232,8 +1304,75 @@ export default function ValoradorPage() {
             </div>
           </StepWrapper>
 
-          {/* STEP 5 - Extras */}
+          {/* STEP 5 - Planta + Ascensor */}
           <StepWrapper active={step === 5} direction={direction}>
+            <div className="space-y-8">
+              {/* Planta */}
+              <div>
+                <p className="text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-3 text-center">
+                  Altura del piso
+                </p>
+                <div className="grid grid-cols-5 gap-2">
+                  {PLANTA_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setPlanta(opt.value)}
+                      className={`py-3.5 rounded-xl border-2 text-sm font-medium transition-all duration-300 cursor-pointer font-[Lato]
+                        ${
+                          planta === opt.value
+                            ? 'border-[#2A79A9] bg-[#2A79A9]/[0.06] text-[#1A1A1A] shadow-[0_0_0_1px_rgba(42,121,169,0.15)]'
+                            : 'border-[#1A1A1A]/[0.08] bg-white text-[#1A1A1A]/55 hover:border-[#2A79A9]/40 hover:bg-[#2A79A9]/[0.02]'
+                        }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ascensor — only ask when not on PB */}
+              {planta !== null && planta > 0 && (
+                <div>
+                  <p className="text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-3 text-center">
+                    ¿Tiene ascensor?
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 max-w-xs mx-auto">
+                    {[
+                      { label: 'Sí', value: true },
+                      { label: 'No', value: false },
+                    ].map((opt) => (
+                      <button
+                        key={String(opt.value)}
+                        type="button"
+                        onClick={() => setAscensor(opt.value)}
+                        className={`py-3.5 rounded-xl border-2 text-sm font-medium transition-all duration-300 cursor-pointer font-[Lato]
+                          ${
+                            ascensor === opt.value
+                              ? 'border-[#2A79A9] bg-[#2A79A9]/[0.06] text-[#1A1A1A] shadow-[0_0_0_1px_rgba(42,121,169,0.15)]'
+                              : 'border-[#1A1A1A]/[0.08] bg-white text-[#1A1A1A]/55 hover:border-[#2A79A9]/40 hover:bg-[#2A79A9]/[0.02]'
+                          }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={goForward}
+                disabled={planta === null || (planta > 0 && ascensor === null)}
+                className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+              >
+                Continuar
+              </button>
+            </div>
+          </StepWrapper>
+
+          {/* STEP 6 - Extras */}
+          <StepWrapper active={step === 6} direction={direction}>
             <div className="space-y-6">
               <div className="flex flex-wrap gap-3 justify-center">
                 {EXTRAS_OPTIONS.map((opt) => {
@@ -1263,7 +1402,7 @@ export default function ValoradorPage() {
                 type="button"
                 onClick={handleFinish}
                 disabled={extras.length === 0}
-                className="w-full rounded-2xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
+                className="w-full rounded-xl bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
               >
                 Ver resultado
               </button>

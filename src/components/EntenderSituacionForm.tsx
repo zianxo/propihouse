@@ -56,7 +56,7 @@ function OptionCard({
     <button
       type="button"
       onClick={onClick}
-      className={`group relative w-full text-left rounded-2xl border-2 px-6 py-5 transition-all duration-300 cursor-pointer
+      className={`group relative w-full text-left rounded-xl border-2 px-6 py-5 transition-all duration-300 cursor-pointer
         ${
           selected
             ? 'border-[#2A79A9] bg-[#2A79A9]/[0.06] shadow-[0_0_0_1px_rgba(42,121,169,0.15)]'
@@ -343,7 +343,7 @@ export function EntenderSituacionForm({
                     key={opt.value}
                     type="button"
                     onClick={() => setTipoVivienda(opt.value)}
-                    className={`flex flex-col items-center justify-center gap-2 rounded-2xl border-2 py-5 px-4 transition-all duration-300 cursor-pointer
+                    className={`flex flex-col items-center justify-center gap-2 rounded-xl border-2 py-5 px-4 transition-all duration-300 cursor-pointer
                       ${
                         tipoVivienda === opt.value
                           ? 'border-[#2A79A9] bg-[#2A79A9]/[0.06] shadow-[0_0_0_1px_rgba(42,121,169,0.15)]'

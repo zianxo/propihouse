@@ -226,9 +226,12 @@ function scoreInput(input: ValuationInput, zone: Zone | null): number {
   return Math.min(100, s)
 }
 
+/* Asymmetric band: Pau wants the upper bound always at +12%, regardless
+ * of confidence. The lower bound widens as confidence drops. Reflects
+ * his read that real comparables have wider upside than downside. */
 function bandFor(score: number): { low: number; high: number; label: 'baja' | 'media' | 'alta' } {
-  if (score >= 70) return { low: 0.93, high: 1.07, label: 'alta' }
-  if (score >= 40) return { low: 0.91, high: 1.09, label: 'media' }
+  if (score >= 70) return { low: 0.93, high: 1.12, label: 'alta' }
+  if (score >= 40) return { low: 0.91, high: 1.12, label: 'media' }
   return { low: 0.88, high: 1.12, label: 'baja' }
 }
 

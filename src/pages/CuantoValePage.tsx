@@ -84,7 +84,7 @@ export default function CuantoValePage() {
   useEffect(() => {
     document.title = "Cuánto vale mi vivienda en L'Hospitalet — Propi House"
     const meta = document.querySelector('meta[name="description"]')
-    if (meta) meta.setAttribute('content', 'Descubre el valor orientativo de tu vivienda en L\'Hospitalet de Llobregat con nuestro valorador gratuito.')
+    if (meta) meta.setAttribute('content', 'Descubre el valor orientativo de tu vivienda en L\'Hospitalet de Llobregat con nuestro valorador online.')
     return () => { document.title = "Propi House — Inmobiliaria en L'Hospitalet de Llobregat" }
   }, [])
 
@@ -167,7 +167,7 @@ export default function CuantoValePage() {
           <div className="grid md:grid-cols-2 gap-6 mt-14">
             {FACTORS.map((f, i) => (
               <RevealSection key={f.title} delay={i * 100}>
-                <div className="rounded-2xl border border-[#1A1A1A]/[0.06] bg-white/50 p-7 hover:bg-white hover:shadow-[0_2px_24px_rgba(0,0,0,0.04)] transition-all duration-500 h-full">
+                <div className="rounded-xl border border-[#1A1A1A]/[0.06] bg-white/50 p-7 hover:bg-white hover:shadow-[0_2px_24px_rgba(0,0,0,0.04)] transition-all duration-500 h-full">
                   <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[#EFE8CD]/50 text-[#868C4D] text-lg mb-4">
                     {f.icon}
                   </span>
@@ -185,7 +185,7 @@ export default function CuantoValePage() {
       {/* ─── BLOCK 3: VALORADOR CTA ─── */}
       <section className="relative z-10 py-16 md:py-20 px-6">
         <RevealSection>
-          <div className="max-w-3xl mx-auto rounded-3xl bg-[#2A79A9] p-10 md:p-14 text-center relative overflow-hidden">
+          <div className="max-w-3xl mx-auto rounded-xl bg-[#2A79A9] p-10 md:p-14 text-center relative overflow-hidden">
             {/* Decorative circles */}
             <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-white/[0.05]" />
             <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-white/[0.04]" />
@@ -268,7 +268,7 @@ export default function CuantoValePage() {
           <div className="grid md:grid-cols-2 gap-6">
             {PROCESS_STEPS.map((s, i) => (
               <RevealSection key={s.number} delay={i * 100}>
-                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-7 hover:bg-white/[0.05] transition-all duration-500 h-full">
+                <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-7 hover:bg-white/[0.05] transition-all duration-500 h-full">
                   <span className="font-[Playfair_Display] text-3xl font-light text-[#EFE8CD]/50 mb-3 block">
                     {s.number}
                   </span>

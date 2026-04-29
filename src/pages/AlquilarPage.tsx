@@ -102,17 +102,17 @@ const FEARS = [
 /* ─── Order Aspects ─── */
 const ASPECTS = [
   {
-    num: '01',
+    num: '1',
     title: 'Precio',
     desc: 'Saber cuánto pedir, con datos reales y normativa actualizada.',
   },
   {
-    num: '02',
+    num: '2',
     title: 'Tipo de inquilino',
     desc: 'Definir qué perfil encaja con tu situación y tu propiedad.',
   },
   {
-    num: '03',
+    num: '3',
     title: 'Nivel de implicación',
     desc: 'Decidir cuánto quieres gestionar tu y cuánto quieres delegar.',
   },
@@ -178,12 +178,9 @@ export default function AlquilarPage() {
             <h1 className="font-[Playfair_Display] text-[clamp(2rem,5.5vw,3.5rem)] font-normal leading-[1.12] tracking-[-0.015em] text-dark mb-8 max-w-3xl">
               Alquilar una vivienda en L'Hospitalet de Llobregat no siempre es una decisión sencilla
             </h1>
-            <div className="max-w-2xl space-y-5">
+            <div className="max-w-2xl">
               <p className="text-text-light text-lg leading-relaxed">
-                Muchas personas tienen una propiedad que podrían alquilar, pero no lo hacen. O lo hacen con dudas.
-              </p>
-              <p className="text-text-light text-lg leading-relaxed">
-                Dudas sobre el precio, sobre quién entra en tu vivienda, sobre qué pasa si algo sale mal. Preguntas normales que, sin una respuesta clara, acaban frenando una decisión que podría tener mucho sentido.
+                Muchas personas tienen una propiedad que podrían alquilar, pero no lo hacen, o lo hacen con dudas: dudas sobre el precio, sobre quién entra en tu vivienda, sobre qué pasa si algo sale mal. Preguntas normales que, sin una respuesta clara, acaban frenando una decisión que podría tener mucho sentido.
               </p>
             </div>
           </RevealSection>
@@ -194,7 +191,7 @@ export default function AlquilarPage() {
       <section className="py-20 md:py-28 bg-warm-white">
         <div className="max-w-4xl mx-auto px-6">
           <RevealSection>
-            <div className="bg-white rounded-2xl shadow-card p-8 md:p-12 border border-cream-dark/20 relative overflow-hidden">
+            <div className="bg-white rounded-xl shadow-card p-8 md:p-12 border border-cream-dark/20 relative overflow-hidden">
               {/* Decorative accent line */}
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-olive via-blue to-olive" />
 
@@ -359,7 +356,7 @@ export default function AlquilarPage() {
               {PACKS.map((pack) => (
                 <div
                   key={pack.name}
-                  className={`relative rounded-2xl flex flex-col transition-all duration-500 hover:-translate-y-1 ${
+                  className={`relative rounded-xl flex flex-col transition-all duration-500 hover:-translate-y-1 ${
                     pack.accent
                       ? 'bg-gradient-to-b from-blue to-blue-dark text-white shadow-elevated ring-1 ring-blue/30 lg:-mt-4 lg:mb-[-16px]'
                       : 'bg-white shadow-card border border-cream-dark/20'
@@ -463,10 +460,10 @@ export default function AlquilarPage() {
               {/* Decorative offset depth frame */}
               <div
                 aria-hidden
-                className="absolute -top-3 -right-3 w-full h-full rounded-2xl bg-olive/[0.2]"
+                className="absolute -top-3 -right-3 w-full h-full rounded-xl bg-olive/[0.2]"
               />
 
-              <div className="relative rounded-2xl overflow-hidden bg-white border border-cream-dark/20 shadow-[0_20px_60px_-20px_rgba(26,26,26,0.12)]">
+              <div className="relative rounded-xl overflow-hidden bg-white border border-cream-dark/20 shadow-[0_20px_60px_-20px_rgba(26,26,26,0.12)]">
                 {/* Top accent bar */}
                 <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-olive/60 via-blue/30 to-transparent" />
 
@@ -615,11 +612,11 @@ export default function AlquilarPage() {
                 </div>
               </div>
               <div className="lg:col-span-2">
-                <div className="bg-cream/60 rounded-2xl p-7 space-y-5 border border-cream-dark/20">
+                <div className="bg-cream/60 rounded-xl p-7 space-y-5 border border-cream-dark/20">
                   {[
                     { label: 'Selección de inquilino', desc: 'Perfil verificado y compatible con tu propiedad.' },
                     { label: 'Análisis de solvencia', desc: 'Documentación financiera revisada antes de firmar.' },
-                    { label: 'Protección legal', desc: 'Contratos blindados y opciones de seguro de impago.' },
+                    { label: 'Protección legal', desc: 'Contratos blindados y, además, seguro de impago.' },
                   ].map(({ label, desc }) => (
                     <div key={label} className="flex gap-3">
                       <div className="w-8 h-8 rounded-lg bg-olive/15 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -644,21 +641,19 @@ export default function AlquilarPage() {
       <section className="py-24 md:py-32 bg-cream/40">
         <div className="max-w-5xl mx-auto px-6">
           <RevealSection>
-            <div className="flex items-end justify-between gap-6 mb-12 md:mb-14 flex-wrap">
-              <div className="max-w-2xl">
-                <span className="inline-block text-[#B8A88A] text-xs font-bold tracking-[0.2em] uppercase mb-5">
-                  Guía
-                </span>
-                <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-dark leading-tight tracking-tight">
-                  Entender el alquiler también es parte de la decisión
-                </h2>
-                <p className="text-text-light text-base md:text-lg leading-relaxed mt-5 max-w-xl">
-                  Hemos escrito una serie de artículos para propietarios que quieren entender bien el proceso antes de dar el paso.
-                </p>
-              </div>
+            <div className="mb-12 md:mb-14 max-w-2xl">
+              <span className="inline-block text-[#B8A88A] text-xs font-bold tracking-[0.2em] uppercase mb-5">
+                Guía
+              </span>
+              <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-medium text-dark leading-tight tracking-tight">
+                Entender el alquiler también es parte de la decisión
+              </h2>
+              <p className="text-text-light text-base md:text-lg leading-relaxed mt-5 max-w-xl">
+                Te compartimos una serie de artículos para propietarios que quieren entender bien el proceso antes de dar el paso.
+              </p>
               <Link
                 to="/guia"
-                className="group inline-flex items-center gap-2 text-sm font-bold text-blue hover:text-blue-dark transition-colors whitespace-nowrap pb-2"
+                className="group inline-flex items-center gap-2 text-sm font-bold text-blue hover:text-blue-dark transition-colors mt-6"
               >
                 Ver guía inmobiliaria
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-1">
@@ -729,10 +724,10 @@ export default function AlquilarPage() {
             </div>
 
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight mb-6">
-              Antes de tomar una decisión, conviene entender bien tu situación
+              Cada propietario es diferente
             </h2>
             <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-              Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
+              Queremos saber qué tiene sentido en tu caso.
             </p>
 
             {/* Two buttons */}
@@ -756,7 +751,7 @@ export default function AlquilarPage() {
             </div>
 
             <p className="text-white/35 text-sm mt-8">
-              Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
+              Analizamos tu caso y vemos qué tiene sentido para ti.
             </p>
           </RevealSection>
         </div>

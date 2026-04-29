@@ -39,7 +39,7 @@ export default function ContactoPage() {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
             <div className="lg:col-span-3">
               <RevealSection>
-                <div className="bg-white rounded-2xl shadow-card p-8 md:p-10">
+                <div className="bg-white rounded-xl shadow-card p-8 md:p-10">
                   {sent ? (
                     <div className="text-center py-12">
                       <div className="w-16 h-16 rounded-full bg-olive/20 flex items-center justify-center mx-auto mb-4">

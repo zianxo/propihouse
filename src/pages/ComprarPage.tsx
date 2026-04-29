@@ -235,32 +235,35 @@ export default function ComprarPage() {
           </RevealSection>
 
           <RevealSection delay={120} className="mt-14">
-            <div className="grid gap-10 sm:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-3">
               {[
                 {
-                  num: '01',
+                  num: '1',
                   title: 'Qu\u00e9 necesitas realmente',
                   desc: 'Separar lo urgente de lo importante. Definir qu\u00e9 buscas y por qu\u00e9.',
                 },
                 {
-                  num: '02',
+                  num: '2',
                   title: 'Qu\u00e9 presupuesto tiene sentido',
                   desc: 'Entender tu capacidad real, no solo el precio de la vivienda.',
                 },
                 {
-                  num: '03',
+                  num: '3',
                   title: 'Qu\u00e9 tipo de vivienda encaja',
                   desc: 'Zona, tipolog\u00eda, estado del inmueble y posibilidades de reforma.',
                 },
               ].map((item) => (
-                <div key={item.num} className="group">
-                  <span className="block font-[Playfair_Display] text-3xl text-[#868C4D]/40 mb-3">
+                <div
+                  key={item.num}
+                  className="group rounded-xl bg-white border border-[#1A1A1A]/[0.06] p-6 transition-all duration-400 hover:bg-[#2A79A9] hover:border-[#2A79A9] hover:-translate-y-0.5 hover:shadow-card cursor-default"
+                >
+                  <span className="block font-[Playfair_Display] text-3xl text-[#868C4D]/40 group-hover:text-[#868C4D] transition-colors duration-400 mb-3">
                     {item.num}
                   </span>
-                  <h3 className="font-[Playfair_Display] text-lg text-[#1A1A1A] mb-2">
+                  <h3 className="font-[Playfair_Display] text-lg text-[#1A1A1A] group-hover:text-[#A0A667] transition-colors duration-400 mb-2">
                     {item.title}
                   </h3>
-                  <p className="text-sm leading-[1.7] text-[#1A1A1A]/55">
+                  <p className="text-sm leading-[1.7] text-[#1A1A1A]/55 group-hover:text-white/80 transition-colors duration-400">
                     {item.desc}
                   </p>
                 </div>
@@ -325,7 +328,7 @@ export default function ComprarPage() {
               {[
                 {
                   title: 'Ahorros disponibles',
-                  desc: 'La entrada, los gastos de escritura e impuestos requieren una parte importante de capital propio.',
+                  desc: 'La entrada, los impuestos y los gastos de escritura requieren una parte importante de capital propio.',
                 },
                 {
                   title: 'Financiaci\u00f3n accesible',
@@ -342,18 +345,14 @@ export default function ComprarPage() {
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="group relative flex items-start gap-4 rounded-xl p-4 -mx-4 transition-all duration-500 hover:bg-[#2A79A9]/[0.06]"
+                  className="group relative flex items-start gap-4 rounded-xl p-5 -mx-1 border border-transparent transition-all duration-400 hover:border-[#2A79A9]/35 hover:bg-white hover:shadow-[0_8px_30px_-12px_rgba(42,121,169,0.18)]"
                 >
-                  <span
-                    aria-hidden
-                    className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full bg-[#2A79A9]/0 group-hover:bg-[#2A79A9]/70 transition-all duration-500 scale-y-50 group-hover:scale-y-100 origin-center"
-                  />
-                  <span className="mt-1.5 flex-shrink-0 block w-2 h-2 rounded-full border-2 border-[#868C4D]/50 group-hover:border-[#2A79A9] group-hover:bg-[#2A79A9]/30 transition-colors duration-500" />
+                  <span className="mt-1.5 flex-shrink-0 block w-2 h-2 rounded-full border-2 border-[#868C4D]/50 group-hover:border-[#2A79A9] group-hover:bg-[#2A79A9]/30 transition-colors duration-400" />
                   <div>
-                    <h4 className="font-semibold text-[#1A1A1A] text-base mb-1">
+                    <h4 className="font-semibold text-[#1A1A1A] text-base mb-1 group-hover:text-[#2A79A9] transition-colors duration-400">
                       {item.title}
                     </h4>
-                    <p className="text-sm leading-[1.7] text-[#1A1A1A]/55 group-hover:text-[#1A1A1A]/80 transition-colors duration-500">
+                    <p className="text-sm leading-[1.7] text-[#1A1A1A]/55 group-hover:text-[#1A1A1A]/80 transition-colors duration-400">
                       {item.desc}
                     </p>
                   </div>
@@ -455,27 +454,27 @@ export default function ComprarPage() {
             color="blue"
             steps={[
               {
-                num: '01',
+                num: '1',
                 title: 'Entender tu situaci\u00f3n',
                 desc: 'Escuchamos tu momento vital, tus necesidades y tus dudas. Sin prisa, sin compromiso. El objetivo es tener una foto clara de d\u00f3nde est\u00e1s y hacia d\u00f3nde quieres ir.',
               },
               {
-                num: '02',
+                num: '2',
                 title: 'Definir un marco claro',
                 desc: 'Trabajamos juntos para establecer un presupuesto realista, prioridades claras y criterios de b\u00fasqueda que tengan sentido con tu situaci\u00f3n.',
               },
               {
-                num: '03',
+                num: '3',
                 title: 'Filtrar y enfocar la b\u00fasqueda',
                 desc: 'En lugar de visitar decenas de viviendas, seleccionamos las que realmente encajan. Cada visita tiene un prop\u00f3sito claro.',
               },
               {
-                num: '04',
+                num: '4',
                 title: 'Analizar cada oportunidad',
                 desc: 'Estudiamos cada vivienda con criterio: estado real, posibilidades de reforma, valoraci\u00f3n de mercado y condiciones de la operaci\u00f3n.',
               },
               {
-                num: '05',
+                num: '5',
                 title: 'Acompa\u00f1ar la decisi\u00f3n',
                 desc: 'Negociaci\u00f3n, financiaci\u00f3n, documentaci\u00f3n legal y cierre. Te acompa\u00f1amos en cada paso hasta que las llaves est\u00e9n en tu mano.',
               },
