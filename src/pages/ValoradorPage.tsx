@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { lastReviewedLabel, zoneLabel } from '../data/zones'
+import { searchLocations, type LocationSuggestion } from '../data/locations'
 import { computeValuation, type Estado, type Tipo } from '../lib/valorador'
 
 /* ────────────────────────────────────────────
@@ -107,6 +108,150 @@ function StepWrapper({
       }`}
     >
       {children}
+    </div>
+  )
+}
+
+/* ────────────────────────────────────────────
+   Address autocomplete
+   ──────────────────────────────────────────── */
+function CATEGORY_BADGE(c: LocationSuggestion['category']): string {
+  switch (c) {
+    case 'barrio': return 'Barrio'
+    case 'codigo-postal': return 'CP'
+    case 'avenida': return 'Avda'
+    case 'plaza': return 'Plaça'
+    case 'rambla': return 'Rambla'
+    default: return 'Calle'
+  }
+}
+
+function AddressAutocomplete({
+  value,
+  onChange,
+  onSelect,
+  onSubmit,
+}: {
+  value: string
+  onChange: (v: string) => void
+  /** Fired when the user picks a suggestion. The label is what we want
+   *  in the input; the suggestion exposes the zoneSlug for downstream
+   *  display normalization if we need it later. */
+  onSelect?: (s: LocationSuggestion) => void
+  /** Fires on Enter when the dropdown is closed (lets users skip the
+   *  Continuar button on this step, matching native form behavior). */
+  onSubmit?: () => void
+}) {
+  const [open, setOpen] = useState(false)
+  const [highlight, setHighlight] = useState(0)
+  const [focused, setFocused] = useState(false)
+  const containerRef = useRef<HTMLDivElement | null>(null)
+
+  const suggestions = focused ? searchLocations(value) : []
+  const showDropdown = open && focused && suggestions.length > 0
+
+  /* Click-outside closes the dropdown but keeps the input value. */
+  useEffect(() => {
+    if (!showDropdown) return
+    const onClick = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onClick)
+    return () => document.removeEventListener('mousedown', onClick)
+  }, [showDropdown])
+
+  /* Reset highlight when the suggestion list shape changes. */
+  useEffect(() => {
+    setHighlight(0)
+  }, [value])
+
+  function pick(s: LocationSuggestion) {
+    onChange(s.label)
+    onSelect?.(s)
+    setOpen(false)
+  }
+
+  function handleKey(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'ArrowDown') {
+      if (suggestions.length === 0) return
+      e.preventDefault()
+      setOpen(true)
+      setHighlight((h) => (h + 1) % suggestions.length)
+    } else if (e.key === 'ArrowUp') {
+      if (suggestions.length === 0) return
+      e.preventDefault()
+      setOpen(true)
+      setHighlight((h) => (h - 1 + suggestions.length) % suggestions.length)
+    } else if (e.key === 'Enter') {
+      if (showDropdown) {
+        e.preventDefault()
+        pick(suggestions[highlight])
+      } else if (onSubmit) {
+        e.preventDefault()
+        onSubmit()
+      }
+    } else if (e.key === 'Escape') {
+      setOpen(false)
+    }
+  }
+
+  return (
+    <div ref={containerRef} className="relative">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => {
+          onChange(e.target.value)
+          setOpen(true)
+        }}
+        onFocus={() => {
+          setFocused(true)
+          setOpen(true)
+        }}
+        onBlur={() => setFocused(false)}
+        onKeyDown={handleKey}
+        placeholder="Zona, calle o código postal..."
+        autoFocus
+        autoComplete="off"
+        className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
+      />
+      {showDropdown && (
+        <ul
+          role="listbox"
+          className="absolute z-20 left-0 right-0 mt-2 max-h-72 overflow-auto rounded-xl border border-[#1A1A1A]/[0.08] bg-white shadow-[0_18px_40px_-18px_rgba(0,0,0,0.18)]"
+        >
+          {suggestions.map((s, i) => {
+            const isActive = i === highlight
+            return (
+              <li key={`${s.category}-${s.label}-${i}`}>
+                <button
+                  type="button"
+                  onMouseDown={(e) => {
+                    /* mousedown beats blur — keeps focus on the input
+                     * after pick so onSubmit can fire on Enter next. */
+                    e.preventDefault()
+                    pick(s)
+                  }}
+                  onMouseEnter={() => setHighlight(i)}
+                  className={`w-full flex items-center justify-between gap-3 px-5 py-3 text-left transition-colors font-[Lato] ${
+                    isActive ? 'bg-[#2A79A9]/[0.06]' : 'hover:bg-[#1A1A1A]/[0.03]'
+                  }`}
+                >
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-sm text-[#1A1A1A] truncate">{s.label}</span>
+                    <span className="block text-xs text-[#1A1A1A]/50 truncate">{s.description}</span>
+                  </span>
+                  <span className="flex-shrink-0 text-[10px] font-semibold tracking-[0.15em] uppercase text-[#868C4D]">
+                    {CATEGORY_BADGE(s.category)}
+                  </span>
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </div>
   )
 }
@@ -285,7 +430,7 @@ function ResultScreen({
     pdf.drawDivider(doc, y)
     y += 5
     if (tipo) { pdf.drawRow(doc, 'Tipo', tipoLabel, y); y += 6 }
-    if (ubicacion?.trim()) { pdf.drawRow(doc, 'Ubicación', ubicacion.trim(), y); y += 6 }
+    if (ubicacionDisplay) { pdf.drawRow(doc, 'Ubicación', ubicacionDisplay, y); y += 6 }
     pdf.drawRow(doc, 'Superficie', `${metros} m²`, y); y += 6
     if (condition) { pdf.drawRow(doc, 'Estado', estadoLabel, y); y += 6 }
     if (plantaAscensorLabel) { pdf.drawRow(doc, 'Planta', plantaAscensorLabel, y); y += 6 }
@@ -404,11 +549,20 @@ function ResultScreen({
     return visible.map((e) => map[e] ?? e).join(' · ')
   })()
 
+  /* Display label for ubicación. When the matcher recognizes the input
+   * (barrio, postal code, or curated street), show "<DisplayName> ·
+   * L'Hospitalet" so the report reads cleanly even if the user typed
+   * "san jose" or a full street. Falls back to the raw input. */
+  const ubicacionDisplay = (() => {
+    if (zone) return `${zone.displayName} · L'Hospitalet`
+    return ubicacion?.trim() || null
+  })()
+
   /* Each row in the "Datos" card. Empty-value rows are skipped so the
    * card stays compact when fields weren't asked. */
   const dataRows: Array<{ label: string; value: string | null }> = [
     { label: 'Tipo', value: tipo ? tipoLabel : null },
-    { label: 'Ubicación', value: ubicacion?.trim() || null },
+    { label: 'Ubicación', value: ubicacionDisplay },
     { label: 'Superficie', value: `${metros} m²` },
     { label: 'Estado', value: condition ? estadoLabel : null },
     { label: 'Planta', value: plantaAscensorLabel },
@@ -1550,13 +1704,12 @@ export default function ValoradorPage() {
           {/* STEP 2 - Location */}
           <StepWrapper active={step === 2} direction={direction}>
             <div className="space-y-6">
-              <input
-                type="text"
+              <AddressAutocomplete
                 value={ubicación}
-                onChange={(e) => setUbicacion(e.target.value)}
-                placeholder="Zona, calle o código postal..."
-                autoFocus
-                className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
+                onChange={setUbicacion}
+                onSubmit={() => {
+                  if (ubicación.trim()) goForward()
+                }}
               />
               <button
                 type="button"

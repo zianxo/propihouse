@@ -226,6 +226,7 @@ function normalize(s: string): string {
     .toLowerCase()
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '') // strip diacritics
+    .replace(/['’`´]/g, '') // collapse straight + curly apostrophes
     .replace(/\s+/g, ' ')
     .trim()
 }
