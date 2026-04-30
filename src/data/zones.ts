@@ -79,7 +79,7 @@ const ZONE_META: ZoneMeta[] = [
       "plaça d'europa",
       'fira',
       "l'illa",
-      '08908',
+      '08901',
     ],
     priceIndexSlug: 'sant-josep',
   },

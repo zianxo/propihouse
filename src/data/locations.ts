@@ -136,15 +136,20 @@ interface PostalSeed {
   zoneSlug: string
 }
 
+/* Per Pau (local expert): Sant Josep is 08901, sharing it with Centre.
+ * The order here is significant — the FIRST occurrence per zone wins
+ * when we build cpByZoneSlug for "primary CP" descriptions, so Centre
+ * stays linked to 08901 first, Sant Josep also resolves to 08901, and
+ * the dedupe step joins both barrios under the single 08901 CP entry. */
 const POSTAL_CODES: PostalSeed[] = [
   { cp: '08901', zoneSlug: 'centre' },
+  { cp: '08901', zoneSlug: 'sant-josep' },
   { cp: '08902', zoneSlug: 'santa-eulalia' },
   { cp: '08903', zoneSlug: 'la-torrassa' },
   { cp: '08904', zoneSlug: 'collblanc' },
   { cp: '08905', zoneSlug: 'les-planes' },
   { cp: '08906', zoneSlug: 'pubilla-cases' },
   { cp: '08907', zoneSlug: 'bellvitge' },
-  { cp: '08908', zoneSlug: 'sant-josep' },
 ]
 
 /* ─── Build the unified suggestion list ───────────────────────────────── */
@@ -162,7 +167,24 @@ function normalize(s: string): string {
 function buildSuggestions(): LocationSuggestion[] {
   const list: LocationSuggestion[] = []
   const zoneBySlug = new Map(ZONES.map((z) => [z.slug, z]))
-  const cpByZoneSlug = new Map(POSTAL_CODES.map((p) => [p.zoneSlug, p.cp]))
+
+  /* "Primary CP" per zone — first POSTAL_CODES entry for that slug.
+   * (new Map((dup-keys)) keeps the LAST insertion, so we build it
+   * manually to preserve first-occurrence semantics.) */
+  const cpByZoneSlug = new Map<string, string>()
+  for (const p of POSTAL_CODES) {
+    if (!cpByZoneSlug.has(p.zoneSlug)) cpByZoneSlug.set(p.zoneSlug, p.cp)
+  }
+
+  /* Reverse: zones served by each CP — used to dedupe CP autocomplete
+   * rows when a CP covers more than one barrio (e.g. 08901 covers both
+   * Centre and Sant Josep). */
+  const zonesByCP = new Map<string, string[]>()
+  for (const p of POSTAL_CODES) {
+    const arr = zonesByCP.get(p.cp) ?? []
+    arr.push(p.zoneSlug)
+    zonesByCP.set(p.cp, arr)
+  }
 
   /* Description shapes per category — Pau wanted to see "L'Hospitalet"
    * and the postal code in the dropdown so users get the same context
@@ -193,15 +215,18 @@ function buildSuggestions(): LocationSuggestion[] {
     })
   }
 
-  /* 2. Postal codes — the CP is the label, so the description shows
-   *    the barrio + L'Hospitalet (no need to repeat the CP). */
-  for (const p of POSTAL_CODES) {
-    const z = zoneBySlug.get(p.zoneSlug)
+  /* 2. Postal codes — one suggestion per unique CP. When a CP serves
+   *    multiple barrios, the description joins all of them so the user
+   *    sees "08901 — Centre · Sant Josep · L'Hospitalet" and picking
+   *    routes to the first listed zone. */
+  for (const [cp, zoneSlugs] of zonesByCP) {
+    const zones = zoneSlugs.map((s) => zoneBySlug.get(s)).filter((z): z is Zone => Boolean(z))
+    const barrios = zones.map((z) => z.displayName).join(' · ')
     list.push({
-      label: p.cp,
-      description: z ? `${z.displayName} · L'Hospitalet` : "L'Hospitalet",
-      zoneSlug: p.zoneSlug,
-      searchText: normalize(p.cp),
+      label: cp,
+      description: barrios ? `${barrios} · L'Hospitalet` : "L'Hospitalet",
+      zoneSlug: zones[0]?.slug ?? zoneSlugs[0],
+      searchText: normalize(cp),
       category: 'codigo-postal',
     })
   }
