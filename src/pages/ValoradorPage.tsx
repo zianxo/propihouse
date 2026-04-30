@@ -25,6 +25,7 @@ const CONDITION_OPTIONS: CardOption[] = [
   { label: 'A reformar', value: 'reformar', icon: '◇' },
   { label: 'Buen estado', value: 'buen-estado', icon: '◈' },
   { label: 'Reformada', value: 'reformada', icon: '◆' },
+  { label: 'Reforma premium', value: 'premium-reformado', icon: '❖' },
   { label: 'Obra nueva', value: 'obra-nueva', icon: '✦' },
 ]
 
@@ -526,6 +527,7 @@ function ResultScreen({
       case 'reformar': return 'A reformar'
       case 'buen-estado': return 'Buen estado'
       case 'reformada': return 'Reformada'
+      case 'premium-reformado': return 'Reforma premium'
       case 'obra-nueva': return 'Obra nueva'
       default: return '—'
     }
@@ -1037,7 +1039,7 @@ function CountSelector({
       t = tipo (piso | planta-baja | casa | atico | duplex)
       u = ubicacion (free text)
       m = metros (number)
-      e = estado (reformar | buen-estado | reformada | obra-nueva)
+      e = estado (reformar | buen-estado | reformada | premium-reformado | obra-nueva)
       p = planta (0..4 or empty)
       a = ascensor (1 | 0 or empty)
       x = extras CSV
@@ -1071,7 +1073,7 @@ function encodeShareablePayload(p: ShareablePayload): string {
  * valuations. So we whitelist categorical values and clamp numerics
  * to the same ranges the form itself accepts. */
 const VALID_TIPO = ['piso', 'planta-baja', 'casa', 'atico', 'duplex'] as const
-const VALID_ESTADO = ['reformar', 'buen-estado', 'reformada', 'obra-nueva'] as const
+const VALID_ESTADO = ['reformar', 'buen-estado', 'reformada', 'premium-reformado', 'obra-nueva'] as const
 const VALID_EXTRAS = ['parking', 'terraza', 'balcon', 'trastero', 'ascensor', 'ninguno'] as const
 
 function decodeShareablePayload(search: string): Partial<ShareablePayload> | null {
@@ -1778,7 +1780,7 @@ export default function ValoradorPage() {
 
           {/* STEP 4 - Condition */}
           <StepWrapper active={step === 4} direction={direction}>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {CONDITION_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}

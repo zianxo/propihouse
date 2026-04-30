@@ -54,7 +54,12 @@ function findZone(input: string): Zone | null {
 
 /* ─── Inputs ─────────────────────────────────────────────────────────── */
 
-export type Estado = 'reformar' | 'buen-estado' | 'reformada' | 'obra-nueva'
+export type Estado =
+  | 'reformar'
+  | 'buen-estado'
+  | 'reformada'
+  | 'premium-reformado'
+  | 'obra-nueva'
 export type Tipo = 'piso' | 'planta-baja' | 'casa' | 'atico' | 'duplex'
 export type Exterior = 'interior' | 'semi-exterior' | 'exterior'
 
@@ -127,10 +132,16 @@ export interface ValuationOutput {
 
 /* ─── Coefficient tables ─────────────────────────────────────────────── */
 
+/* Five-tier estado ladder. "Reformada" is now a modest lift (typical
+ * recent reform); "Reforma premium" is the gut/integral renovation that
+ * commands a real premium. Calibrated to Pau's read that current
+ * mid-tier L'H reformada listings cap out closer to 210k than 270k for
+ * the kind of profile we test on. */
 const ESTADO_COEF: Record<Estado, number> = {
   reformar: 0.80,
   'buen-estado': 1.00,
-  reformada: 1.15,
+  reformada: 1.05,
+  'premium-reformado': 1.22,
   'obra-nueva': 1.30,
 }
 
