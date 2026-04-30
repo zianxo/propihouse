@@ -159,32 +159,47 @@ function normalize(s: string): string {
     .trim()
 }
 
-function describeZone(zone: Zone | undefined, fallback: string): string {
-  if (!zone) return fallback
-  return `${zone.displayName} · ${zone.district}`
-}
-
 function buildSuggestions(): LocationSuggestion[] {
   const list: LocationSuggestion[] = []
   const zoneBySlug = new Map(ZONES.map((z) => [z.slug, z]))
+  const cpByZoneSlug = new Map(POSTAL_CODES.map((p) => [p.zoneSlug, p.cp]))
+
+  /* Description shapes per category — Pau wanted to see "L'Hospitalet"
+   * and the postal code in the dropdown so users get the same context
+   * a typical address autocomplete shows. */
+  const describeBarrio = (z: Zone): string => {
+    const cp = cpByZoneSlug.get(z.slug)
+    const parts: string[] = ["L'Hospitalet"]
+    if (cp) parts.push(cp)
+    parts.push(z.district)
+    return parts.join(' · ')
+  }
+  const describeWithBarrio = (z: Zone | undefined): string => {
+    if (!z) return "L'Hospitalet"
+    const cp = cpByZoneSlug.get(z.slug)
+    const parts: string[] = [z.displayName, "L'Hospitalet"]
+    if (cp) parts.push(cp)
+    return parts.join(' · ')
+  }
 
   /* 1. Barrios — top priority results. */
   for (const z of ZONES) {
     list.push({
       label: z.displayName,
-      description: z.district,
+      description: describeBarrio(z),
       zoneSlug: z.slug,
       searchText: normalize(`${z.displayName} ${z.aliases.join(' ')}`),
       category: 'barrio',
     })
   }
 
-  /* 2. Postal codes — discovered through postal-code typing. */
+  /* 2. Postal codes — the CP is the label, so the description shows
+   *    the barrio + L'Hospitalet (no need to repeat the CP). */
   for (const p of POSTAL_CODES) {
     const z = zoneBySlug.get(p.zoneSlug)
     list.push({
       label: p.cp,
-      description: describeZone(z, p.cp),
+      description: z ? `${z.displayName} · L'Hospitalet` : "L'Hospitalet",
       zoneSlug: p.zoneSlug,
       searchText: normalize(p.cp),
       category: 'codigo-postal',
@@ -196,7 +211,7 @@ function buildSuggestions(): LocationSuggestion[] {
     const z = zoneBySlug.get(s.zoneSlug)
     list.push({
       label: s.label,
-      description: describeZone(z, s.zoneSlug),
+      description: describeWithBarrio(z),
       zoneSlug: s.zoneSlug,
       searchText: normalize([s.label, ...(s.aliases ?? [])].join(' ')),
       category: s.category,
