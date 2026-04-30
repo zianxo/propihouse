@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { RevealSection, SectionHeading } from '../components/ui'
 
@@ -8,7 +8,7 @@ import { RevealSection, SectionHeading } from '../components/ui'
 const FACTORS = [
   {
     title: 'Estado del inmueble',
-    text: 'Una reforma reciente puede cambiar completamente la percepción de valor. No es solo estética -- es lo que el comprador imagina al entrar.',
+    text: 'Una reforma reciente puede cambiar completamente la percepción de valor. No es solo estética, es lo que el comprador imagina al entrar.',
     icon: '◈',
   },
   {
@@ -35,7 +35,7 @@ const BEYOND_PRICE = [
   },
   {
     title: 'Tipo de comprador',
-    text: 'Familias, inversores, parejas jóvenes -- cada perfil tiene prioridades distintas y disposición de pago diferente.',
+    text: 'Familias, inversores, parejas jóvenes; cada perfil tiene prioridades distintas y disposición de pago diferente.',
   },
   {
     title: 'Presentación de la vivienda',
@@ -43,44 +43,46 @@ const BEYOND_PRICE = [
   },
   {
     title: 'Feedback de las visitas',
-    text: 'Las primeras visitas dan información real. Si nadie hace oferta, algo falla -- y no siempre es el precio.',
+    text: 'Las primeras visitas dan información real. Si nadie hace oferta, algo falla, y no siempre es el precio.',
   },
 ]
 
 const PROCESS_STEPS = [
   {
-    number: '01',
+    number: '1',
     title: 'Analizamos en profundidad',
     text: 'Visitamos tu vivienda, evaluamos su estado real y recopilamos datos del mercado en tu zona concreta.',
   },
   {
-    number: '02',
+    number: '2',
     title: 'Estudiamos el encaje',
     text: 'Cruzamos el perfil de tu vivienda con la demanda actual. No todas las viviendas compiten en el mismo segmento.',
   },
   {
-    number: '03',
+    number: '3',
     title: 'Definimos la estrategia',
     text: 'Precio, posicionamiento, presentación. Trazamos un plan coherente que maximice el resultado.',
   },
   {
-    number: '04',
+    number: '4',
     title: 'Acompañamos el proceso',
     text: 'Desde la primera visita hasta la firma. Cada paso con transparencia y comunicación constante.',
   },
 ]
 
 const ARTICLES = [
-  { n: '01', cat: 'Valoración', title: 'Cómo saber cuánto vale mi piso en L\'Hospitalet', href: '/guia/cuanto-vale-piso-hospitalet' },
-  { n: '02', cat: 'Preparación', title: 'Cómo preparar una vivienda antes de venderla', href: '/guia/preparar-vivienda-vender' },
-  { n: '03', cat: 'Mercado', title: 'Es buen momento para vender en L\'Hospitalet?', href: '/guia/buen-momento-vender' },
-  { n: '04', cat: 'Errores', title: 'Errores habituales al vender una vivienda', href: '/guia/errores-vender-vivienda' },
+  { n: '1', cat: 'Valoración', title: 'Cómo saber cuánto vale mi piso en L\'Hospitalet', href: '/guia/cuanto-vale-piso-hospitalet' },
+  { n: '2', cat: 'Preparación', title: 'Cómo preparar una vivienda antes de venderla', href: '/guia/preparar-vivienda-vender' },
+  { n: '3', cat: 'Mercado', title: 'Es buen momento para vender en L\'Hospitalet?', href: '/guia/buen-momento-vender' },
+  { n: '4', cat: 'Errores', title: 'Errores habituales al vender una vivienda', href: '/guia/errores-vender-vivienda' },
 ]
 
 /* ────────────────────────────────────────────
    Component
    ──────────────────────────────────────────── */
 export default function CuantoValePage() {
+  const [openStep, setOpenStep] = useState<number | null>(0)
+
   useEffect(() => {
     document.title = "Cuánto vale mi vivienda en L'Hospitalet — Propi House"
     const meta = document.querySelector('meta[name="description"]')
@@ -164,9 +166,10 @@ export default function CuantoValePage() {
 
           <div className="grid md:grid-cols-2 gap-6 mt-14">
             {FACTORS.map((f, i) => (
-              <RevealSection key={f.title} delay={i * 100}>
-                <div className="rounded-xl border border-[#1A1A1A]/[0.06] bg-white/50 p-7 hover:bg-white hover:shadow-[0_2px_24px_rgba(0,0,0,0.04)] transition-all duration-500 h-full">
-                  <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[#EFE8CD]/50 text-[#868C4D] text-lg mb-4">
+              <RevealSection key={f.title} delay={i * 140}>
+                <div className="group relative rounded-xl border border-[#1A1A1A]/[0.06] bg-white/50 p-7 h-full transition-all duration-500 ease-out hover:-translate-y-1 hover:bg-white hover:border-[#868C4D]/25 hover:shadow-[0_12px_32px_-12px_rgba(134,140,77,0.18)]">
+                  <span className="absolute left-0 top-7 bottom-7 w-px bg-[#868C4D] origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-out" />
+                  <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[#EFE8CD]/50 text-[#868C4D] text-lg mb-4 transition-all duration-500 group-hover:bg-[#EFE8CD] group-hover:scale-110 group-hover:rotate-[-4deg]">
                     {f.icon}
                   </span>
                   <h3 className="text-lg font-medium text-[#1A1A1A] mb-2 font-[Lato]">{f.title}</h3>
@@ -226,13 +229,13 @@ export default function CuantoValePage() {
             />
           </RevealSection>
 
-          <div className="grid md:grid-cols-2 gap-x-10 gap-y-10 mt-14">
+          <div className="grid md:grid-cols-2 gap-x-8 gap-y-6 mt-14">
             {BEYOND_PRICE.map((item, i) => (
-              <RevealSection key={item.title} delay={i * 80}>
-                <div className="flex gap-5">
-                  <div className="flex-shrink-0 w-px bg-[#2A79A9]/20 mt-1 self-stretch" />
+              <RevealSection key={item.title} delay={180 + i * 220}>
+                <div className="group relative flex gap-5 rounded-xl border border-transparent p-5 -m-5 transition-all duration-500 ease-out hover:-translate-y-0.5 hover:border-[#2A79A9]/15 hover:bg-white/60 hover:shadow-[0_10px_28px_-12px_rgba(42,121,169,0.18)]">
+                  <div className="flex-shrink-0 w-px bg-[#2A79A9]/20 mt-1 self-stretch transition-all duration-500 group-hover:w-[2px] group-hover:bg-[#2A79A9]/55" />
                   <div>
-                    <h3 className="text-base font-medium text-[#1A1A1A] mb-2 font-[Lato]">
+                    <h3 className="text-base font-medium text-[#1A1A1A] mb-2 font-[Lato] transition-colors duration-500 group-hover:text-[#2A79A9]">
                       {item.title}
                     </h3>
                     <p className="text-[#1A1A1A]/65 text-[15px] leading-relaxed font-light font-[Lato]">
@@ -251,32 +254,68 @@ export default function CuantoValePage() {
         {/* Subtle top accent line */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-[#2A79A9]/40 to-transparent" />
 
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <RevealSection>
             <div className="mb-14">
               <h2 className="font-[Playfair_Display] text-3xl md:text-4xl font-light text-white tracking-tight leading-[1.15] mb-4">
                 Qué hacemos en Propi House después de conocer el valor?
               </h2>
-              <p className="text-white/70 text-lg font-light max-w-2xl font-[Lato]">
+              <p className="text-white/85 text-lg font-light max-w-2xl font-[Lato]">
                 Un número no es suficiente. Esto es lo que hacemos para que tomes la mejor decisión posible.
               </p>
             </div>
           </RevealSection>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {PROCESS_STEPS.map((s, i) => (
-              <RevealSection key={s.number} delay={i * 100}>
-                <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-7 hover:bg-white/[0.05] transition-all duration-500 h-full">
-                  <span className="font-[Playfair_Display] text-3xl font-light text-[#EFE8CD]/50 mb-3 block">
-                    {s.number}
-                  </span>
-                  <h3 className="text-lg font-medium text-white mb-2 font-[Lato]">{s.title}</h3>
-                  <p className="text-white/65 text-[15px] leading-relaxed font-light font-[Lato]">
-                    {s.text}
-                  </p>
-                </div>
-              </RevealSection>
-            ))}
+          <div className="space-y-3">
+            {PROCESS_STEPS.map((s, i) => {
+              const isOpen = openStep === i
+              return (
+                <RevealSection key={s.number} delay={i * 100}>
+                  <div
+                    className={`rounded-xl border bg-white/[0.07] backdrop-blur-sm transition-all duration-500 ${
+                      isOpen ? 'border-[#EFE8CD]/30 bg-white/[0.10]' : 'border-white/10 hover:bg-white/[0.09]'
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setOpenStep(isOpen ? null : i)}
+                      className="w-full flex items-center gap-5 p-5 md:p-6 text-left"
+                      aria-expanded={isOpen}
+                    >
+                      <span className="font-[Playfair_Display] text-2xl md:text-3xl font-light text-[#EFE8CD] flex-shrink-0 w-8 text-center">
+                        {s.number}
+                      </span>
+                      <h3 className="flex-1 text-base md:text-lg font-medium text-white font-[Lato]">
+                        {s.title}
+                      </h3>
+                      <svg
+                        className={`w-5 h-5 text-[#EFE8CD]/80 flex-shrink-0 transition-transform duration-500 ${isOpen ? 'rotate-180' : ''}`}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+                    <div
+                      className={`grid transition-all duration-500 ease-out ${
+                        isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <p className="px-5 md:px-6 pb-5 md:pb-6 pl-[4.25rem] md:pl-[4.75rem] text-white/90 text-[15px] leading-relaxed font-light font-[Lato]">
+                          {s.text}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </RevealSection>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -314,21 +353,19 @@ export default function CuantoValePage() {
       <section className="relative z-10 py-20 md:py-28 px-6">
         <div className="max-w-5xl mx-auto">
           <RevealSection>
-            <div className="flex items-end justify-between gap-6 mb-12 md:mb-14 flex-wrap">
-              <div>
-                <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#868C4D] mb-5">
-                  Guia
-                </span>
-                <h2 className="font-[Playfair_Display] text-[clamp(1.85rem,4.2vw,2.85rem)] font-normal leading-[1.15] tracking-[-0.015em] text-[#1A1A1A] max-w-2xl">
-                  Artículos para entender el mercado
-                </h2>
-                <p className="mt-4 text-base md:text-lg text-[#1A1A1A]/55 max-w-xl font-[Lato] font-light leading-relaxed">
-                  Lecturas prácticas para tomar decisiones informadas sobre tu vivienda.
-                </p>
-              </div>
+            <div className="mb-12 md:mb-14 max-w-2xl">
+              <span className="inline-block font-[Lato] text-xs font-semibold tracking-[0.2em] uppercase text-[#868C4D] mb-5">
+                Guía
+              </span>
+              <h2 className="font-[Playfair_Display] text-[clamp(1.85rem,4.2vw,2.85rem)] font-normal leading-[1.15] tracking-[-0.015em] text-[#1A1A1A]">
+                Artículos para entender el mercado
+              </h2>
+              <p className="mt-4 text-base md:text-lg text-[#1A1A1A]/55 max-w-xl font-[Lato] font-light leading-relaxed">
+                Lecturas prácticas para tomar decisiones informadas sobre tu vivienda.
+              </p>
               <Link
                 to="/guia"
-                className="group inline-flex items-center gap-2 text-sm font-semibold text-[#2A79A9] hover:text-[#2A79A9]/80 transition-colors whitespace-nowrap pb-2 font-[Lato]"
+                className="group mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#2A79A9] hover:text-[#2A79A9]/80 transition-colors font-[Lato]"
               >
                 Ver guía inmobiliaria
                 <svg
