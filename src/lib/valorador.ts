@@ -38,7 +38,19 @@
  *  surfaces the new form fields.
  */
 
-import { matchZone, BASE_PRICE_M2, COEF_COMERCIAL, type Zone } from '../data/zones'
+import { matchZone, ZONES, BASE_PRICE_M2, COEF_COMERCIAL, type Zone } from '../data/zones'
+import { resolveLocationToZoneSlug } from '../data/locations'
+
+/* matchZone covers barrio names, aliases, and postal codes. The curated
+ * streets / avenues / plazas live in locations.ts so the engine doesn't
+ * carry display-only data; this wrapper checks both. */
+function findZone(input: string): Zone | null {
+  const direct = matchZone(input)
+  if (direct) return direct
+  const slug = resolveLocationToZoneSlug(input)
+  if (!slug) return null
+  return ZONES.find((z) => z.slug === slug) ?? null
+}
 
 /* ─── Inputs ─────────────────────────────────────────────────────────── */
 
@@ -238,7 +250,7 @@ function bandFor(score: number): { low: number; high: number; label: 'baja' | 'm
 /* ─── Public API ────────────────────────────────────────────────────── */
 
 export function computeValuation(input: ValuationInput): ValuationOutput {
-  const zone = matchZone(input.ubicacion)
+  const zone = findZone(input.ubicacion)
   const zoneMult = zone?.mult ?? 1
   const basePerM2 = BASE_PRICE_M2
 
