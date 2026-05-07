@@ -19,7 +19,7 @@
  *  extend it any time; nothing in the engine depends on completeness.
  */
 
-import { ZONES, type Zone } from './zones'
+import { ZONES, matchZone, type Zone } from './zones'
 
 export type LocationCategory =
   | 'barrio'
@@ -274,6 +274,151 @@ export function searchLocations(query: string, limit = 8): LocationSuggestion[] 
     .sort((a, b) => a.rank - b.rank)
     .slice(0, limit)
     .map((s) => s.entry)
+}
+
+/* ─── Remote (Mapbox) geocoding ───────────────────────────────────────────
+ *
+ * The curated list above covers ~50 well-known streets, but Hospitalet
+ * has thousands. For real addresses we hit Mapbox Geocoding v6 with a
+ * proximity bias to L'Hospitalet centre, then keep only features whose
+ * postcode (08901–08907) or locality lands in the city.
+ *
+ * The token is a pk.* (public-by-design) key restricted at the Mapbox
+ * dashboard level. Failures are caught by the caller — the UI falls
+ * back to the local suggestions if the network blips.
+ * ───────────────────────────────────────────────────────────────────── */
+
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_API_KEY as string | undefined
+const HOSPITALET_PROXIMITY = '2.0996,41.3596'
+const HOSPITALET_CP_RE = /^0890[1-7]$/
+
+function postcodeToZoneSlug(cp: string): string | null {
+  if (!cp) return null
+  for (const p of POSTAL_CODES) {
+    if (p.cp === cp) return p.zoneSlug
+  }
+  return null
+}
+
+function inferStreetCategory(name: string): LocationCategory {
+  const head = name.trim()
+  if (/^(Avinguda|Avenida|Av\.?|Avda\.?)\b/i.test(head)) return 'avenida'
+  if (/^(Pla[çc]a|Plaza|Pl\.?)\b/i.test(head)) return 'plaza'
+  if (/^Rambla/i.test(head)) return 'rambla'
+  return 'calle'
+}
+
+interface MapboxFeatureContext {
+  postcode?: { name?: string }
+  locality?: { name?: string }
+  place?: { name?: string }
+  neighborhood?: { name?: string }
+  region?: { name?: string }
+}
+interface MapboxFeatureProps {
+  name?: string
+  name_preferred?: string
+  feature_type?: string
+  full_address?: string
+  place_formatted?: string
+  context?: MapboxFeatureContext
+}
+interface MapboxFeature {
+  type: 'Feature'
+  properties: MapboxFeatureProps
+}
+
+/**
+ * Hit Mapbox geocoding for the query and return suggestions restricted
+ * to L'Hospitalet. Resolves to [] on network/HTTP error or if the token
+ * is missing — callers should treat this as best-effort and fall back
+ * to the local list.
+ */
+export async function searchLocationsRemote(
+  query: string,
+  signal?: AbortSignal,
+): Promise<LocationSuggestion[]> {
+  const q = query.trim()
+  if (!MAPBOX_TOKEN || q.length < 2) return []
+
+  const url = new URL('https://api.mapbox.com/search/geocode/v6/forward')
+  url.searchParams.set('q', q)
+  url.searchParams.set('access_token', MAPBOX_TOKEN)
+  url.searchParams.set('country', 'es')
+  url.searchParams.set('proximity', HOSPITALET_PROXIMITY)
+  url.searchParams.set('types', 'address,street,postcode,neighborhood,place')
+  url.searchParams.set('limit', '10')
+  url.searchParams.set('language', 'es')
+  url.searchParams.set('autocomplete', 'true')
+
+  let res: Response
+  try {
+    res = await fetch(url.toString(), { signal })
+  } catch {
+    return []
+  }
+  if (!res.ok) return []
+  const json = (await res.json().catch(() => null)) as { features?: MapboxFeature[] } | null
+  if (!json?.features) return []
+
+  const out: LocationSuggestion[] = []
+  for (const feat of json.features) {
+    const props = feat.properties ?? {}
+    const ctx = props.context ?? {}
+
+    const postcode = ctx.postcode?.name ?? ''
+    const locality = ctx.locality?.name ?? ctx.place?.name ?? ''
+    const neighborhood = ctx.neighborhood?.name ?? ''
+
+    const isHospitalet =
+      HOSPITALET_CP_RE.test(postcode) || /hospitalet/i.test(locality)
+    if (!isHospitalet) continue
+
+    const featType = props.feature_type ?? 'address'
+    const rawName = props.name_preferred || props.name || ''
+    if (!rawName) continue
+
+    /* Pick the most useful label per feature type. For street & address
+     * we prefer name (e.g. "Carrer Major 12"); for postcode we use the
+     * code itself; for neighborhood/place we use the barrio name. */
+    const label =
+      featType === 'postcode' ? postcode || rawName : rawName
+
+    let category: LocationCategory
+    if (featType === 'postcode') category = 'codigo-postal'
+    else if (featType === 'neighborhood' || featType === 'place') category = 'barrio'
+    else category = inferStreetCategory(label)
+
+    /* Prefer postcode → zoneSlug. Fall back to fuzzy-matching the
+     * neighborhood text against zone aliases. */
+    const zoneSlug =
+      postcodeToZoneSlug(postcode) ??
+      matchZone(neighborhood || locality || label)?.slug ??
+      'centre'
+
+    const descParts: string[] = []
+    if (neighborhood) descParts.push(neighborhood)
+    descParts.push("L'Hospitalet")
+    if (postcode) descParts.push(postcode)
+
+    out.push({
+      label,
+      description: descParts.join(' · '),
+      zoneSlug,
+      searchText: normalize(label),
+      category,
+    })
+  }
+
+  /* Dedupe by label — Mapbox sometimes returns both a "street" and an
+   * "address" entry for the same name. Keep the first (best-ranked). */
+  const seen = new Set<string>()
+  return out.filter((s) => {
+    const key = `${s.category}|${s.searchText}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
 }
 
 /**

@@ -224,13 +224,17 @@ function MortgageCalculator() {
       import('jspdf'),
       import('../lib/pdf'),
     ])
-    const logoDataUrl = await pdf.loadLogoDataUrl()
+    const [logoDataUrl, bgDataUrl] = await Promise.all([
+      pdf.loadLogoDataUrl(),
+      pdf.loadOfficeBgDataUrl(),
+    ])
 
     const doc = new jsPDF({ unit: 'mm', format: 'a4' })
     const pageW = doc.internal.pageSize.getWidth()
     const margin = pdf.PAGE_MARGIN_MM
     const contentW = pageW - margin * 2
 
+    pdf.drawBackground(doc, bgDataUrl)
     pdf.drawHeader(doc, logoDataUrl)
 
     /* ── Title ──────────────────────────────────────────────── */
@@ -243,7 +247,7 @@ function MortgageCalculator() {
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(10)
     doc.setTextColor(...pdf.PDF_COLORS.muted)
-    doc.text('Tu capacidad de compra, en una página.', margin, y)
+    doc.text('Lo que ves es lo que es.', margin, y)
 
     /* ── Inputs section ────────────────────────────────────── */
     y += 14
@@ -273,11 +277,14 @@ function MortgageCalculator() {
     doc.setTextColor(...pdf.PDF_COLORS.dark)
     const cuotaStr = noFinancing ? '— sin financiación —' : fmtEUR.format(Math.round(monthlyPayment))
     doc.text(cuotaStr, margin + 4, y + 14)
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(9)
-    doc.setTextColor(...pdf.PDF_COLORS.muted)
+    /* Subtitle inline-right-of-number — keeps the eye on the same line
+     * instead of leaving an empty right half of the card. */
     if (!noFinancing) {
-      doc.text(`durante ${plazo} años`, pageW - margin - 4, y + 14, { align: 'right' })
+      const cuotaWidth = doc.getTextWidth(cuotaStr)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(10)
+      doc.setTextColor(...pdf.PDF_COLORS.muted)
+      doc.text(`/mes · ${plazo} años`, margin + 4 + cuotaWidth + 3, y + 14)
     }
 
     /* ── Detail rows ───────────────────────────────────────── */
@@ -358,9 +365,9 @@ function MortgageCalculator() {
         </RevealSection>
 
         <RevealSection delay={150}>
-          <div className="grid lg:grid-cols-[1fr,1fr] gap-8 lg:gap-12 items-start">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-6 lg:gap-12 items-start">
             {/* ── Left: Inputs ── */}
-            <div className="space-y-7 bg-white rounded-xl p-7 md:p-9 shadow-soft border border-cream-dark/15">
+            <div className="space-y-7 bg-white rounded-xl p-7 md:p-6 lg:p-9 shadow-soft border border-cream-dark/15">
               <SliderInput
                 id="calc-precio"
                 label="Precio de la vivienda"
@@ -459,7 +466,7 @@ function MortgageCalculator() {
               {/* Offset frame decoration */}
               <div className="hidden lg:block absolute -top-3 -right-3 w-full h-full rounded-xl border-2 border-blue/15" />
 
-              <div className="relative bg-white rounded-xl p-7 md:p-9 shadow-card border border-cream-dark/10">
+              <div className="relative bg-white rounded-xl p-7 md:p-6 lg:p-9 shadow-card border border-cream-dark/10">
                 {noFinancing ? (
                   <div className="text-center py-10">
                     <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-5">

@@ -49,6 +49,7 @@ export default function Header() {
   }, [menuOpen])
 
   return (
+    <>
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
@@ -127,40 +128,41 @@ export default function Header() {
           </button>
         </div>
       </div>
-
-      <div
-        className={`lg:hidden fixed inset-0 top-0 bg-warm-white z-40 transition-all duration-500 overflow-y-auto overscroll-contain ${
-          menuOpen
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none'
-        }`}
-        style={{ WebkitOverflowScrolling: 'touch' }}
-      >
-        <div className="min-h-full flex flex-col items-center justify-center gap-2 px-8 pt-28 pb-12">
-          {NAV_LINKS.map(({ to, label }, i) => (
-            <NavLink
-              key={to}
-              to={to}
-              onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                `text-2xl font-serif font-medium py-3 px-6 rounded-xl transition-all duration-300 ${
-                  isActive ? 'text-blue bg-cream' : 'text-dark hover:text-blue hover:bg-cream/40'
-                }`
-              }
-              style={{ animationDelay: `${i * 0.05}s` }}
-            >
-              {label}
-            </NavLink>
-          ))}
-          <Link
-            to="/entender-mi-situacion"
-            onClick={() => setMenuOpen(false)}
-            className="mt-6 bg-blue hover:bg-blue-dark text-white text-lg font-bold px-8 py-3.5 rounded-lg transition-all duration-300"
-          >
-            Entender mi situación
-          </Link>
-        </div>
-      </div>
     </header>
+
+    <div
+      className={`lg:hidden fixed inset-0 bg-warm-white z-40 transition-all duration-500 overflow-y-auto overscroll-contain ${
+        menuOpen
+          ? 'opacity-100 pointer-events-auto'
+          : 'opacity-0 pointer-events-none'
+      }`}
+      style={{ WebkitOverflowScrolling: 'touch' }}
+    >
+      <div className="min-h-full flex flex-col items-center justify-center gap-2 px-8 pt-28 pb-12">
+        {NAV_LINKS.map(({ to, label }, i) => (
+          <NavLink
+            key={to}
+            to={to}
+            onClick={() => setMenuOpen(false)}
+            className={({ isActive }) =>
+              `text-2xl font-serif font-medium py-3 px-6 rounded-xl transition-all duration-300 ${
+                isActive ? 'text-blue bg-cream' : 'text-dark hover:text-blue hover:bg-cream/40'
+              }`
+            }
+            style={{ animationDelay: `${i * 0.05}s` }}
+          >
+            {label}
+          </NavLink>
+        ))}
+        <Link
+          to="/entender-mi-situacion"
+          onClick={() => setMenuOpen(false)}
+          className="mt-6 bg-blue hover:bg-blue-dark text-white text-lg font-bold px-8 py-3.5 rounded-lg transition-all duration-300"
+        >
+          Entender mi situación
+        </Link>
+      </div>
+    </div>
+    </>
   )
 }

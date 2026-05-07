@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { lastReviewedLabel, zoneLabel } from '../data/zones'
-import { searchLocations, type LocationSuggestion } from '../data/locations'
+import { searchLocations, searchLocationsRemote, type LocationSuggestion } from '../data/locations'
 import { computeValuation, type Estado, type Tipo } from '../lib/valorador'
 
 /* ────────────────────────────────────────────
@@ -146,10 +146,47 @@ function AddressAutocomplete({
   const [open, setOpen] = useState(false)
   const [highlight, setHighlight] = useState(0)
   const [focused, setFocused] = useState(false)
+  const [remote, setRemote] = useState<LocationSuggestion[]>([])
   const containerRef = useRef<HTMLDivElement | null>(null)
 
-  const suggestions = focused ? searchLocations(value) : []
+  /* Local curated list = instant (synchronous, ~50 entries), shown
+   * while Mapbox is in flight or if the network blips. Remote results
+   * replace local once they arrive — Mapbox covers the long tail of
+   * Hospitalet streets that Pau cares about. Dedupe by normalized
+   * label so a curated street and its Mapbox twin don't both show. */
+  const local = focused ? searchLocations(value) : []
+  const merged: LocationSuggestion[] = []
+  const seen = new Set<string>()
+  for (const s of [...remote, ...local]) {
+    const key = s.searchText
+    if (seen.has(key)) continue
+    seen.add(key)
+    merged.push(s)
+    if (merged.length >= 8) break
+  }
+  const suggestions = merged
   const showDropdown = open && focused && suggestions.length > 0
+
+  /* Debounced Mapbox call. Aborts in-flight requests when the user
+   * keeps typing so only the latest query's response wins. */
+  useEffect(() => {
+    if (!focused) return
+    const q = value.trim()
+    if (q.length < 2) {
+      setRemote([])
+      return
+    }
+    const controller = new AbortController()
+    const t = setTimeout(() => {
+      searchLocationsRemote(q, controller.signal).then((r) => {
+        if (!controller.signal.aborted) setRemote(r)
+      })
+    }, 220)
+    return () => {
+      clearTimeout(t)
+      controller.abort()
+    }
+  }, [value, focused])
 
   /* Click-outside closes the dropdown but keeps the input value. */
   useEffect(() => {
@@ -403,13 +440,17 @@ function ResultScreen({
       import('jspdf'),
       import('../lib/pdf'),
     ])
-    const logoDataUrl = await pdf.loadLogoDataUrl()
+    const [logoDataUrl, bgDataUrl] = await Promise.all([
+      pdf.loadLogoDataUrl(),
+      pdf.loadOfficeBgDataUrl(),
+    ])
 
     const doc = new jsPDF({ unit: 'mm', format: 'a4' })
     const pageW = doc.internal.pageSize.getWidth()
     const margin = pdf.PAGE_MARGIN_MM
     const contentW = pageW - margin * 2
 
+    pdf.drawBackground(doc, bgDataUrl)
     pdf.drawHeader(doc, logoDataUrl)
 
     /* Title */
