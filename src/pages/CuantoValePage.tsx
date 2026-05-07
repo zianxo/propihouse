@@ -466,7 +466,7 @@ export default function CuantoValePage() {
             </div>
 
             <p className="text-white/35 text-sm mt-8">
-              Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.
+              Sin compromiso. Analizamos tu caso y vemos qué tiene sentido para ti.
             </p>
           </RevealSection>
         </div>
