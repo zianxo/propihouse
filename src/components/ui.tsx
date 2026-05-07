@@ -246,7 +246,7 @@ export function CTASection({
             {buttonText}
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </Link>
-          <p className="text-white/50 text-sm mt-4">Sin compromiso. Analizamos tu caso y vemos que tiene sentido para ti.</p>
+          <p className="text-white/50 text-sm mt-4">Sin compromiso. Analizamos tu caso y vemos qué tiene sentido para ti.</p>
         </div>
       </section>
     </RevealSection>
