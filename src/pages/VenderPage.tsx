@@ -67,7 +67,12 @@ function StrikeGrid({ steps }: { steps: { n: string; label: string }[] }) {
     <div ref={containerRef} className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
       {steps.map((step, i) => (
         <div key={step.n} className="relative" data-strike-card>
-          <div className="relative bg-white/70 border border-[#1A1A1A]/[0.08] rounded-lg p-5 md:p-6 backdrop-blur-sm min-h-[120px] flex flex-col justify-center items-center text-center">
+          <div className="relative bg-white/70 border border-[#1A1A1A]/[0.08] rounded-lg p-5 md:p-6 backdrop-blur-sm min-h-[120px] flex items-center justify-center text-center">
+            {/* Step number floats in the corner so the label sits dead
+             * centre and the strike line crosses through the actual text. */}
+            <span className="absolute top-3 left-4 font-[Playfair_Display] text-xs text-[#1A1A1A]/30">
+              {step.n}
+            </span>
             <span
               aria-hidden
               className="absolute left-[8%] right-[8%] top-1/2 h-0.5 bg-[#1A1A1A]/45 origin-left"
@@ -76,9 +81,6 @@ function StrikeGrid({ steps }: { steps: { n: string; label: string }[] }) {
                 transition: `transform 700ms cubic-bezier(0.16,1,0.3,1) ${i * 120}ms`,
               }}
             />
-            <span className="font-[Playfair_Display] text-xs text-[#1A1A1A]/30 mb-2 block">
-              {step.n}
-            </span>
             <p
               className={`text-sm font-medium transition-colors duration-500 ${
                 active[i] ? 'text-[#1A1A1A]/45' : 'text-[#1A1A1A]/75'
