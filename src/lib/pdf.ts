@@ -65,6 +65,70 @@ export async function loadOfficeBgDataUrl(): Promise<string | null> {
   return fetchAsDataUrl('/images/office-bg.jpg')
 }
 
+/* Fetch a Mapbox Static Images PNG showing the given query's location
+ * with a single pin. Two network round-trips: forward-geocode to get
+ * lat/lng, then download the rendered map. Returns null on any failure
+ * (missing token, no geocoding hit, bad response) so the caller can
+ * skip the map cleanly without breaking the report.
+ *
+ * Uses Mapbox's light-v11 style — grayscale and uncluttered, matches
+ * the editorial tone of the rest of the report. */
+export async function loadLocationMapDataUrl(
+  query: string,
+  signal?: AbortSignal,
+): Promise<string | null> {
+  const token = import.meta.env.VITE_MAPBOX_API_KEY as string | undefined
+  const q = query.trim()
+  if (!token || !q) return null
+
+  /* 1) Geocode → first feature's coordinates. */
+  const gc = new URL('https://api.mapbox.com/search/geocode/v6/forward')
+  gc.searchParams.set('q', q)
+  gc.searchParams.set('access_token', token)
+  gc.searchParams.set('country', 'es')
+  gc.searchParams.set('proximity', '2.0996,41.3596')
+  gc.searchParams.set('limit', '1')
+  gc.searchParams.set('language', 'es')
+
+  let coords: [number, number] | null = null
+  try {
+    const r = await fetch(gc.toString(), { signal })
+    if (!r.ok) return null
+    const json = (await r.json().catch(() => null)) as
+      | { features?: Array<{ geometry?: { coordinates?: number[] } }> }
+      | null
+    const c = json?.features?.[0]?.geometry?.coordinates
+    if (!c || c.length < 2) return null
+    coords = [c[0], c[1]]
+  } catch {
+    return null
+  }
+  const [lng, lat] = coords
+
+  /* 2) Static map — 4:1 strip (matches the PDF render aspect so the
+   * image doesn't squish), retina, blue pin at the pinpoint. */
+  const pin = `pin-l+2a79a9(${lng.toFixed(5)},${lat.toFixed(5)})`
+  const center = `${lng.toFixed(5)},${lat.toFixed(5)},14.5,0`
+  const size = '1000x250@2x'
+  const mapUrl =
+    `https://api.mapbox.com/styles/v1/mapbox/light-v11/static/` +
+    `${pin}/${center}/${size}?access_token=${token}`
+
+  try {
+    const r = await fetch(mapUrl, { signal })
+    if (!r.ok) return null
+    const blob = await r.blob()
+    return await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(blob)
+    })
+  } catch {
+    return null
+  }
+}
+
 /* Draws the office photo full-bleed, then lays a "frosted glass" panel
  * over most of the page: a translucent white-ish rectangle that lets
  * the photo bleed through softly while keeping black text crisply
