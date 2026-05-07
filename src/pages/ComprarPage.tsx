@@ -612,7 +612,7 @@ export default function ComprarPage() {
             </div>
 
             <p className="text-white/35 text-sm mt-8">
-              Escríbenos y te contactaremos en 24-48h.
+              Sin compromiso. Analizamos tu caso y vemos qué tiene sentido para ti.
             </p>
           </RevealSection>
         </div>
