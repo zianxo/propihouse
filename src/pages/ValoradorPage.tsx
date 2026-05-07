@@ -453,9 +453,14 @@ function ResultScreen({
       import('jspdf'),
       import('../lib/pdf'),
     ])
-    const [logoDataUrl, bgDataUrl] = await Promise.all([
+    /* Geocoding for the location map runs in parallel with logo+bg. The
+     * map query is the user's free-text ubicación; if it fails to
+     * geocode (or the token is missing) the helper returns null and we
+     * skip the map silently. */
+    const [logoDataUrl, bgDataUrl, mapDataUrl] = await Promise.all([
       pdf.loadLogoDataUrl(),
       pdf.loadOfficeBgDataUrl(),
+      pdf.loadLocationMapDataUrl(ubicacion),
     ])
 
     const doc = new jsPDF({ unit: 'mm', format: 'a4' })
@@ -490,6 +495,17 @@ function ResultScreen({
     if (condition) { pdf.drawRow(doc, 'Estado', estadoLabel, y); y += 6 }
     if (plantaAscensorLabel) { pdf.drawRow(doc, 'Planta', plantaAscensorLabel, y); y += 6 }
     if (extrasLabel !== '—') { pdf.drawRow(doc, 'Extras', extrasLabel, y); y += 6 }
+
+    /* Location map — clean Mapbox light-style strip with a Propi-blue
+     * pin at the geocoded address. Skipped silently if geocoding
+     * failed. 4:1 ratio so it stays a horizon strip and leaves room
+     * for the special-case banner near the bottom of the page. */
+    if (mapDataUrl) {
+      y += 8
+      const mapH = contentW / 4
+      doc.addImage(mapDataUrl, 'PNG', margin, y, contentW, mapH, undefined, 'FAST')
+      y += mapH
+    }
 
     /* Resultado hero card */
     y += 8
