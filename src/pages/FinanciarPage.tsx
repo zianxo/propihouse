@@ -262,10 +262,29 @@ function MortgageCalculator() {
     pdf.drawRow(doc, 'Plazo', fmtYears(plazo), y); y += 6
     pdf.drawRow(doc, 'Ingresos netos mensuales', `${fmtEUR.format(ingresos)} /mes`, y)
 
-    /* ── Hero result: Cuota mensual ────────────────────────── */
+    /* ── Hero results: Capital + Cuota ──────────────────────
+     * Both numbers carry equal visual weight — full-width warmCream
+     * cards stacked. Pau wanted them matched. */
     y += 14
     pdf.drawSectionTitle(doc, 'Resultado', y, 'blue')
     y += 8
+
+    if (!noFinancing) {
+      /* Capital a financiar */
+      doc.setFillColor(...pdf.PDF_COLORS.warmCream)
+      doc.roundedRect(margin, y - 2, contentW, 22, 2, 2, 'F')
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(8.5)
+      doc.setTextColor(...pdf.PDF_COLORS.muted)
+      doc.text('CAPITAL A FINANCIAR', margin + 4, y + 4)
+      doc.setFont('times', 'normal')
+      doc.setFontSize(26)
+      doc.setTextColor(...pdf.PDF_COLORS.dark)
+      doc.text(fmtEUR.format(capital), margin + 4, y + 14)
+      y += 26
+    }
+
+    /* Cuota mensual */
     doc.setFillColor(...pdf.PDF_COLORS.warmCream)
     doc.roundedRect(margin, y - 2, contentW, 22, 2, 2, 'F')
     doc.setFont('helvetica', 'bold')
@@ -289,7 +308,6 @@ function MortgageCalculator() {
 
     /* ── Detail rows ───────────────────────────────────────── */
     y += 30
-    pdf.drawRow(doc, 'Capital a financiar', fmtEUR.format(capital), y, { bold: true }); y += 6
     pdf.drawRow(doc, 'Total a pagar', fmtEUR.format(Math.round(totalCost)), y); y += 6
     pdf.drawRow(doc, 'Total intereses', fmtEUR.format(Math.round(totalInterest)), y); y += 6
     pdf.drawRow(doc, 'Financiación / total', `${pctFinanciacion.toFixed(1)}%`, y, { muted: true }); y += 6
@@ -495,10 +513,13 @@ function MortgageCalculator() {
                   </div>
                 ) : (
                   <>
-                    {/* Capital */}
-                    <div className="mb-6 pb-6 border-b border-cream-dark/15">
+                    {/* Capital — hero treatment matching Cuota mensual so
+                        both headline numbers carry equal visual weight. */}
+                    <div className="mb-8 text-center pb-6 border-b border-cream-dark/15">
                       <span className="text-xs font-bold tracking-[0.15em] uppercase text-text-muted">Capital a financiar</span>
-                      <p className="font-serif text-2xl text-dark font-medium mt-1">{fmtEUR.format(capital)}</p>
+                      <p className="font-serif text-4xl md:text-5xl text-dark font-medium mt-2 tabular-nums">
+                        {fmtEUR.format(capital)}
+                      </p>
                     </div>
 
                     {/* Monthly Payment - Hero number */}

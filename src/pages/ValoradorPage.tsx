@@ -151,14 +151,27 @@ function AddressAutocomplete({
 
   /* Local curated list = instant (synchronous, ~50 entries), shown
    * while Mapbox is in flight or if the network blips. Remote results
-   * replace local once they arrive — Mapbox covers the long tail of
-   * Hospitalet streets that Pau cares about. Dedupe by normalized
-   * label so a curated street and its Mapbox twin don't both show. */
+   * fill in the long tail of real Hospitalet streets.
+   *
+   * Dedupe key is the NORMALIZED LABEL — not searchText. Curated
+   * entries fold their aliases into searchText (e.g. "rambla just
+   * oliveras" + "just oliveras"), so deduping on searchText leaves a
+   * curated and a Mapbox twin both visible. Local results come first
+   * so when the same street exists in both sources, we keep the
+   * curated one (its description includes the barrio name). */
+  const dedupeKey = (s: LocationSuggestion): string =>
+    s.label
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .replace(/['’]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
   const local = focused ? searchLocations(value) : []
   const merged: LocationSuggestion[] = []
   const seen = new Set<string>()
-  for (const s of [...remote, ...local]) {
-    const key = s.searchText
+  for (const s of [...local, ...remote]) {
+    const key = dedupeKey(s)
     if (seen.has(key)) continue
     seen.add(key)
     merged.push(s)
