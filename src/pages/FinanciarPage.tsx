@@ -238,7 +238,7 @@ function MortgageCalculator() {
     pdf.drawHeader(doc, logoDataUrl)
 
     /* ── Title ──────────────────────────────────────────────── */
-    let y = margin + 28
+    let y = margin + 32
     doc.setFont('times', 'normal')
     doc.setFontSize(20)
     doc.setTextColor(...pdf.PDF_COLORS.dark)

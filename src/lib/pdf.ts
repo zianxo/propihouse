@@ -26,10 +26,11 @@ export const PDF_COLORS = {
   warmCream: [247, 243, 232] as [number, number, number], // matches --color-cream-light
 } as const
 
-/* Logo height in millimetres. 18 was the original value; +5 % brought
- * it to 18.9, and another +15 % per Pau pushes it to 21.74 mm. Both
- * reports source this constant. */
-export const LOGO_HEIGHT_MM = 21.74
+/* Logo height in millimetres. Started at 18; +5 % → 18.9; +15 % →
+ * 21.74; another +10 % per Pau pushes it to 23.91 mm. Both reports
+ * source this constant; the header divider position is derived from
+ * it so the line never crosses the wordmark. */
+export const LOGO_HEIGHT_MM = 23.91
 
 export const PAGE_MARGIN_MM = 18
 
@@ -152,33 +153,60 @@ export function drawHeader(doc: jsPDF, logoDataUrl: string | null) {
   doc.line(margin, dividerY, pageW - margin, dividerY)
 }
 
-/* Footer: thin divider, italic disclaimer, brand line + contact info.
- * Anchored to the bottom of the page using internal.pageSize. */
+/* Footer: thin divider, italic disclaimer, then a three-line block —
+ * brand + Pau contact, legal entity + socials, and the office address
+ * centred at the very bottom. ~18 mm tall in total, anchored to the
+ * page's bottom margin. */
 export function drawFooter(doc: jsPDF, disclaimer: string) {
   const pageW = doc.internal.pageSize.getWidth()
   const margin = PAGE_MARGIN_MM
   const footerY = doc.internal.pageSize.getHeight() - margin
 
+  /* Divider sits 18 mm above the bottom of the footer to host the
+   * disclaimer + 3 contact rows. */
   doc.setDrawColor(...PDF_COLORS.divider)
   doc.setLineWidth(0.3)
-  doc.line(margin, footerY - 10, pageW - margin, footerY - 10)
+  doc.line(margin, footerY - 18, pageW - margin, footerY - 18)
 
+  /* Disclaimer (italic, may wrap on narrow content widths). */
   doc.setFont('helvetica', 'italic')
   doc.setFontSize(8)
   doc.setTextColor(...PDF_COLORS.muted)
-  doc.text(disclaimer, margin, footerY - 5, { maxWidth: pageW - margin * 2 })
+  doc.text(disclaimer, margin, footerY - 13, { maxWidth: pageW - margin * 2 })
 
+  /* Row 1 — propihouse.es (bold) | Pau · phone · email. */
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(8.5)
   doc.setTextColor(...PDF_COLORS.dark)
-  doc.text('propihouse.es', margin, footerY)
+  doc.text('propihouse.es', margin, footerY - 8)
   doc.setFont('helvetica', 'normal')
   doc.setTextColor(...PDF_COLORS.muted)
   doc.text(
     'Pau Manovel · 637 86 36 78 · hola@propihouse.es',
     pageW - margin,
-    footerY,
+    footerY - 8,
     { align: 'right' },
+  )
+
+  /* Row 2 — brand (left) | social handles (right). Pau prefers
+   * "Propi House" here over the legal entity. */
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(7.5)
+  doc.setTextColor(...PDF_COLORS.muted)
+  doc.text('Propi House', margin, footerY - 4)
+  doc.text(
+    '@propihouse.es · facebook.com/propihouse.bcn',
+    pageW - margin,
+    footerY - 4,
+    { align: 'right' },
+  )
+
+  /* Row 3 — full office address, centred. */
+  doc.text(
+    'Carrer d’Enric Prat de la Riba 187, 08901 L’Hospitalet de Llobregat · Barcelona',
+    pageW / 2,
+    footerY,
+    { align: 'center' },
   )
 }
 
