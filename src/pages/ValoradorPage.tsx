@@ -46,7 +46,7 @@ const PLANTA_OPTIONS: Array<{ label: string; value: number }> = [
 ]
 
 const TOTAL_STEPS = 6
-const REFINE_TOTAL_STEPS = 7
+const REFINE_TOTAL_STEPS = 6
 
 /* All pricing math (condition / extra / size / etc. coefficients) lives
  * in src/lib/valorador.ts. This page only collects user input and hands
@@ -692,22 +692,65 @@ function ResultScreen({
             </dl>
           </div>
 
-          {/* RIGHT — Price card */}
-          <div className="rounded-xl bg-white border-2 border-[#1A1A1A]/[0.06] shadow-[0_4px_40px_rgba(0,0,0,0.04)] p-7 md:p-10 flex flex-col items-center justify-center text-center">
-            <p className="text-xs text-[#1A1A1A]/35 mb-2 tracking-widest uppercase font-[Lato]">
-              Entre
-            </p>
-            <p className="font-[Playfair_Display] text-3xl md:text-4xl lg:text-[2.6rem] font-light text-[#1A1A1A] tracking-tight leading-none">
-              {formatEur(lowValue)}
-              <span className="text-[#1A1A1A]/20 mx-2">–</span>
-              {formatEur(highValue)}
-            </p>
-            <p className="mt-4 text-sm text-[#1A1A1A]/35 font-[Lato]">
-              ~{formatEur(Math.round(pricePerM2))}/m² &middot; {metros} m²
-            </p>
-            <p className="mt-3 text-[11px] text-[#1A1A1A]/30 tracking-wide font-[Lato]">
-              {lastReviewedLabel()}
-            </p>
+          {/* RIGHT — Price card. Share + download actions live at the
+           * bottom of THIS card (not the page) so users see them
+           * alongside the "Entre" range itself. */}
+          <div className="rounded-xl bg-white border-2 border-[#1A1A1A]/[0.06] shadow-[0_4px_40px_rgba(0,0,0,0.04)] p-7 md:p-10 flex flex-col text-center">
+            <div className="flex-1 flex flex-col items-center justify-center">
+              <p className="text-xs text-[#1A1A1A]/35 mb-2 tracking-widest uppercase font-[Lato]">
+                Entre
+              </p>
+              <p className="font-[Playfair_Display] text-3xl md:text-4xl lg:text-[2.6rem] font-light text-[#1A1A1A] tracking-tight leading-none">
+                {formatEur(lowValue)}
+                <span className="text-[#1A1A1A]/20 mx-2">–</span>
+                {formatEur(highValue)}
+              </p>
+              <p className="mt-4 text-sm text-[#1A1A1A]/35 font-[Lato]">
+                ~{formatEur(Math.round(pricePerM2))}/m² &middot; {metros} m²
+              </p>
+              <p className="mt-3 text-[11px] text-[#1A1A1A]/30 tracking-wide font-[Lato]">
+                {lastReviewedLabel()}
+              </p>
+            </div>
+
+            {/* Share + download row inside the card. */}
+            <div className="mt-6 pt-5 border-t border-[#1A1A1A]/[0.06] flex items-center justify-center flex-wrap gap-x-4 gap-y-2">
+              <button
+                type="button"
+                onClick={handleShareWhatsApp}
+                className="inline-flex items-center gap-2 text-[13px] text-[#1A1A1A]/45 hover:text-[#1A1A1A]/80 transition-colors cursor-pointer font-[Lato]"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                </svg>
+                WhatsApp
+              </button>
+              <span className="text-[#1A1A1A]/10">|</span>
+              <button
+                type="button"
+                onClick={handleCopyLink}
+                className="inline-flex items-center gap-2 text-[13px] text-[#1A1A1A]/45 hover:text-[#1A1A1A]/80 transition-colors cursor-pointer font-[Lato]"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                </svg>
+                {linkCopied ? 'Copiado' : 'Copiar enlace'}
+              </button>
+              <span className="text-[#1A1A1A]/10">|</span>
+              <button
+                type="button"
+                onClick={handleDownloadPDF}
+                className="inline-flex items-center gap-2 text-[13px] text-[#1A1A1A]/45 hover:text-[#1A1A1A]/80 transition-colors cursor-pointer font-[Lato]"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Descargar
+              </button>
+            </div>
           </div>
         </div>
 
@@ -779,61 +822,6 @@ function ResultScreen({
           </button>
         </div>
 
-        {/* Share + Download row. Three secondary actions in one line on
-         * desktop, wrapping to two rows on narrow viewports. */}
-        <div className="flex items-center justify-center flex-wrap gap-x-4 gap-y-2">
-          <button
-            type="button"
-            onClick={handleShareWhatsApp}
-            className="inline-flex items-center gap-2 text-sm text-[#1A1A1A]/40 hover:text-[#1A1A1A]/70 transition-colors cursor-pointer font-[Lato]"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-            </svg>
-            Compartir por WhatsApp
-          </button>
-          <span className="text-[#1A1A1A]/10 hidden sm:inline">|</span>
-          <button
-            type="button"
-            onClick={handleCopyLink}
-            className="inline-flex items-center gap-2 text-sm text-[#1A1A1A]/40 hover:text-[#1A1A1A]/70 transition-colors cursor-pointer font-[Lato]"
-          >
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-            </svg>
-            {linkCopied ? 'Enlace copiado' : 'Copiar enlace'}
-          </button>
-          <span className="text-[#1A1A1A]/10 hidden sm:inline">|</span>
-          <button
-            type="button"
-            onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 text-sm text-[#1A1A1A]/40 hover:text-[#1A1A1A]/70 transition-colors cursor-pointer font-[Lato]"
-          >
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Descargar informe
-          </button>
-        </div>
       </div>
     </div>
   )
@@ -1214,12 +1202,10 @@ export default function ValoradorPage() {
   /* Refinement form data */
   const [refineStep, setRefineStep] = useState(1)
   const [refineDirection, setRefineDirection] = useState<'forward' | 'back'>('forward')
-  const [refDireccion, setRefDireccion] = useState('')
-  const [refCatastral, setRefCatastral] = useState('')
   const [refHabitaciones, setRefHabitaciones] = useState('')
   const [refBanos, setRefBanos] = useState('')
   const [refLuz, setRefLuz] = useState('')
-  const [refPlanta, setRefPlanta] = useState('')
+  const [refEnergia, setRefEnergia] = useState('')
   const [refSituacion, setRefSituacion] = useState('')
   const [refTiming, setRefTiming] = useState('')
   const [refNombre, setRefNombre] = useState('')
@@ -1357,13 +1343,12 @@ export default function ValoradorPage() {
   /* ─── Refinement form ─── */
   if (phase === 'refine') {
     const refineStepTitles: Record<number, string> = {
-      1: '¿Dónde se encuentra exactamente la vivienda?',
-      2: 'Cuéntanos un poco más sobre la vivienda',
-      3: '¿Cómo es la luz natural en la vivienda?',
-      4: '¿En qué planta se encuentra?',
-      5: '¿En qué momento estás con tu vivienda?',
-      6: '¿Cuándo te gustaría tomar una decisión?',
-      7: '¿Dónde te podemos enviar el análisis?',
+      1: 'Cuéntanos un poco más sobre la vivienda',
+      2: '¿Cómo es la luz natural en la vivienda?',
+      3: '¿Qué certificado energético tiene la vivienda?',
+      4: '¿En qué momento estás con tu vivienda?',
+      5: '¿Cuándo te gustaría tomar una decisión?',
+      6: '¿Dónde te podemos enviar el análisis?',
     }
 
     return (
@@ -1404,56 +1389,8 @@ export default function ValoradorPage() {
 
           {/* Steps */}
           <div className="w-full max-w-2xl mx-auto">
-            {/* REFINE STEP 1 — Ubicacion real */}
+            {/* REFINE STEP 1 — Caracteristicas clave (was step 2) */}
             <StepWrapper active={refineStep === 1} direction={refineDirection}>
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-2">
-                    Direccion o zona exacta
-                  </label>
-                  <input
-                    type="text"
-                    value={refDireccion}
-                    onChange={(e) => setRefDireccion(e.target.value)}
-                    placeholder="Ej: Calle Major 15, Santa Eulalia..."
-                    autoFocus
-                    className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-4 text-base text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
-                  />
-                </div>
-
-                {/* Optional catastral */}
-                <div className="rounded-xl border border-[#1A1A1A]/[0.06] bg-white/60 p-5">
-                  <p className="text-sm text-[#1A1A1A]/40 font-[Lato] mb-3">
-                    ¿Quieres ayudarnos a afinar más el análisis?
-                  </p>
-                  <label className="block text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-2">
-                    Referencia catastral
-                  </label>
-                  <input
-                    type="text"
-                    value={refCatastral}
-                    onChange={(e) => setRefCatastral(e.target.value)}
-                    placeholder="Ej: 1234567AB1234C0001XY"
-                    className="w-full rounded-xl border-2 border-[#1A1A1A]/[0.08] bg-white px-5 py-3.5 text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:border-[#2A79A9]/40 focus:outline-none focus:ring-2 focus:ring-[#2A79A9]/10 transition-all font-[Lato]"
-                  />
-                  <p className="mt-2 text-xs text-[#1A1A1A]/30 font-[Lato]">
-                    Solo lo usamos para hacer un análisis más preciso
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={refineGoForward}
-                  disabled={!refDireccion.trim()}
-                  className="w-full rounded-lg bg-[#2A79A9] text-white py-4 text-base font-medium tracking-wide transition-all duration-300 hover:bg-[#236891] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-[Lato]"
-                >
-                  Continuar
-                </button>
-              </div>
-            </StepWrapper>
-
-            {/* REFINE STEP 2 — Caracteristicas clave */}
-            <StepWrapper active={refineStep === 2} direction={refineDirection}>
               <div className="space-y-8">
                 <CountSelector
                   label="Habitaciones"
@@ -1479,8 +1416,8 @@ export default function ValoradorPage() {
               </div>
             </StepWrapper>
 
-            {/* REFINE STEP 3 — Luminosidad (auto-advance) */}
-            <StepWrapper active={refineStep === 3} direction={refineDirection}>
+            {/* REFINE STEP 2 — Luminosidad (auto-advance) */}
+            <StepWrapper active={refineStep === 2} direction={refineDirection}>
               <div className="space-y-3">
                 {['Muy luminosa', 'Normal', 'Poco luminosa', 'No estoy seguro'].map((opt) => (
                   <OptionCard
@@ -1493,22 +1430,38 @@ export default function ValoradorPage() {
               </div>
             </StepWrapper>
 
-            {/* REFINE STEP 4 — Altura / planta (auto-advance) */}
-            <StepWrapper active={refineStep === 4} direction={refineDirection}>
+            {/* REFINE STEP 3 — Certificado energético (auto-advance).
+             * 4×2 grid of letter buttons (A–G) with a fall-through
+             * "no lo sé" card below — feels closer to a real energy
+             * label than a 9-row stack of OptionCards. */}
+            <StepWrapper active={refineStep === 3} direction={refineDirection}>
               <div className="space-y-3">
-                {['Bajo', 'Intermedio', 'Alto', 'Ático', 'No lo se'].map((opt) => (
-                  <OptionCard
-                    key={opt}
-                    label={opt}
-                    selected={refPlanta === opt}
-                    onClick={() => refineSelectAndAdvance(setRefPlanta, opt)}
-                  />
-                ))}
+                <div className="grid grid-cols-4 gap-2.5">
+                  {['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((opt) => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => refineSelectAndAdvance(setRefEnergia, opt)}
+                      className={`py-6 rounded-xl border-2 font-[Playfair_Display] text-2xl transition-all duration-300 cursor-pointer ${
+                        refEnergia === opt
+                          ? 'border-[#2A79A9] bg-[#2A79A9]/[0.06] text-[#1A1A1A] shadow-[0_0_0_1px_rgba(42,121,169,0.15)]'
+                          : 'border-[#1A1A1A]/[0.08] bg-white text-[#1A1A1A]/45 hover:border-[#2A79A9]/40 hover:bg-[#2A79A9]/[0.02]'
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+                <OptionCard
+                  label="No lo sé / no tiene certificado"
+                  selected={refEnergia === 'No lo sé'}
+                  onClick={() => refineSelectAndAdvance(setRefEnergia, 'No lo sé')}
+                />
               </div>
             </StepWrapper>
 
-            {/* REFINE STEP 5 — Situacion del propietario (auto-advance) */}
-            <StepWrapper active={refineStep === 5} direction={refineDirection}>
+            {/* REFINE STEP 4 — Situacion del propietario (auto-advance) */}
+            <StepWrapper active={refineStep === 4} direction={refineDirection}>
               <div className="space-y-3">
                 {[
                   'Quiero vender mi vivienda',
@@ -1527,8 +1480,8 @@ export default function ValoradorPage() {
               </div>
             </StepWrapper>
 
-            {/* REFINE STEP 6 — Timing (auto-advance) */}
-            <StepWrapper active={refineStep === 6} direction={refineDirection}>
+            {/* REFINE STEP 5 — Timing (auto-advance) */}
+            <StepWrapper active={refineStep === 5} direction={refineDirection}>
               <div className="space-y-3">
                 {['Lo antes posible', 'En los proximos meses', 'Solo estoy informandome'].map((opt) => (
                   <OptionCard
@@ -1541,8 +1494,8 @@ export default function ValoradorPage() {
               </div>
             </StepWrapper>
 
-            {/* REFINE STEP 7 — Contacto */}
-            <StepWrapper active={refineStep === 7} direction={refineDirection}>
+            {/* REFINE STEP 6 — Contacto */}
+            <StepWrapper active={refineStep === 6} direction={refineDirection}>
               <div className="space-y-5">
                 <div>
                   <label className="block text-sm text-[#1A1A1A]/45 font-medium font-[Lato] mb-2">Nombre</label>
