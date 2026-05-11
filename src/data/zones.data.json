@@ -1,19 +1,19 @@
 {
   "lastReviewed": "2026-05",
-  "basePriceM2": 3165,
+  "basePriceM2": 3191,
   "multipliers": {
-    "centre": 1.263,
-    "sant-josep": 1,
-    "sanfeliu": 0.937,
-    "collblanc": 1.001,
+    "centre": 1.282,
+    "sant-josep": 1.011,
+    "sanfeliu": 0.967,
+    "collblanc": 1,
     "la-torrassa": 1.009,
-    "santa-eulalia": 1.27,
+    "santa-eulalia": 1.307,
     "granvia-sud": 0.95,
-    "la-florida": 0.942,
-    "les-planes": 0.761,
-    "pubilla-cases": 0.977,
-    "can-serra": 1.156,
-    "bellvitge": 0.926,
+    "la-florida": 0.935,
+    "les-planes": 0.79,
+    "pubilla-cases": 0.964,
+    "can-serra": 1.123,
+    "bellvitge": 0.919,
     "el-gornal": 0.72
   }
 }
