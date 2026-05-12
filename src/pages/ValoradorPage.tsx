@@ -812,28 +812,11 @@ function ResultScreen({
           </div>
         )}
 
-        {/* Explanation */}
-        <div className="max-w-xl mx-auto mb-12 mt-12">
-          <p className="text-[#1A1A1A]/55 text-[15px] leading-relaxed font-light font-[Lato] mb-5">
-            Este resultado es una buena referencia para empezar a entender el valor de tu vivienda.
-            Sin embargo, el resultado final depende de cómo se plantee la vivienda en el mercado:
-          </p>
-          <ul className="space-y-2 pl-1">
-            {[
-              'cómo se presenta la vivienda',
-              'el tipo de comprador',
-              'la estrategia de salida al mercado',
-            ].map((item) => (
-              <li key={item} className="flex items-start gap-3 text-[#1A1A1A]/55 text-[15px] font-light font-[Lato]">
-                <span className="mt-[9px] flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#868C4D]/70" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* CTA — emphasized "afinar" block */}
-        <div className="rounded-xl border-2 border-[#2A79A9]/15 bg-gradient-to-br from-[#2A79A9]/[0.04] via-white/60 to-[#868C4D]/[0.04] p-9 md:p-12 text-center mb-10 shadow-[0_4px_30px_rgba(42,121,169,0.06)]">
+        {/* CTA — emphasized "afinar" block. Pau wanted this card to sit
+         * immediately under the price / Datos cards so the call-to-
+         * action stays close to the result; the explanatory text moves
+         * below it. */}
+        <div className="rounded-xl border-2 border-[#2A79A9]/15 bg-gradient-to-br from-[#2A79A9]/[0.04] via-white/60 to-[#868C4D]/[0.04] p-9 md:p-12 text-center mb-10 mt-12 shadow-[0_4px_30px_rgba(42,121,169,0.06)]">
           <p className="text-[#868C4D] text-xs font-semibold tracking-[0.2em] uppercase mb-4 font-[Lato]">
             ¿Te ha sorprendido el resultado?
           </p>
@@ -862,6 +845,26 @@ function ResultScreen({
               <polyline points="12 5 19 12 12 19" />
             </svg>
           </button>
+        </div>
+
+        {/* Explanation block — moved BELOW the CTA per Pau. */}
+        <div className="max-w-xl mx-auto mb-12">
+          <p className="text-[#1A1A1A]/55 text-[15px] leading-relaxed font-light font-[Lato] mb-5">
+            Este resultado es una buena referencia para empezar a entender el valor de tu vivienda.
+            Sin embargo, el resultado final depende de cómo se plantee la vivienda en el mercado:
+          </p>
+          <ul className="space-y-2 pl-1">
+            {[
+              'cómo se presenta la vivienda',
+              'el tipo de comprador',
+              'la estrategia de salida al mercado',
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-3 text-[#1A1A1A]/55 text-[15px] font-light font-[Lato]">
+                <span className="mt-[9px] flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#868C4D]/70" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </div>
 
       </div>
