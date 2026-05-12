@@ -453,14 +453,9 @@ function ResultScreen({
       import('jspdf'),
       import('../lib/pdf'),
     ])
-    /* Geocoding for the location map runs in parallel with logo+bg. The
-     * map query is the user's free-text ubicación; if it fails to
-     * geocode (or the token is missing) the helper returns null and we
-     * skip the map silently. */
-    const [logoDataUrl, bgDataUrl, mapDataUrl] = await Promise.all([
+    const [logoDataUrl, bgDataUrl] = await Promise.all([
       pdf.loadLogoDataUrl(),
       pdf.loadValoradorBgDataUrl(),
-      pdf.loadLocationMapDataUrl(ubicacion),
     ])
 
     const doc = new jsPDF({ unit: 'mm', format: 'a4' })
@@ -495,25 +490,6 @@ function ResultScreen({
     if (condition) { pdf.drawRow(doc, 'Estado', estadoLabel, y); y += 6 }
     if (plantaAscensorLabel) { pdf.drawRow(doc, 'Planta', plantaAscensorLabel, y); y += 6 }
     if (extrasLabel !== '—') { pdf.drawRow(doc, 'Extras', extrasLabel, y); y += 6 }
-
-    /* Location map — clean Mapbox light-style strip with a Propi-blue
-     * pin at the geocoded address. Skipped silently if geocoding
-     * failed. 5:1 ratio keeps it a thin horizon band so the page can
-     * also carry the new editorial + contact sections without spilling
-     * to a second sheet. */
-    if (mapDataUrl) {
-      y += 5
-      const mapH = contentW / 6
-      doc.addImage(mapDataUrl, 'PNG', margin, y, contentW, mapH, undefined, 'FAST')
-      y += mapH
-      /* Mapbox ToS attribution — tiny right-aligned caption since the
-       * logo/attribution overlays are disabled on the static image. */
-      doc.setFont('helvetica', 'normal')
-      doc.setFontSize(6.5)
-      doc.setTextColor(...pdf.PDF_COLORS.muted)
-      doc.text('Mapa: Mapbox · OpenStreetMap', pageW - margin, y + 2.5, { align: 'right' })
-      y += 1
-    }
 
     /* Resultado hero card */
     y += 6
@@ -620,10 +596,9 @@ function ResultScreen({
     pdf.drawRow(doc, 'Pau Manovel · 637 86 36 78', 'hola@propihouse.es', y); y += 5
     pdf.drawRow(doc, 'Carrer d’Enric Prat de la Riba 187 · 08901 L’Hospitalet', 'propihouse.es', y, { muted: true })
 
-    pdf.drawFooter(
-      doc,
-      'Esta valoración es orientativa. El precio final depende de la presentación de la vivienda, el comprador y la estrategia de salida al mercado.',
-    )
+    /* Footer intentionally omitted on the Valorador report per Pau —
+     * the disclaimer + brand strip felt redundant with the body
+     * Contacto block already in view. */
 
     doc.save(`propihouse-valoracion-${Date.now()}.pdf`)
   }
