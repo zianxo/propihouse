@@ -527,34 +527,44 @@ export default function HomePage() {
                     className="absolute -top-3 -left-3 w-full h-full rounded-xl bg-olive/[0.18]"
                   />
 
-                  <div className="relative bg-white rounded-xl border border-cream-dark/20 shadow-[0_20px_60px_-20px_rgba(26,26,26,0.18)] p-8 md:p-9">
-                    {/* Top accent bar */}
-                    <div className="absolute top-0 left-8 right-8 h-[3px] rounded-b-full bg-gradient-to-r from-olive/60 via-blue/40 to-transparent" />
-
-                    {/* Monogram */}
-                    <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-olive/[0.15] to-blue/[0.08] border border-olive/20 flex items-center justify-center mb-6">
-                      <span className="font-serif text-3xl text-olive-dark font-medium tracking-tight">PM</span>
+                  <div className="relative bg-white rounded-xl border border-cream-dark/20 shadow-[0_20px_60px_-20px_rgba(26,26,26,0.18)] overflow-hidden">
+                    {/* Photo of Pau — replaces the previous "PM" monogram
+                     * placeholder. Source is 4:3 landscape (plant wall +
+                     * Pau on the right); object-cover with right-bias
+                     * keeps him visible if the container ever crops. */}
+                    <div className="aspect-[4/3] w-full bg-cream-dark/15">
+                      <img
+                        src="/images/pau.jpg"
+                        alt="Pau Manovel, asesor inmobiliario"
+                        className="w-full h-full object-cover object-right"
+                        loading="lazy"
+                      />
                     </div>
 
-                    {/* Name */}
-                    <h3 className="font-serif text-2xl md:text-[1.7rem] font-medium text-dark leading-tight mb-2">
-                      Pau Manovel
-                    </h3>
+                    <div className="relative p-8 md:p-9">
+                      {/* Top accent bar */}
+                      <div className="absolute top-0 left-8 right-8 h-[3px] rounded-b-full bg-gradient-to-r from-olive/60 via-blue/40 to-transparent" />
 
-                    {/* Role + location */}
-                    <p className="text-text-light text-sm font-medium leading-snug">
-                      Asesor inmobiliario
-                    </p>
-                    <p className="text-text-muted text-sm">
-                      L&apos;Hospitalet de Llobregat
-                    </p>
+                      {/* Name */}
+                      <h3 className="font-serif text-2xl md:text-[1.7rem] font-medium text-dark leading-tight mb-2">
+                        Pau Manovel
+                      </h3>
 
-                    {/* Decorative divider */}
-                    <div className="flex items-center gap-3 mt-7 pt-6 border-t border-cream-dark/30">
-                      <span className="block w-7 h-px bg-olive/50" />
-                      <span className="text-[10px] tracking-[0.18em] uppercase text-text-muted font-bold">
-                        +10 a&ntilde;os acompa&ntilde;ando decisiones
-                      </span>
+                      {/* Role + location */}
+                      <p className="text-text-light text-sm font-medium leading-snug">
+                        Asesor inmobiliario
+                      </p>
+                      <p className="text-text-muted text-sm">
+                        L&apos;Hospitalet de Llobregat
+                      </p>
+
+                      {/* Decorative divider */}
+                      <div className="flex items-center gap-3 mt-7 pt-6 border-t border-cream-dark/30">
+                        <span className="block w-7 h-px bg-olive/50" />
+                        <span className="text-[10px] tracking-[0.18em] uppercase text-text-muted font-bold">
+                          +10 a&ntilde;os acompa&ntilde;ando decisiones
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
