@@ -43,7 +43,7 @@ export default function Header() {
           <img
             src="/logos/logo.png"
             alt="Propi House"
-            className="h-18 md:h-22 w-auto transition-all duration-300"
+            className="h-[5.4rem] md:h-[6.6rem] w-auto transition-all duration-300"
           />
         </Link>
 
