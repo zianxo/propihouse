@@ -392,6 +392,7 @@ function MortgageCalculator() {
     pdf.drawFooter(
       doc,
       'Esta simulación es orientativa. Las condiciones reales dependen de cada entidad bancaria y de tu perfil financiero.',
+      { omitBrandRow: true },
     )
 
     doc.save(`propihouse-simulacion-hipoteca-${Date.now()}.pdf`)

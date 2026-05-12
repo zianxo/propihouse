@@ -506,6 +506,13 @@ function ResultScreen({
       const mapH = contentW / 6
       doc.addImage(mapDataUrl, 'PNG', margin, y, contentW, mapH, undefined, 'FAST')
       y += mapH
+      /* Mapbox ToS attribution — tiny right-aligned caption since the
+       * logo/attribution overlays are disabled on the static image. */
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(6.5)
+      doc.setTextColor(...pdf.PDF_COLORS.muted)
+      doc.text('Mapa: Mapbox · OpenStreetMap', pageW - margin, y + 2.5, { align: 'right' })
+      y += 1
     }
 
     /* Resultado hero card */
