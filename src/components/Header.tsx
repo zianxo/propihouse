@@ -59,7 +59,7 @@ export default function Header() {
           <img
             src="/logos/logo.png"
             alt="Propi House"
-            className="h-[5.4rem] md:h-[6.6rem] w-auto transition-all duration-300"
+            className="h-[6.4rem] md:h-[6.6rem] w-auto transition-all duration-300"
           />
         </Link>
 
@@ -69,7 +69,10 @@ export default function Header() {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `px-3 py-2 rounded-lg text-[14px] font-medium transition-colors duration-200 ${
+                /* Same serif treatment Pau likes on the mobile sidebar
+                 * items, ported to the desktop nav. Size dialled in so
+                 * Playfair Display reads cleanly at navbar scale. */
+                `px-3 py-2 rounded-lg font-[Playfair_Display] text-[17px] font-medium tracking-tight transition-colors duration-200 ${
                   isActive
                     ? 'text-blue bg-blue/5'
                     : 'text-text hover:text-blue hover:bg-cream-dark/40'
