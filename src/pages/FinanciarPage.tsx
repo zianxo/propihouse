@@ -250,7 +250,7 @@ function MortgageCalculator() {
     doc.text('Lo que ves es lo que es.', margin, y)
 
     /* ── Inputs section ────────────────────────────────────── */
-    y += 11
+    y += 8
     pdf.drawSectionTitle(doc, 'Tus datos', y)
     y += 6
     pdf.drawDivider(doc, y)
@@ -281,7 +281,7 @@ function MortgageCalculator() {
       doc.setFontSize(22)
       doc.setTextColor(...pdf.PDF_COLORS.dark)
       doc.text(fmtEUR.format(capital), margin + 4, y + 14)
-      y += 22
+      y += 25
     }
 
     /* Cuota mensual. Number font dropped 26 → 22 pt per Pau ("reducir
@@ -317,7 +317,9 @@ function MortgageCalculator() {
      * the on-page UI (emerald = saludable, amber = ajustado, red =
      * arriesgado), aligned so the chip's right edge meets the page
      * margin. */
-    y += 22
+    /* +25 mm to keep the first detail-row baseline clear of the
+     * Cuota card bottom (was +22, which produced a ~0.5 mm overlap). */
+    y += 25
     pdf.drawRow(doc, 'Total estimado a devolver', fmtEUR.format(Math.round(totalCost)), y); y += 5
     pdf.drawRow(doc, 'Total intereses estimados', fmtEUR.format(Math.round(totalInterest)), y); y += 5
     pdf.drawRow(doc, 'Porcentaje de financiación', `${pctFinanciacion.toFixed(1)}%`, y, { muted: true }); y += 5
