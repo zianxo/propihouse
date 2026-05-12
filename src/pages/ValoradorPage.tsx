@@ -466,8 +466,10 @@ function ResultScreen({
     pdf.drawBackground(doc, bgDataUrl)
     pdf.drawHeader(doc, logoDataUrl)
 
-    /* Title (Pau-approved phrasing — more personal than the V1 wording). */
-    let y = margin + 32
+    /* Title (Pau-approved phrasing — more personal than the V1 wording).
+     * margin + 38 keeps the title baseline clear of the header divider
+     * once the logo height + 25 % bump is applied. */
+    let y = margin + 38
     doc.setFont('times', 'normal')
     doc.setFontSize(20)
     doc.setTextColor(...pdf.PDF_COLORS.dark)

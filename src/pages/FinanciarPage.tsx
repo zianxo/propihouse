@@ -238,7 +238,7 @@ function MortgageCalculator() {
     pdf.drawHeader(doc, logoDataUrl)
 
     /* ── Title ──────────────────────────────────────────────── */
-    let y = margin + 32
+    let y = margin + 38
     doc.setFont('times', 'normal')
     doc.setFontSize(20)
     doc.setTextColor(...pdf.PDF_COLORS.dark)
@@ -265,7 +265,7 @@ function MortgageCalculator() {
     /* ── Hero results: Capital + Cuota ──────────────────────
      * Both numbers carry equal visual weight — full-width warmCream
      * cards stacked. Pau wanted them matched. */
-    y += 11
+    y += 8
     pdf.drawSectionTitle(doc, 'Resultado', y, 'blue')
     y += 6
 
@@ -354,7 +354,7 @@ function MortgageCalculator() {
     /* ── Gastos de compra ────────────────────────────────────
      * Label set per Pau: "GASTOS DE COMPRA ESTIMADOS" and
      * "Total gastos estimado para formalizar la compra". */
-    y += 10
+    y += 8
     pdf.drawSectionTitle(doc, 'Gastos de compra estimados', y)
     y += 5
     pdf.drawDivider(doc, y)

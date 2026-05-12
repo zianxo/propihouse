@@ -26,11 +26,11 @@ export const PDF_COLORS = {
   warmCream: [247, 243, 232] as [number, number, number], // matches --color-cream-light
 } as const
 
-/* Logo height in millimetres. Started at 18; +5 % → 18.9; +15 % →
- * 21.74; another +10 % per Pau pushes it to 23.91 mm. Both reports
+/* Logo height in millimetres. Started at 18; cumulative bumps per Pau
+ * (+5 %, +15 %, +10 %, now +25 %) land it at 29.89 mm. Both reports
  * source this constant; the header divider position is derived from
  * it so the line never crosses the wordmark. */
-export const LOGO_HEIGHT_MM = 23.91
+export const LOGO_HEIGHT_MM = 29.89
 
 export const PAGE_MARGIN_MM = 18
 
