@@ -524,7 +524,10 @@ function ResultScreen({
     /* Detail rows. "Nivel de precisión orientativa" replaces the old
      * "Confianza (88/100)" — Pau wanted a softer label without the
      * numeric score, which felt overly clinical. */
-    y += 26
+    /* +30 mm clears the bottom of the hero card with ~4 mm of
+     * visible breathing room (was +26, which left Zona's text top
+     * sitting half a mm INSIDE the card). */
+    y += 30
     pdf.drawRow(doc, 'Zona', zoneLabel(zone), y); y += 5
     pdf.drawRow(
       doc,
