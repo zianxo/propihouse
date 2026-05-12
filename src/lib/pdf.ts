@@ -58,11 +58,16 @@ export async function loadLogoDataUrl(): Promise<string | null> {
   return fetchAsDataUrl('/logos/logo.png')
 }
 
-/* Office photo used as the report background. Compressed JPEG ~550KB,
- * portrait-oriented to match A4. Returns null on fetch failure — caller
- * skips the background and ships a clean white report instead. */
-export async function loadOfficeBgDataUrl(): Promise<string | null> {
-  return fetchAsDataUrl('/images/office-bg.jpg')
+/* Per-report background loaders. Each report has its own office-shot
+ * photo: the valorador uses the lamp + pink-sofa view, the financiar
+ * uses the green wall + green-armchair view. Both are portrait JPEGs
+ * pre-compressed to ~300–450 KB. Returns null on fetch failure — the
+ * caller skips the background and ships a clean white report instead. */
+export async function loadValoradorBgDataUrl(): Promise<string | null> {
+  return fetchAsDataUrl('/images/valorador-bg.jpg')
+}
+export async function loadFinanciarBgDataUrl(): Promise<string | null> {
+  return fetchAsDataUrl('/images/financiar-bg.jpg')
 }
 
 /* Fetch a Mapbox Static Images PNG showing the given query's location
@@ -315,4 +320,39 @@ export function drawDivider(doc: jsPDF, atY: number) {
   doc.setDrawColor(...PDF_COLORS.rowDivider)
   doc.setLineWidth(0.2)
   doc.line(margin, atY, pageW - margin, atY)
+}
+
+/* Multi-line paragraph. Auto-wraps to the content width, returns the Y
+ * position where the next element should start (= atY + lines × line
+ * height). Default 10pt body, 5 mm line height, dark color. */
+export function drawParagraph(
+  doc: jsPDF,
+  text: string,
+  atY: number,
+  opts?: { fontSize?: number; lineHeight?: number; muted?: boolean },
+): number {
+  const pageW = doc.internal.pageSize.getWidth()
+  const margin = PAGE_MARGIN_MM
+  const fontSize = opts?.fontSize ?? 10
+  const lineHeight = opts?.lineHeight ?? 5
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(fontSize)
+  doc.setTextColor(...(opts?.muted ? PDF_COLORS.muted : PDF_COLORS.dark))
+  const lines = doc.splitTextToSize(text, pageW - margin * 2 - 2) as string[]
+  doc.text(lines, margin + 2, atY)
+  return atY + lines.length * lineHeight
+}
+
+/* Open a new page and re-render the background + header so every page
+ * has the same visual treatment. Returns the Y where content can
+ * start, matching the first-page convention (margin + 32). */
+export function nextPage(
+  doc: jsPDF,
+  bgDataUrl: string | null,
+  logoDataUrl: string | null,
+): number {
+  doc.addPage()
+  drawBackground(doc, bgDataUrl)
+  drawHeader(doc, logoDataUrl)
+  return PAGE_MARGIN_MM + 32
 }

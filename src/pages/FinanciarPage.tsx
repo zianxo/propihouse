@@ -226,7 +226,7 @@ function MortgageCalculator() {
     ])
     const [logoDataUrl, bgDataUrl] = await Promise.all([
       pdf.loadLogoDataUrl(),
-      pdf.loadOfficeBgDataUrl(),
+      pdf.loadFinanciarBgDataUrl(),
     ])
 
     const doc = new jsPDF({ unit: 'mm', format: 'a4' })
@@ -278,13 +278,15 @@ function MortgageCalculator() {
       doc.setTextColor(...pdf.PDF_COLORS.muted)
       doc.text('CAPITAL A FINANCIAR', margin + 4, y + 4)
       doc.setFont('times', 'normal')
-      doc.setFontSize(26)
+      doc.setFontSize(22)
       doc.setTextColor(...pdf.PDF_COLORS.dark)
       doc.text(fmtEUR.format(capital), margin + 4, y + 14)
       y += 26
     }
 
-    /* Cuota mensual */
+    /* Cuota mensual. Number font dropped 26 → 22 pt per Pau ("reducir
+     * un poco"). Capital uses the same size so the two hero cards
+     * stay matched. */
     doc.setFillColor(...pdf.PDF_COLORS.warmCream)
     doc.roundedRect(margin, y - 2, contentW, 22, 2, 2, 'F')
     doc.setFont('helvetica', 'bold')
@@ -292,7 +294,7 @@ function MortgageCalculator() {
     doc.setTextColor(...pdf.PDF_COLORS.blue)
     doc.text('CUOTA MENSUAL', margin + 4, y + 4)
     doc.setFont('times', 'normal')
-    doc.setFontSize(26)
+    doc.setFontSize(22)
     doc.setTextColor(...pdf.PDF_COLORS.dark)
     const cuotaStr = noFinancing ? '— sin financiación —' : fmtEUR.format(Math.round(monthlyPayment))
     doc.text(cuotaStr, margin + 4, y + 14)
@@ -306,16 +308,54 @@ function MortgageCalculator() {
       doc.text(`/mes · ${plazo} años`, margin + 4 + cuotaWidth + 3, y + 14)
     }
 
-    /* ── Detail rows ───────────────────────────────────────── */
+    /* ── Detail rows ─────────────────────────────────────────
+     * Labels rewritten per Pau:
+     *  - "Total a pagar"          → "Total estimado a devolver"
+     *  - "Total intereses"        → "Total intereses estimados"
+     *  - "Financiación / total"   → "Porcentaje de financiación"
+     * Endeudamiento gets a colour-coded chip on the right matching
+     * the on-page UI (emerald = saludable, amber = ajustado, red =
+     * arriesgado), aligned so the chip's right edge meets the page
+     * margin. */
     y += 30
-    pdf.drawRow(doc, 'Total a pagar', fmtEUR.format(Math.round(totalCost)), y); y += 6
-    pdf.drawRow(doc, 'Total intereses', fmtEUR.format(Math.round(totalInterest)), y); y += 6
-    pdf.drawRow(doc, 'Financiación / total', `${pctFinanciacion.toFixed(1)}%`, y, { muted: true }); y += 6
-    pdf.drawRow(doc, 'Endeudamiento', `${debtRatio.toFixed(1)}% · ${debtLabel}`, y, { muted: true })
+    pdf.drawRow(doc, 'Total estimado a devolver', fmtEUR.format(Math.round(totalCost)), y); y += 6
+    pdf.drawRow(doc, 'Total intereses estimados', fmtEUR.format(Math.round(totalInterest)), y); y += 6
+    pdf.drawRow(doc, 'Porcentaje de financiación', `${pctFinanciacion.toFixed(1)}%`, y, { muted: true }); y += 6
 
-    /* ── Gastos de compra ──────────────────────────────────── */
+    /* Endeudamiento row with coloured badge. */
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.setTextColor(...pdf.PDF_COLORS.muted)
+    doc.text('Endeudamiento', margin + 2, y)
+    const debtBg: [number, number, number] =
+      debtRatio <= 30 ? [209, 250, 229] :
+      debtRatio <= 35 ? [254, 243, 199] :
+                        [254, 226, 226]
+    const debtFg: [number, number, number] =
+      debtRatio <= 30 ? [4, 120, 87] :
+      debtRatio <= 35 ? [180, 83, 9] :
+                        [185, 28, 28]
+    const debtChipText = debtLabel.toUpperCase()
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(7.5)
+    const debtChipW = doc.getTextWidth(debtChipText) + 6
+    const debtChipH = 4.6
+    const debtChipX = pageW - margin - 2 - debtChipW
+    const debtChipY = y - debtChipH + 1.2
+    doc.setFillColor(...debtBg)
+    doc.roundedRect(debtChipX, debtChipY, debtChipW, debtChipH, 1.2, 1.2, 'F')
+    doc.setTextColor(...debtFg)
+    doc.text(debtChipText, debtChipX + debtChipW / 2, debtChipY + debtChipH - 1.5, { align: 'center' })
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.setTextColor(...pdf.PDF_COLORS.muted)
+    doc.text(`${debtRatio.toFixed(1)}%`, debtChipX - 2, y, { align: 'right' })
+
+    /* ── Gastos de compra ────────────────────────────────────
+     * Label set per Pau: "GASTOS DE COMPRA ESTIMADOS" and
+     * "Total gastos estimado para formalizar la compra". */
     y += 14
-    pdf.drawSectionTitle(doc, 'Gastos de compra', y)
+    pdf.drawSectionTitle(doc, 'Gastos de compra estimados', y)
     y += 6
     pdf.drawDivider(doc, y)
     y += 5
@@ -328,7 +368,33 @@ function MortgageCalculator() {
     y += 8
     pdf.drawDivider(doc, y)
     y += 5
-    pdf.drawRow(doc, 'Total gastos', fmtEUR.format(gastosCompra), y, { bold: true })
+    pdf.drawRow(doc, 'Total estimado para formalizar la compra', fmtEUR.format(gastosCompra), y, { bold: true })
+
+    /* ── Page 2 — Siguiente paso + Contacto ──────────────────
+     * Editorial copy and the full contact block live on page 2 so
+     * page 1 keeps the data + hero numbers + gastos uncramped. */
+    y = pdf.nextPage(doc, bgDataUrl, logoDataUrl)
+
+    pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y)
+    y += 6
+    pdf.drawDivider(doc, y)
+    y += 5
+    y = pdf.drawParagraph(
+      doc,
+      'Si quieres saber si esta compra encaja de verdad contigo, revisamos tu situación, tu capacidad real y el margen mensual con más detalle.',
+      y,
+    )
+
+    y += 10
+    pdf.drawSectionTitle(doc, 'Contacto', y)
+    y += 6
+    pdf.drawDivider(doc, y)
+    y += 5
+    pdf.drawRow(doc, 'Pau Manovel', '637 86 36 78', y); y += 6
+    pdf.drawRow(doc, 'Email', 'hola@propihouse.es', y); y += 6
+    pdf.drawRow(doc, 'Dirección', 'Carrer d’Enric Prat de la Riba 187', y, { muted: true }); y += 5
+    pdf.drawRow(doc, '', '08901 L’Hospitalet de Llobregat', y, { muted: true }); y += 6
+    pdf.drawRow(doc, 'Web', 'propihouse.es', y, { muted: true })
 
     pdf.drawFooter(
       doc,

@@ -459,7 +459,7 @@ function ResultScreen({
      * skip the map silently. */
     const [logoDataUrl, bgDataUrl, mapDataUrl] = await Promise.all([
       pdf.loadLogoDataUrl(),
-      pdf.loadOfficeBgDataUrl(),
+      pdf.loadValoradorBgDataUrl(),
       pdf.loadLocationMapDataUrl(ubicacion),
     ])
 
@@ -471,17 +471,17 @@ function ResultScreen({
     pdf.drawBackground(doc, bgDataUrl)
     pdf.drawHeader(doc, logoDataUrl)
 
-    /* Title */
+    /* Title (Pau-approved phrasing — more personal than the V1 wording). */
     let y = margin + 32
     doc.setFont('times', 'normal')
     doc.setFontSize(20)
     doc.setTextColor(...pdf.PDF_COLORS.dark)
-    doc.text('Valoración orientativa de vivienda', margin, y)
+    doc.text('Valor orientativo de tu vivienda', margin, y)
     y += 5
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(10)
     doc.setTextColor(...pdf.PDF_COLORS.muted)
-    doc.text('Una referencia basada en el mercado actual de L’Hospitalet de Llobregat.', margin, y)
+    doc.text('Lo que ves es lo que es.', margin, y)
 
     /* Datos section */
     y += 14
@@ -535,13 +535,15 @@ function ResultScreen({
     )
     doc.text(lastReviewedLabel(), pageW - margin - 4, y + 21, { align: 'right' })
 
-    /* Detail rows */
+    /* Detail rows. "Nivel de precisión orientativa" replaces the old
+     * "Confianza (88/100)" — Pau wanted a softer label without the
+     * numeric score, which felt overly clinical. */
     y += 34
     pdf.drawRow(doc, 'Zona', zoneLabel(zone), y); y += 6
     pdf.drawRow(
       doc,
-      'Confianza',
-      `${confidenceLabel.charAt(0).toUpperCase() + confidenceLabel.slice(1)} (${confidenceScore}/100)`,
+      'Nivel de precisión orientativa',
+      confidenceLabel.charAt(0).toUpperCase() + confidenceLabel.slice(1),
       y,
       { muted: true },
     )
@@ -572,6 +574,45 @@ function ResultScreen({
       doc.text(reasonText, margin + 4, y + 11, { maxWidth: contentW - 8 })
       y += 18
     }
+
+    /* ── Page 2 — Explanatory + Contacto ──────────────────────
+     * Page 1 already carries the data + map + price card; the
+     * editorial copy and full contact block live on page 2 so each
+     * page has breathing room and the layout doesn't fight the
+     * special-case banner near the bottom. */
+    y = pdf.nextPage(doc, bgDataUrl, logoDataUrl)
+
+    pdf.drawSectionTitle(doc, 'Cómo leer esta valoración', y)
+    y += 6
+    pdf.drawDivider(doc, y)
+    y += 5
+    y = pdf.drawParagraph(
+      doc,
+      'Este rango ofrece una referencia orientativa según la zona, las características de la vivienda y el mercado actual. El precio final puede variar en función de su estado, su presentación y la estrategia de venta.',
+      y,
+    )
+
+    y += 8
+    pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y)
+    y += 6
+    pdf.drawDivider(doc, y)
+    y += 5
+    y = pdf.drawParagraph(
+      doc,
+      'Si quieres afinar el valor real de venta, revisamos contigo la vivienda, el momento del mercado y el enfoque más adecuado para su venta.',
+      y,
+    )
+
+    y += 10
+    pdf.drawSectionTitle(doc, 'Contacto', y)
+    y += 6
+    pdf.drawDivider(doc, y)
+    y += 5
+    pdf.drawRow(doc, 'Pau Manovel', '637 86 36 78', y); y += 6
+    pdf.drawRow(doc, 'Email', 'hola@propihouse.es', y); y += 6
+    pdf.drawRow(doc, 'Dirección', 'Carrer d’Enric Prat de la Riba 187', y, { muted: true }); y += 5
+    pdf.drawRow(doc, '', '08901 L’Hospitalet de Llobregat', y, { muted: true }); y += 6
+    pdf.drawRow(doc, 'Web', 'propihouse.es', y, { muted: true })
 
     pdf.drawFooter(
       doc,
