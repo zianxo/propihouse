@@ -110,11 +110,11 @@ export async function loadLocationMapDataUrl(
   }
   const [lng, lat] = coords
 
-  /* 2) Static map — 4:1 strip (matches the PDF render aspect so the
+  /* 2) Static map — 5:1 strip (matches the PDF render aspect so the
    * image doesn't squish), retina, blue pin at the pinpoint. */
   const pin = `pin-l+2a79a9(${lng.toFixed(5)},${lat.toFixed(5)})`
   const center = `${lng.toFixed(5)},${lat.toFixed(5)},14.5,0`
-  const size = '1000x250@2x'
+  const size = '1000x200@2x'
   const mapUrl =
     `https://api.mapbox.com/styles/v1/mapbox/light-v11/static/` +
     `${pin}/${center}/${size}?access_token=${token}`
@@ -222,60 +222,35 @@ export function drawHeader(doc: jsPDF, logoDataUrl: string | null) {
   doc.line(margin, dividerY, pageW - margin, dividerY)
 }
 
-/* Footer: thin divider, italic disclaimer, then a three-line block —
- * brand + Pau contact, legal entity + socials, and the office address
- * centred at the very bottom. ~18 mm tall in total, anchored to the
- * page's bottom margin. */
+/* Footer: thin divider, italic disclaimer, then a compact brand line.
+ * The full contact block now lives in the report body's Contacto
+ * section, so the footer only needs the disclaimer + brand + social
+ * handles. ~10 mm tall. */
 export function drawFooter(doc: jsPDF, disclaimer: string) {
   const pageW = doc.internal.pageSize.getWidth()
   const margin = PAGE_MARGIN_MM
   const footerY = doc.internal.pageSize.getHeight() - margin
 
-  /* Divider sits 18 mm above the bottom of the footer to host the
-   * disclaimer + 3 contact rows. */
   doc.setDrawColor(...PDF_COLORS.divider)
   doc.setLineWidth(0.3)
-  doc.line(margin, footerY - 18, pageW - margin, footerY - 18)
+  doc.line(margin, footerY - 10, pageW - margin, footerY - 10)
 
-  /* Disclaimer (italic, may wrap on narrow content widths). */
   doc.setFont('helvetica', 'italic')
   doc.setFontSize(8)
   doc.setTextColor(...PDF_COLORS.muted)
-  doc.text(disclaimer, margin, footerY - 13, { maxWidth: pageW - margin * 2 })
+  doc.text(disclaimer, margin, footerY - 5, { maxWidth: pageW - margin * 2 })
 
-  /* Row 1 — propihouse.es (bold) | Pau · phone · email. */
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(8.5)
   doc.setTextColor(...PDF_COLORS.dark)
-  doc.text('propihouse.es', margin, footerY - 8)
+  doc.text('propihouse.es', margin, footerY)
   doc.setFont('helvetica', 'normal')
   doc.setTextColor(...PDF_COLORS.muted)
-  doc.text(
-    'Pau Manovel · 637 86 36 78 · hola@propihouse.es',
-    pageW - margin,
-    footerY - 8,
-    { align: 'right' },
-  )
-
-  /* Row 2 — brand (left) | social handles (right). Pau prefers
-   * "Propi House" here over the legal entity. */
-  doc.setFont('helvetica', 'normal')
-  doc.setFontSize(7.5)
-  doc.setTextColor(...PDF_COLORS.muted)
-  doc.text('Propi House', margin, footerY - 4)
   doc.text(
     '@propihouse.es · facebook.com/propihouse.bcn',
     pageW - margin,
-    footerY - 4,
-    { align: 'right' },
-  )
-
-  /* Row 3 — full office address, centred. */
-  doc.text(
-    'Carrer d’Enric Prat de la Riba 187, 08901 L’Hospitalet de Llobregat · Barcelona',
-    pageW / 2,
     footerY,
-    { align: 'center' },
+    { align: 'right' },
   )
 }
 
