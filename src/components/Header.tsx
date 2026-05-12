@@ -26,9 +26,25 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  /* Body scroll lock that survives close — captures the current scroll
+   * position on open and restores it on close. The naive overflow:hidden
+   * pattern loses position on iOS Safari (and the menu overlay's own
+   * scroll could push body scroll forward), which is why Pau ended up
+   * at the bottom of the page after dismissing. */
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+    if (!menuOpen) return
+    const scrollY = window.scrollY
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollY}px`
+    document.body.style.left = '0'
+    document.body.style.right = '0'
+    return () => {
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.left = ''
+      document.body.style.right = ''
+      window.scrollTo(0, scrollY)
+    }
   }, [menuOpen])
 
   return (
@@ -81,7 +97,7 @@ export default function Header() {
             <div className="w-5 flex flex-col gap-1.5 relative">
               <span
                 className={`w-full h-[2px] rounded-full bg-dark transition-all duration-300 origin-center ${
-                  menuOpen ? 'rotate-45 translate-y-[5px]' : ''
+                  menuOpen ? 'rotate-45 translate-y-[8px]' : ''
                 }`}
               />
               <span
@@ -91,7 +107,7 @@ export default function Header() {
               />
               <span
                 className={`w-full h-[2px] rounded-full bg-dark transition-all duration-300 origin-center ${
-                  menuOpen ? '-rotate-45 -translate-y-[5px]' : ''
+                  menuOpen ? '-rotate-45 -translate-y-[8px]' : ''
                 }`}
               />
             </div>

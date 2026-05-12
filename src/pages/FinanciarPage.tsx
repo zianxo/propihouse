@@ -250,7 +250,7 @@ function MortgageCalculator() {
     doc.text('Lo que ves es lo que es.', margin, y)
 
     /* ── Inputs section ────────────────────────────────────── */
-    y += 14
+    y += 11
     pdf.drawSectionTitle(doc, 'Tus datos', y)
     y += 6
     pdf.drawDivider(doc, y)
@@ -371,11 +371,11 @@ function MortgageCalculator() {
     pdf.drawRow(doc, 'Total estimado para formalizar la compra', fmtEUR.format(gastosCompra), y, { bold: true })
 
     /* ── Editorial + Contacto (same page) ────────────────────
-     * Pau wanted the title-to-content spacing here to match the
-     * upper sections (Datos, Resultado, Gastos): title → 6 mm →
-     * divider → 5 mm → first row. "Siguiente paso recomendado"
+     * Inter-section gap bumped 5 → 8 mm so it matches the upper
+     * sections' visible breathing (~4 mm gap between text bottom
+     * and the next section's accent). "Siguiente paso recomendado"
      * picks up the blue accent; Contacto stays olive. */
-    y += 5
+    y += 8
     pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y, 'blue')
     y += 6
     pdf.drawDivider(doc, y)
@@ -387,7 +387,7 @@ function MortgageCalculator() {
       { fontSize: 9, lineHeight: 4 },
     )
 
-    y += 5
+    y += 8
     pdf.drawSectionTitle(doc, 'Contacto', y)
     y += 6
     pdf.drawDivider(doc, y)
