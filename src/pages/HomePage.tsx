@@ -79,8 +79,13 @@ function HeroScrollVideo() {
       sh = FRAME_WIDTH / canvasAspect
       sy = (FRAME_HEIGHT - sh) / 2
     } else {
+      /* Portrait crop. Centred on desktop; biased right on phones —
+       * Pau felt the centred crop showed too much empty left side
+       * and not enough of the subject on the right. */
       sw = FRAME_HEIGHT * canvasAspect
-      sx = (FRAME_WIDTH - sw) / 2
+      const cssWidth = cw / dpr
+      const xBias = cssWidth < 768 ? 0.72 : 0.5
+      sx = (FRAME_WIDTH - sw) * xBias
     }
 
     ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch)

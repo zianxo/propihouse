@@ -111,13 +111,18 @@ export async function loadLocationMapDataUrl(
   const [lng, lat] = coords
 
   /* 2) Static map — 5:1 strip (matches the PDF render aspect so the
-   * image doesn't squish), retina, blue pin at the pinpoint. */
+   * image doesn't squish), retina, blue pin at the pinpoint.
+   * logo+attribution disabled at the API level for a cleaner image;
+   * Mapbox ToS require attribution to appear next to the map, so the
+   * caller renders a tiny "Mapa: Mapbox · OpenStreetMap" caption
+   * below the embed in the PDF. */
   const pin = `pin-l+2a79a9(${lng.toFixed(5)},${lat.toFixed(5)})`
   const center = `${lng.toFixed(5)},${lat.toFixed(5)},14.5,0`
   const size = '1000x200@2x'
   const mapUrl =
     `https://api.mapbox.com/styles/v1/mapbox/light-v11/static/` +
-    `${pin}/${center}/${size}?access_token=${token}`
+    `${pin}/${center}/${size}?access_token=${token}` +
+    `&logo=false&attribution=false`
 
   try {
     const r = await fetch(mapUrl, { signal })
@@ -223,10 +228,14 @@ export function drawHeader(doc: jsPDF, logoDataUrl: string | null) {
 }
 
 /* Footer: thin divider, italic disclaimer, then a compact brand line.
- * The full contact block now lives in the report body's Contacto
- * section, so the footer only needs the disclaimer + brand + social
- * handles. ~10 mm tall. */
-export function drawFooter(doc: jsPDF, disclaimer: string) {
+ * Pass { omitBrandRow: true } to render only the divider + disclaimer
+ * (the Financiar report uses this — its body Contacto carries the
+ * brand info, so the duplicated bottom strip felt noisy). */
+export function drawFooter(
+  doc: jsPDF,
+  disclaimer: string,
+  opts?: { omitBrandRow?: boolean },
+) {
   const pageW = doc.internal.pageSize.getWidth()
   const margin = PAGE_MARGIN_MM
   const footerY = doc.internal.pageSize.getHeight() - margin
@@ -239,6 +248,8 @@ export function drawFooter(doc: jsPDF, disclaimer: string) {
   doc.setFontSize(8)
   doc.setTextColor(...PDF_COLORS.muted)
   doc.text(disclaimer, margin, footerY - 5, { maxWidth: pageW - margin * 2 })
+
+  if (opts?.omitBrandRow) return
 
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(8.5)
