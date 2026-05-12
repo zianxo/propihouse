@@ -373,15 +373,16 @@ function MortgageCalculator() {
     pdf.drawRow(doc, 'Total estimado para formalizar la compra', fmtEUR.format(gastosCompra), y, { bold: true })
 
     /* ── Editorial + Contacto (same page) ────────────────────
-     * Inter-section gap bumped 5 → 8 mm so it matches the upper
-     * sections' visible breathing (~4 mm gap between text bottom
-     * and the next section's accent). "Siguiente paso recomendado"
-     * picks up the blue accent; Contacto stays olive. */
-    y += 8
-    pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y, 'blue')
+     * Tighter than upper sections — Pau felt the spacing around the
+     * editorial titles was excessive (paragraphs are sparser than
+     * the upper data rows, so the same gaps feel proportionally
+     * larger). Pattern here: inter-section 6 mm, title → divider
+     * 4 mm, divider → content 4 mm. */
     y += 6
+    pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y, 'blue')
+    y += 4
     pdf.drawDivider(doc, y)
-    y += 5
+    y += 4
     y = pdf.drawParagraph(
       doc,
       'Si quieres saber si esta compra encaja de verdad contigo, revisamos tu situación, tu capacidad real y el margen mensual con más detalle.',
@@ -389,11 +390,11 @@ function MortgageCalculator() {
       { fontSize: 9, lineHeight: 4 },
     )
 
-    y += 8
-    pdf.drawSectionTitle(doc, 'Contacto', y)
     y += 6
+    pdf.drawSectionTitle(doc, 'Contacto', y)
+    y += 4
     pdf.drawDivider(doc, y)
-    y += 5
+    y += 4
     pdf.drawRow(doc, 'Pau Manovel · 637 86 36 78', 'hola@propihouse.es', y); y += 5
     pdf.drawRow(doc, 'Carrer d’Enric Prat de la Riba 187 · 08901 L’Hospitalet', 'propihouse.es', y, { muted: true })
 
