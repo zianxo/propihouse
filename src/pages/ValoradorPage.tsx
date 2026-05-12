@@ -498,19 +498,20 @@ function ResultScreen({
 
     /* Location map — clean Mapbox light-style strip with a Propi-blue
      * pin at the geocoded address. Skipped silently if geocoding
-     * failed. 4:1 ratio so it stays a horizon strip and leaves room
-     * for the special-case banner near the bottom of the page. */
+     * failed. 5:1 ratio keeps it a thin horizon band so the page can
+     * also carry the new editorial + contact sections without spilling
+     * to a second sheet. */
     if (mapDataUrl) {
-      y += 8
-      const mapH = contentW / 4
+      y += 5
+      const mapH = contentW / 6
       doc.addImage(mapDataUrl, 'PNG', margin, y, contentW, mapH, undefined, 'FAST')
       y += mapH
     }
 
     /* Resultado hero card */
-    y += 8
+    y += 6
     pdf.drawSectionTitle(doc, 'Resultado', y, 'blue')
-    y += 8
+    y += 6
     doc.setFillColor(...pdf.PDF_COLORS.warmCream)
     doc.roundedRect(margin, y - 2, contentW, 26, 2, 2, 'F')
     doc.setFont('helvetica', 'bold')
@@ -538,8 +539,8 @@ function ResultScreen({
     /* Detail rows. "Nivel de precisión orientativa" replaces the old
      * "Confianza (88/100)" — Pau wanted a softer label without the
      * numeric score, which felt overly clinical. */
-    y += 34
-    pdf.drawRow(doc, 'Zona', zoneLabel(zone), y); y += 6
+    y += 30
+    pdf.drawRow(doc, 'Zona', zoneLabel(zone), y); y += 5
     pdf.drawRow(
       doc,
       'Nivel de precisión orientativa',
@@ -575,44 +576,35 @@ function ResultScreen({
       y += 18
     }
 
-    /* ── Page 2 — Explanatory + Contacto ──────────────────────
-     * Page 1 already carries the data + map + price card; the
-     * editorial copy and full contact block live on page 2 so each
-     * page has breathing room and the layout doesn't fight the
-     * special-case banner near the bottom. */
-    y = pdf.nextPage(doc, bgDataUrl, logoDataUrl)
-
-    pdf.drawSectionTitle(doc, 'Cómo leer esta valoración', y)
+    /* ── Editorial + Contacto (same page) ───────────────────
+     * Pau marked these onto the single-page printout. Tight spacing
+     * + no per-section dividers (only the section-title block kept)
+     * let it land alongside the map without overflowing. */
     y += 6
-    pdf.drawDivider(doc, y)
-    y += 5
+    pdf.drawSectionTitle(doc, 'Cómo leer esta valoración', y)
+    y += 4
     y = pdf.drawParagraph(
       doc,
       'Este rango ofrece una referencia orientativa según la zona, las características de la vivienda y el mercado actual. El precio final puede variar en función de su estado, su presentación y la estrategia de venta.',
       y,
+      { fontSize: 9, lineHeight: 4 },
     )
 
-    y += 8
+    y += 4
     pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y)
-    y += 6
-    pdf.drawDivider(doc, y)
-    y += 5
+    y += 4
     y = pdf.drawParagraph(
       doc,
       'Si quieres afinar el valor real de venta, revisamos contigo la vivienda, el momento del mercado y el enfoque más adecuado para su venta.',
       y,
+      { fontSize: 9, lineHeight: 4 },
     )
 
-    y += 10
+    y += 4
     pdf.drawSectionTitle(doc, 'Contacto', y)
-    y += 6
-    pdf.drawDivider(doc, y)
-    y += 5
-    pdf.drawRow(doc, 'Pau Manovel', '637 86 36 78', y); y += 6
-    pdf.drawRow(doc, 'Email', 'hola@propihouse.es', y); y += 6
-    pdf.drawRow(doc, 'Dirección', 'Carrer d’Enric Prat de la Riba 187', y, { muted: true }); y += 5
-    pdf.drawRow(doc, '', '08901 L’Hospitalet de Llobregat', y, { muted: true }); y += 6
-    pdf.drawRow(doc, 'Web', 'propihouse.es', y, { muted: true })
+    y += 4
+    pdf.drawRow(doc, 'Pau Manovel · 637 86 36 78', 'hola@propihouse.es', y); y += 5
+    pdf.drawRow(doc, 'Carrer d’Enric Prat de la Riba 187 · 08901 L’Hospitalet', 'propihouse.es', y, { muted: true })
 
     pdf.drawFooter(
       doc,

@@ -255,19 +255,19 @@ function MortgageCalculator() {
     y += 6
     pdf.drawDivider(doc, y)
     y += 5
-    pdf.drawRow(doc, 'Precio de la vivienda', fmtEUR.format(precio), y); y += 6
-    pdf.drawRow(doc, 'Ahorros disponibles', fmtEUR.format(ahorros), y); y += 6
-    pdf.drawRow(doc, 'ITP (Impuesto de transmisiones)', fmtPct2(gastosPct), y); y += 6
-    pdf.drawRow(doc, 'Tipo de interés anual', fmtPct2(interes), y); y += 6
-    pdf.drawRow(doc, 'Plazo', fmtYears(plazo), y); y += 6
+    pdf.drawRow(doc, 'Precio de la vivienda', fmtEUR.format(precio), y); y += 5
+    pdf.drawRow(doc, 'Ahorros disponibles', fmtEUR.format(ahorros), y); y += 5
+    pdf.drawRow(doc, 'ITP (Impuesto de transmisiones)', fmtPct2(gastosPct), y); y += 5
+    pdf.drawRow(doc, 'Tipo de interés anual', fmtPct2(interes), y); y += 5
+    pdf.drawRow(doc, 'Plazo', fmtYears(plazo), y); y += 5
     pdf.drawRow(doc, 'Ingresos netos mensuales', `${fmtEUR.format(ingresos)} /mes`, y)
 
     /* ── Hero results: Capital + Cuota ──────────────────────
      * Both numbers carry equal visual weight — full-width warmCream
      * cards stacked. Pau wanted them matched. */
-    y += 14
+    y += 11
     pdf.drawSectionTitle(doc, 'Resultado', y, 'blue')
-    y += 8
+    y += 6
 
     if (!noFinancing) {
       /* Capital a financiar */
@@ -317,10 +317,10 @@ function MortgageCalculator() {
      * the on-page UI (emerald = saludable, amber = ajustado, red =
      * arriesgado), aligned so the chip's right edge meets the page
      * margin. */
-    y += 30
-    pdf.drawRow(doc, 'Total estimado a devolver', fmtEUR.format(Math.round(totalCost)), y); y += 6
-    pdf.drawRow(doc, 'Total intereses estimados', fmtEUR.format(Math.round(totalInterest)), y); y += 6
-    pdf.drawRow(doc, 'Porcentaje de financiación', `${pctFinanciacion.toFixed(1)}%`, y, { muted: true }); y += 6
+    y += 28
+    pdf.drawRow(doc, 'Total estimado a devolver', fmtEUR.format(Math.round(totalCost)), y); y += 5
+    pdf.drawRow(doc, 'Total intereses estimados', fmtEUR.format(Math.round(totalInterest)), y); y += 5
+    pdf.drawRow(doc, 'Porcentaje de financiación', `${pctFinanciacion.toFixed(1)}%`, y, { muted: true }); y += 5
 
     /* Endeudamiento row with coloured badge. */
     doc.setFont('helvetica', 'normal')
@@ -354,47 +354,40 @@ function MortgageCalculator() {
     /* ── Gastos de compra ────────────────────────────────────
      * Label set per Pau: "GASTOS DE COMPRA ESTIMADOS" and
      * "Total gastos estimado para formalizar la compra". */
-    y += 14
+    y += 10
     pdf.drawSectionTitle(doc, 'Gastos de compra estimados', y)
-    y += 6
-    pdf.drawDivider(doc, y)
     y += 5
-    pdf.drawRow(doc, `ITP (${fmtPct2(gastosPct)})`, fmtEUR.format(itp), y); y += 6
+    pdf.drawDivider(doc, y)
+    y += 4
+    pdf.drawRow(doc, `ITP (${fmtPct2(gastosPct)})`, fmtEUR.format(itp), y); y += 5
     pdf.drawRow(doc, 'Gastos de escritura', fmtEUR.format(GASTOS_ESCRITURA_FIJO), y); y += 1
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(8.5)
     doc.setTextColor(...pdf.PDF_COLORS.muted)
     doc.text('notaría · registro · gestoría', margin + 2, y + 4)
-    y += 8
+    y += 7
     pdf.drawDivider(doc, y)
-    y += 5
+    y += 4
     pdf.drawRow(doc, 'Total estimado para formalizar la compra', fmtEUR.format(gastosCompra), y, { bold: true })
 
-    /* ── Page 2 — Siguiente paso + Contacto ──────────────────
-     * Editorial copy and the full contact block live on page 2 so
-     * page 1 keeps the data + hero numbers + gastos uncramped. */
-    y = pdf.nextPage(doc, bgDataUrl, logoDataUrl)
-
-    pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y)
+    /* ── Editorial + Contacto (same page) ────────────────────
+     * Pau wrote these onto the bottom of his single-page printout.
+     * Tight spacing, no per-section dividers — just label + content. */
     y += 6
-    pdf.drawDivider(doc, y)
-    y += 5
+    pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y)
+    y += 4
     y = pdf.drawParagraph(
       doc,
       'Si quieres saber si esta compra encaja de verdad contigo, revisamos tu situación, tu capacidad real y el margen mensual con más detalle.',
       y,
+      { fontSize: 9, lineHeight: 4 },
     )
 
-    y += 10
+    y += 4
     pdf.drawSectionTitle(doc, 'Contacto', y)
-    y += 6
-    pdf.drawDivider(doc, y)
-    y += 5
-    pdf.drawRow(doc, 'Pau Manovel', '637 86 36 78', y); y += 6
-    pdf.drawRow(doc, 'Email', 'hola@propihouse.es', y); y += 6
-    pdf.drawRow(doc, 'Dirección', 'Carrer d’Enric Prat de la Riba 187', y, { muted: true }); y += 5
-    pdf.drawRow(doc, '', '08901 L’Hospitalet de Llobregat', y, { muted: true }); y += 6
-    pdf.drawRow(doc, 'Web', 'propihouse.es', y, { muted: true })
+    y += 4
+    pdf.drawRow(doc, 'Pau Manovel · 637 86 36 78', 'hola@propihouse.es', y); y += 5
+    pdf.drawRow(doc, 'Carrer d’Enric Prat de la Riba 187 · 08901 L’Hospitalet', 'propihouse.es', y, { muted: true })
 
     pdf.drawFooter(
       doc,
