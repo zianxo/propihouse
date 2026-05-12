@@ -281,7 +281,7 @@ function MortgageCalculator() {
       doc.setFontSize(22)
       doc.setTextColor(...pdf.PDF_COLORS.dark)
       doc.text(fmtEUR.format(capital), margin + 4, y + 14)
-      y += 26
+      y += 22
     }
 
     /* Cuota mensual. Number font dropped 26 → 22 pt per Pau ("reducir
@@ -317,7 +317,7 @@ function MortgageCalculator() {
      * the on-page UI (emerald = saludable, amber = ajustado, red =
      * arriesgado), aligned so the chip's right edge meets the page
      * margin. */
-    y += 28
+    y += 22
     pdf.drawRow(doc, 'Total estimado a devolver', fmtEUR.format(Math.round(totalCost)), y); y += 5
     pdf.drawRow(doc, 'Total intereses estimados', fmtEUR.format(Math.round(totalInterest)), y); y += 5
     pdf.drawRow(doc, 'Porcentaje de financiación', `${pctFinanciacion.toFixed(1)}%`, y, { muted: true }); y += 5
@@ -371,11 +371,15 @@ function MortgageCalculator() {
     pdf.drawRow(doc, 'Total estimado para formalizar la compra', fmtEUR.format(gastosCompra), y, { bold: true })
 
     /* ── Editorial + Contacto (same page) ────────────────────
-     * Pau wrote these onto the bottom of his single-page printout.
-     * Tight spacing, no per-section dividers — just label + content. */
+     * Pau wanted the title-to-content spacing here to match the
+     * upper sections (Datos, Resultado, Gastos): title → 6 mm →
+     * divider → 5 mm → first row. "Siguiente paso recomendado"
+     * picks up the blue accent; Contacto stays olive. */
+    y += 5
+    pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y, 'blue')
     y += 6
-    pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y)
-    y += 4
+    pdf.drawDivider(doc, y)
+    y += 5
     y = pdf.drawParagraph(
       doc,
       'Si quieres saber si esta compra encaja de verdad contigo, revisamos tu situación, tu capacidad real y el margen mensual con más detalle.',
@@ -383,9 +387,11 @@ function MortgageCalculator() {
       { fontSize: 9, lineHeight: 4 },
     )
 
-    y += 4
+    y += 5
     pdf.drawSectionTitle(doc, 'Contacto', y)
-    y += 4
+    y += 6
+    pdf.drawDivider(doc, y)
+    y += 5
     pdf.drawRow(doc, 'Pau Manovel · 637 86 36 78', 'hola@propihouse.es', y); y += 5
     pdf.drawRow(doc, 'Carrer d’Enric Prat de la Riba 187 · 08901 L’Hospitalet', 'propihouse.es', y, { muted: true })
 
