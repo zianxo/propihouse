@@ -358,11 +358,26 @@ const SERVICES = [
 ]
 
 /* ─── Review Data ─── */
+/* Real Google reviews (provided by Pau). Three of the four were
+ * truncated at "More" when Pau pasted them, so we render the verbatim
+ * portion that's available — no fabricated continuations. */
 const REVIEWS = [
-  { name: 'María García', text: 'Desde el primer momento nos sentimos acompañados. Encontramos nuestro piso ideal en menos de un mes. Un trato increíblemente cercano y profesional.', image: '/reviews/2026-02-04.webp' },
-  { name: 'Carlos Rodríguez', text: 'Vendimos nuestro piso con Propi House y el proceso fue impecable. Nos guiaron en cada paso y consiguieron un precio por encima de lo esperado.', image: '/reviews/2026-02-04 (1).webp' },
-  { name: 'Ana Martínez', text: 'Buscábamos alquiler y pensábamos que sería imposible. Propi House nos encontró una opción perfecta en nuestra zona preferida. Muy agradecidos.', image: '/reviews/2026-02-04 (2).webp' },
-  { name: 'Jordi Puig', text: 'El equipo financiero nos ayudó a conseguir la mejor hipoteca. Sin ellos, no habríamos podido comprar nuestra primera vivienda. Totalmente recomendable.', image: '/reviews/2026-02-04 (3).webp' },
+  {
+    name: 'Marc Guirado',
+    text: 'Pau me ayudó a vender mi piso y la experiencia fue muy buena. No me prometió milagros, pero sí me dijo exactamente qué podía esperar y cumplió. Fue transparente con los números, estuvo pendiente de cada visita y me mantuvo informado.',
+  },
+  {
+    name: 'Roxangel García',
+    text: 'La experiencia que vivimos mi pareja y yo al adquirir nuestra primera vivienda superó todas nuestras expectativas, no solo por lo rápido de la gestión sino por todo el acompañamiento desde el primer momento. Te hacen sentir escuchados.',
+  },
+  {
+    name: 'Nika Vogt',
+    text: 'Conocí a Pau por casualidad; durante un tiempo, él también formó parte de la comunidad del edificio donde yo vivía. Hace unos años me mudé al extranjero y quería vender mi piso. Un día me llamó para preguntarme si podía ayudarme con la venta.',
+  },
+  {
+    name: 'Baltasar Carrillo Miranda',
+    text: 'En mi caso fue poner en alquiler un piso de mi padre y la experiencia con Pau fue muy agradable, sencilla y sincera en todo momento. Es una persona muy cercana y al mismo tiempo muy profesional. No puedo hacer otra cosa más que recomendarlo.',
+  },
 ]
 
 /* ─── HomePage ─── */

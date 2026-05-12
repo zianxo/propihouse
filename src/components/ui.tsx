@@ -257,14 +257,25 @@ export function CTASection({
 export function ReviewCard({
   name,
   text,
-  image,
   rating = 5,
 }: {
   name: string
   text: string
-  image: string
   rating?: number
 }) {
+  /* Initial-letter avatar (no fake stock images). The colour is
+   * derived deterministically from the name so each reviewer gets
+   * the same circle every render but the cards stay visually varied. */
+  const initial = name.trim().charAt(0).toUpperCase()
+  const palette = [
+    'bg-blue/15 text-blue',
+    'bg-olive/15 text-olive',
+    'bg-[#B8A88A]/20 text-[#8a7a55]',
+    'bg-cream-dark/40 text-dark/70',
+  ]
+  const hash = Array.from(name).reduce((a, c) => a + c.charCodeAt(0), 0)
+  const colour = palette[hash % palette.length]
+
   return (
     <div className="bg-white rounded-xl p-6 shadow-soft flex flex-col gap-4">
       <div className="flex gap-0.5">
@@ -276,12 +287,12 @@ export function ReviewCard({
       </div>
       <p className="text-text-light text-sm leading-relaxed flex-1">"{text}"</p>
       <div className="flex items-center gap-3 pt-2 border-t border-cream-dark/20">
-        <img
-          src={image}
-          alt={name}
-          className="w-10 h-10 rounded-full object-cover"
-          loading="lazy"
-        />
+        <div
+          className={`w-10 h-10 rounded-full flex items-center justify-center font-[Playfair_Display] text-base font-medium ${colour}`}
+          aria-hidden
+        >
+          {initial}
+        </div>
         <div>
           <span className="font-bold text-sm text-dark">{name}</span>
           <div className="flex items-center gap-1 text-xs text-text-muted">
