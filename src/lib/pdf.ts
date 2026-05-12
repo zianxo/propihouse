@@ -175,7 +175,7 @@ export function drawBackground(doc: jsPDF, bgDataUrl: string | null) {
 
   const inset = 10
   const radius = 6
-  docAny.setGState(new docAny.GState({ opacity: 0.82 }))
+  docAny.setGState(new docAny.GState({ opacity: 0.88 }))
   doc.setFillColor(255, 255, 255)
   doc.roundedRect(
     inset,

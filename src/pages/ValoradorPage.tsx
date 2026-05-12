@@ -565,14 +565,15 @@ function ResultScreen({
     }
 
     /* ── Editorial + Contacto (same page) ───────────────────
-     * Inter-section gap bumped 5 → 8 mm so it matches the upper
-     * sections' breathing. "Siguiente paso recomendado" gets the
-     * blue accent per Pau; Cómo leer + Contacto stay olive. */
-    y += 8
-    pdf.drawSectionTitle(doc, 'Cómo leer esta valoración', y)
+     * Tighter than upper sections per Pau — pattern: inter-section
+     * 6 mm, title → divider 4 mm, divider → content 4 mm. "Siguiente
+     * paso recomendado" still gets the blue accent; Cómo leer +
+     * Contacto stay olive. */
     y += 6
+    pdf.drawSectionTitle(doc, 'Cómo leer esta valoración', y)
+    y += 4
     pdf.drawDivider(doc, y)
-    y += 5
+    y += 4
     y = pdf.drawParagraph(
       doc,
       'Este rango ofrece una referencia orientativa según la zona, las características de la vivienda y el mercado actual. El precio final puede variar en función de su estado, su presentación y la estrategia de venta.',
@@ -580,11 +581,11 @@ function ResultScreen({
       { fontSize: 9, lineHeight: 4 },
     )
 
-    y += 8
-    pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y, 'blue')
     y += 6
+    pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y, 'blue')
+    y += 4
     pdf.drawDivider(doc, y)
-    y += 5
+    y += 4
     y = pdf.drawParagraph(
       doc,
       'Si quieres afinar el valor real de venta, revisamos contigo la vivienda, el momento del mercado y el enfoque más adecuado para su venta.',
@@ -592,11 +593,11 @@ function ResultScreen({
       { fontSize: 9, lineHeight: 4 },
     )
 
-    y += 8
-    pdf.drawSectionTitle(doc, 'Contacto', y)
     y += 6
+    pdf.drawSectionTitle(doc, 'Contacto', y)
+    y += 4
     pdf.drawDivider(doc, y)
-    y += 5
+    y += 4
     pdf.drawRow(doc, 'Pau Manovel · 637 86 36 78', 'hola@propihouse.es', y); y += 5
     pdf.drawRow(doc, 'Carrer d’Enric Prat de la Riba 187 · 08901 L’Hospitalet', 'propihouse.es', y, { muted: true })
 
