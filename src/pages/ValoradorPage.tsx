@@ -562,11 +562,10 @@ function ResultScreen({
     }
 
     /* ── Editorial + Contacto (same page) ───────────────────
-     * Title-to-content spacing now matches the upper sections
-     * (Datos, Resultado): title → 6 mm → divider → 5 mm → first
-     * row. "Siguiente paso recomendado" gets the blue accent per
-     * Pau; Cómo leer + Contacto stay olive. */
-    y += 5
+     * Inter-section gap bumped 5 → 8 mm so it matches the upper
+     * sections' breathing. "Siguiente paso recomendado" gets the
+     * blue accent per Pau; Cómo leer + Contacto stay olive. */
+    y += 8
     pdf.drawSectionTitle(doc, 'Cómo leer esta valoración', y)
     y += 6
     pdf.drawDivider(doc, y)
@@ -578,7 +577,7 @@ function ResultScreen({
       { fontSize: 9, lineHeight: 4 },
     )
 
-    y += 5
+    y += 8
     pdf.drawSectionTitle(doc, 'Siguiente paso recomendado', y, 'blue')
     y += 6
     pdf.drawDivider(doc, y)
@@ -590,7 +589,7 @@ function ResultScreen({
       { fontSize: 9, lineHeight: 4 },
     )
 
-    y += 5
+    y += 8
     pdf.drawSectionTitle(doc, 'Contacto', y)
     y += 6
     pdf.drawDivider(doc, y)
