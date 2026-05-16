@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MethodTimeline, RevealSection } from '../components/ui'
+import { FAQSection } from '../components/FAQ'
+import { FAQ_VENDER, FAQ_VENDER_CTA } from '../data/faqs'
 
 /* ═══════════════════════════════════════════════════════════════
    VenderPage
@@ -563,6 +565,11 @@ export default function VenderPage() {
           </RevealSection>
         </div>
       </section>
+
+      {/* ╔══════════════════════════════════════════════════════╗
+          ║  FAQ                                                ║
+          ╚══════════════════════════════════════════════════════╝ */}
+      <FAQSection items={FAQ_VENDER} cta={FAQ_VENDER_CTA} />
 
       {/* ╔══════════════════════════════════════════════════════╗
           ║  CTA FINAL                                          ║

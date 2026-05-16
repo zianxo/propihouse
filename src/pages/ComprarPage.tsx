@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { MethodTimeline, RevealSection } from '../components/ui'
+import { FAQSection } from '../components/FAQ'
+import { FAQ_COMPRAR, FAQ_COMPRAR_CTA } from '../data/faqs'
 
 /* ═══════════════════════════════════════════════════════════════
    ComprarPage
@@ -557,6 +559,11 @@ export default function ComprarPage() {
           </RevealSection>
         </div>
       </section>
+
+      {/* ╔══════════════════════════════════════════════════════╗
+          ║  BLOCK 8a — FAQ                                     ║
+          ╚══════════════════════════════════════════════════════╝ */}
+      <FAQSection items={FAQ_COMPRAR} cta={FAQ_COMPRAR_CTA} />
 
       {/* ╔══════════════════════════════════════════════════════╗
           ║  BLOCK 8 — CTA FINAL                                ║

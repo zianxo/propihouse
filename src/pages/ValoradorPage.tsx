@@ -1010,7 +1010,7 @@ function RefineSuccessScreen() {
 /* ────────────────────────────────────────────
    Shared layout shell
    ──────────────────────────────────────────── */
-function PageShell({ children, headerRight }: { children: React.ReactNode; headerRight?: React.ReactNode }) {
+function PageShell({ children }: { children: React.ReactNode; headerRight?: React.ReactNode }) {
   return (
     <main className="min-h-screen bg-[#FDFBF5] relative">
       <div
@@ -1020,15 +1020,8 @@ function PageShell({ children, headerRight }: { children: React.ReactNode; heade
           backgroundSize: '128px 128px',
         }}
       />
-      <header className="relative z-10 flex items-center justify-between px-6 md:px-10 py-5">
-        <Link
-          to="/"
-          className="font-[Playfair_Display] text-lg tracking-tight text-[#1A1A1A] hover:opacity-70 transition-opacity"
-        >
-          Propi House
-        </Link>
-        {headerRight}
-      </header>
+      {/* Spacer for global navbar — internal header removed (it was hidden behind the fixed Header) */}
+      <div className="pt-28" />
       <div className="relative z-10">{children}</div>
     </main>
   )
@@ -1345,16 +1338,7 @@ export default function ValoradorPage() {
   /* ─── Result ─── */
   if (phase === 'result') {
     return (
-      <PageShell
-        headerRight={
-          <Link
-            to="/cuanto-vale-mi-vivienda"
-            className="text-sm text-[#1A1A1A]/40 hover:text-[#1A1A1A]/60 transition-colors font-[Lato]"
-          >
-            Más sobre valoración
-          </Link>
-        }
-      >
+      <PageShell>
         <ResultScreen
           metros={metros}
           condition={estado}
@@ -1408,18 +1392,8 @@ export default function ValoradorPage() {
           }}
         />
 
-        {/* Top bar */}
-        <header className="relative z-10 flex items-center justify-between px-6 md:px-10 py-5">
-          <Link
-            to="/"
-            className="font-[Playfair_Display] text-lg tracking-tight text-[#1A1A1A] hover:opacity-70 transition-opacity"
-          >
-            Propi House
-          </Link>
-          <span className="hidden sm:block text-xs text-[#1A1A1A]/30 tracking-widest uppercase font-[Lato]">
-            Analisis detallado
-          </span>
-        </header>
+        {/* Spacer for global navbar — internal header removed (hidden behind fixed Header) */}
+        <div className="pt-28" />
 
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center px-6 pt-6 md:pt-12 pb-20">
@@ -1669,15 +1643,8 @@ export default function ValoradorPage() {
         }}
       />
 
-      {/* Top bar */}
-      <header className="relative z-10 flex items-center justify-between px-6 md:px-10 py-5">
-        <Link
-          to="/"
-          className="font-[Playfair_Display] text-lg tracking-tight text-[#1A1A1A] hover:opacity-70 transition-opacity"
-        >
-          Propi House
-        </Link>
-      </header>
+      {/* Spacer for global navbar — internal header removed (hidden behind fixed Header) */}
+      <div className="pt-28" />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center px-6 pt-6 md:pt-12 pb-20">

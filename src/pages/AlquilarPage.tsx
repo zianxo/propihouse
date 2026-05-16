@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { MethodTimeline, RevealSection, SectionHeading } from '../components/ui'
+import { FAQSection } from '../components/FAQ'
+import { FAQ_ALQUILAR, FAQ_ALQUILAR_CTA } from '../data/faqs'
 
 /* ─── Pricing Tiers ─── */
 const PACKS = [
@@ -701,6 +703,9 @@ export default function AlquilarPage() {
           </RevealSection>
         </div>
       </section>
+
+      {/* ═══════════ BLOCK 9b: FAQ ═══════════ */}
+      <FAQSection items={FAQ_ALQUILAR} cta={FAQ_ALQUILAR_CTA} />
 
       {/* ═══════════ BLOCK 10: CTA FINAL ═══════════ */}
       <section className="relative py-24 md:py-32 overflow-hidden">

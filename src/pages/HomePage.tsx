@@ -2,6 +2,8 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { RevealSection, SectionHeading, ReviewCard } from '../components/ui'
 import { EntenderSituacionForm } from '../components/EntenderSituacionForm'
+import { FAQSection } from '../components/FAQ'
+import { FAQ_HOME, FAQ_HOME_CTA } from '../data/faqs'
 
 /* ─── Constants ─── */
 const TOTAL_FRAMES = 145
@@ -635,6 +637,9 @@ export default function HomePage() {
           </RevealSection>
         </div>
       </section>
+
+      {/* ═══════════ FAQ ═══════════ */}
+      <FAQSection items={FAQ_HOME} cta={FAQ_HOME_CTA} />
 
       {/* ═══════════ CTA BANNER ═══════════ */}
       <section className="relative py-24 md:py-32 overflow-hidden">
